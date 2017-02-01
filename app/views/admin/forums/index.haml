@@ -1,0 +1,26 @@
+%section
+    .row
+        .col-md-12
+            .pull-right= link_to "New Forum", new_admin_forum_path, :class => "btn btn-default"
+
+            - @forums.group_by(&:category).each do |category, forums|
+                %h2= category.try(:name) || "Unknown"
+                .table-container
+                    %table.table
+                        %thead
+                            %tr
+                                %th Order
+                                %th Forum
+                                %th Topics
+                                %th Posts
+                                %th Edit
+                                %th Delete
+                        %tbody
+                            - forums.each do |forum|
+                                %tr
+                                    %td= forum.order
+                                    %td= link_to forum.title, forem.forum_path(forum), :title => forum.description
+                                    %td= forum.topics.count
+                                    %td= forum.posts_count
+                                    %td= link_to "Edit", edit_admin_forum_path(forum)
+                                    %td= link_to "Delete", admin_forum_path(forum), :method => :delete, :confirm => "Are you sure?"

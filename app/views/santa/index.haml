@@ -1,0 +1,48 @@
+- content_for :title do "Secret Santa" end
+%section
+    = render :partial => "header"
+    .row
+        .col-md-8
+            %h3 Secret Santa
+            %p The goal is to spread the holiday spirit by giving gifts to others. Gift givers might receive a trophy :)
+            %p You can spend raindrops to vote for a gift request. Spending is instant and irreversible. Have fun!
+            - if user_signed_in? && current_user.raindrops > 0
+                %p
+                    You have a total of
+                    %b= number_with_delimiter(current_user.raindrops.to_i)
+                    raindrops left to give. Get to work!
+            %br
+        .col-md-4
+            .alert.alert-info
+                %strong 24 hour lifetime
+                Ungifted requests will be removed after 24 hours.
+            %h4 Submit a new request
+            - if user_signed_in?
+                - if @purchases.empty?
+                    %p You already have everything from the store, no request to submit! Go give some gifts!
+                - elsif @gift && @gift.giveable?
+                    %p You already have an ungranted gift request submitted! Remove it to submit another one.
+                - else
+                    = render :partial => 'form'
+            - else
+                %p
+                    To post a new gift request, vote for a request, or fulfill a request, please
+                    %a{:href => new_user_registration_path} register
+                    or
+                    = succeed '.' do
+                        %a{:href => new_user_session_path} sign in
+    .row
+        .col-md-12
+            .tabbable
+                %ul.nav.nav-tabs
+                    %li{class: ('active' unless params[:happy])}
+                        %a{:href => "#wishful", :data => {:toggle => "tab"}} Wishful Elves
+                    %li.pull-right{class: ('active' if params[:happy])}
+                        %a{:href => "#happy", :data => {:toggle => "tab"}} Happy Children
+                .tab-content
+                    .tab-pane#wishful{class: ('active' unless params[:happy])}
+                        = render :partial => 'listing', :locals => {:listing => @wishful.select(&:giveable?)}
+                        = paginate @wishful, :param_name => "wishful_page"
+                    .tab-pane#happy{class: ('active' if params[:happy])}
+                        = render :partial => 'listing', :locals => {:listing => @happy}
+                        = paginate @happy, :param_name => "happy_page", params: {happy: true}

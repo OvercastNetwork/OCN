@@ -1,0 +1,14 @@
+.listing{:class => simple_forum_style ? 'simple-forum-style' : ''}
+    - unless simple_forum_style
+        .row.headings
+            .col-xs-12.col-sm-7{:style => "padding-left: 45px;"}
+                Topic
+            .hidden-xs.col-sm-3.col-sm-offset-0
+                Latest
+            .hidden-xs.col-sm-1.text-center
+                Posts
+            .hidden-xs.col-sm-1.text-center
+                Views
+    - topics.each do |topic|
+        - unless topic.nil?
+            = render :partial => 'forem/topics/topic', :locals => {:topic => topic, :show_forum => show_forum, :unsubscribe_button => false, :simple_forum_style => simple_forum_style}

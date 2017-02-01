@@ -1,0 +1,166 @@
+:css
+    .container {
+        width: 1200px;
+    }
+%section
+    .btn-group
+        %a.btn.btn-default.disabled Datacenter
+        %a.btn.btn-default{:href => admin_servers_path, :class => (!params[:dc] ? "active" : "")} All
+        - @datacenters.each do |dc|
+            %a.btn.btn-default{:href => "?dc=" + dc, :class => (params[:dc] == dc ? "active" : "")}= dc
+    .btn-group.pull-right
+        %a.btn.btn-primary{:href => new_admin_server_path} New Server
+        %a.btn.btn-default{:href => restart_lobbies_admin_servers_path, :data => {:method => :post}}
+            Restart Lobbies
+        %a.btn.btn-default{:href => sync_dns_admin_servers_path, :data => {:method => :post}}
+            %i.fa.fa-refresh
+            Sync DNS
+    .row
+        .col-md-12
+            %h2 Families
+            .table-container
+                %table.table.table-striped.table-condensed
+                    %thead
+                        %tr
+                            %th{width: 100} ID
+                            %th{width: 100} Name
+                            %th{width: 50} Players
+                            %th{width: 50} Online Servers
+                            %th{width: 50} Dynamic Servers
+                            %th{width: 50} Total Servers
+                    %tbody
+                        - @families.each do |family|
+                            %tr
+                                %td
+                                    %a{href: "##{family[:id]}"}= family[:id]
+                                %td= family[:name]
+                                %td= family[:online_players]
+                                %td= family[:online_servers]
+                                %td= family[:dynamic_servers]
+                                %td= family[:servers].count
+    - @families.each do |family|
+        - next if family[:servers].empty?
+        - bungee = family[:id] == 'bungee'
+
+        %a{name: family[:id]}
+        %h2
+            = family[:name]
+            %small= family[:id]
+        .row
+            .col-md-12
+                .table-container
+                    %table.table.table-striped.table-condensed
+                        %thead
+                            %tr
+                                %th{width: 40} Pri
+                                %th{width: 40} ID
+                                %th{width: 40} DC
+                                %th{width: 70} Box
+                                %th{width: 160}= bungee ? "IP" : "Token"
+                                %th{width: 160} Name
+                                %th{width: 70} Nextgen
+                                %th{width: 70}= bungee ? "Bungee" : "Bukkit"
+                                %th{width: 70} Plugins
+                                %th{width: 70} Players
+                                - if bungee
+                                    %th{width: 70} Public
+                                    %th{width: 200} Schedule
+                                - else
+                                    %th{width: 70} Capacity
+                                    %th{width: 200} Dynamics
+                                %th{width: 70} Ensure
+                                %th{width: 70} Uptime
+                                %th{width: 70} Restart
+                                %th
+                                %th
+                        %tbody.tiny-text
+                            - family[:servers].each do |server|
+                                %tr
+                                    %td= server.priority
+                                    %td
+                                        %input.tiny-input{type: 'text', value: server.id, disabled: true, style: 'width: 30px;'}
+                                    %td= server.datacenter
+                                    %td= server.box_id
+                                    %td= bungee ? server.ip : server.bungee_name
+                                    %td{class: ('status-ok' if server.visibility == Server::Visibility::PUBLIC)}= server.name
+                                    %td= revision(server.deployed_revision) if server.online?
+                                    %td= revision(server.deployed_application_revision) if server.online?
+                                    %td= revision(server.deployed_revision('Plugins')) if server.online?
+                                    %td= server.num_online
+                                    - if bungee
+                                        %td{class: server.dns_enabled? ? 'status-ok' : 'status-offline'}= time_ago_shorthand(server.dns_toggled_at)
+                                        %td
+                                            - if server.dns_scheduled?
+                                                - if server.dns_window_start <= server.dns_window_stop
+                                                    .dns-disabled{style: "width: #{duration_px(server.dns_window_start)}px"}
+                                                    .dns-enabled{style: "width: #{duration_px(server.dns_window_stop - server.dns_window_start)}px"}
+                                                    .dns-disabled{style: "width: #{duration_px(1.day - server.dns_window_stop)}px"}
+                                                - else
+                                                    .dns-enabled{style: "width: #{duration_px(server.dns_window_stop)}px"}
+                                                    .dns-disabled{style: "width: #{duration_px(server.dns_window_start - server.dns_window_stop)}px"}
+                                                    .dns-enabled{style: "width: #{duration_px(1.day - server.dns_window_start)}px"}
+                                    - else
+                                        %td= server.dynamics["size"]
+                                        %td= server.dynamics_status
+                                    %td{:class => server.ensure_color}= server.ensure
+                                    %td{:class => server.uptime_color}= server.uptime_text
+                                    %td{:class => server.restart_color}= server.restart_text
+                                    %td
+                                        %a{:href => edit_admin_server_path(server.id)}
+                                            %i.fa.fa-pencil
+                                    %td
+                                        %a{:href => admin_server_path(server.id), :data => {:method => :delete, :confirm => "Are you sure you want to delete #{server.name}?"}}
+                                            %i.fa.fa-times
+    .row
+        .col-md-12
+            %h2 Totals
+            .table-container
+                %table.table.table-striped.table-condensed
+                    %thead
+                        %tr
+                            %th ID
+                            %th Players
+                            %th Servers
+                            %th Online
+                            %th Public
+                            - @families.each do |family|
+                                %th{style: "font-family: monospace; font-size: 8px; font-weight: normal;"}
+                                    %nobr= family[:id]
+                    %tbody
+                        - @boxes.each do |box|
+                            - servers = Server.box(box).to_a
+                            - online = servers.select(&:online?)
+                            %tr
+                                %td= box.id
+                                %td= online.sum(&:num_online)
+                                %td= servers.size
+                                %td= online.size
+                                %td= servers.count(&:visible_to_public?)
+                                - @families.each do |family|
+                                    %td= servers.select{|s| s.family == family[:id]}.size
+    - @datacenters.each do |datacenter|
+        - boxes = @boxes.select{|box| box.datacenter == datacenter }
+        - unless boxes.empty?
+            .row
+                .col-md-12
+                    %h2
+                        = datacenter
+                        Matrix
+                    .table-container
+                        %table.table.table-bordered.table-condensed
+                            %thead
+                                %tr
+                                    %th Family
+                                    - boxes.each do |box|
+                                        %th{style: "width: 20px; font-family: monospace; font-weight: normal;"}= box.id
+                            %tbody
+                                - @families.each do |family|
+                                    - if family[:id]
+                                        %tr
+                                            %td{style: "font-weight: bold;"}
+                                                %nobr= family[:id]
+                                            - boxes.each do |box|
+                                                %td{style: "font-size: 70%;"}
+                                                    - family[:servers].select{|s| s.box_obj == box }.each do |server|
+                                                        %div{style: "width: #{830 / boxes.size - 14}px; overflow: hidden;"}
+                                                            %nobr{class: server.uptime_color}= server.name

@@ -1,0 +1,28 @@
+- content_for :title do "Matches" end
+
+%script $(".nav-tabs").tab("show"); $(function(){$("[rel=tooltip]").tooltip();});
+
+%section
+    .page-header
+        .btn-group.pull-right
+            %a.btn.btn-default.dropdown-toggle{:href => "#", :style => 'outline: none', :data => {:toggle => "dropdown"}}
+                - if @server
+                    = @server.display_name
+                - else
+                    All Servers
+                %span.caret
+            %ul.dropdown-menu.dropdown-scrollable
+                %li{:class => (@server ? "" : "active")}
+                    %a{:href => matches_path} All Servers
+                - @servers.each do |server|
+                    %li{:class => (server == @server ? "active" : "")}
+                        %a{:href => matches_path(server_id: server.id)}
+                            = server.display_name
+        %h1
+            Recent Matches
+            %small
+                From all servers
+
+    .row
+        .col-md-12
+            = render partial: 'list', locals: {matches: @matches, exclude: []}

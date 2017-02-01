@@ -1,0 +1,36 @@
+/* http://stackoverflow.com/a/26152334 */
+input.gsc-input,
+.gsc-input-box,
+.gsc-input-box-hover,
+.gsc-input-box-focus,
+.gsc-search-button {
+    box-sizing: content-box;
+    line-height: normal;
+    font-size: 14px !important;
+}
+
+input.gsc-input {
+    background-image: url('https://some.network/images/search_placeholder.png') !important;
+    background-size: 200px 16px;
+    background-repeat: no-repeat;
+}
+
+input.gsc-input:focus {
+    background-image: none !important;
+}
+
+.gsc-search-button {
+    display: none;
+}
+
+.gsc-control-searchbox-only {
+    padding-top: 10px;
+}
+
+td.gsc-input {
+    padding-right: 0 !important;
+}
+
+.gsc-input-box span {
+    font-size: 20px;
+}

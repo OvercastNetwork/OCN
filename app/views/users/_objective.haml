@@ -1,0 +1,24 @@
+-# locals: klass, total, objectives
+- per_column = (objectives.size / 3.0).ceil
+.row
+    .col-md-12
+        %h2
+            = total
+            %small= klass.total_description
+.row
+    - objectives.each_slice(per_column) do |slice|
+        .col-md-4.col-sm-6
+            - slice.select{|goal| goal.match && goal.match.map }.each do |goal|
+                %p
+                    - if goal.respond_to? :percentage
+                        %strong= "#{goal.percentage}%"
+                        of
+                    %strong{style: "color: #{goal.html_color}"}= goal.description
+                    on
+                    = link_to goal.match.map.name, map_path(goal.match.map)
+                    %a.profile-timestamp{:href => match_path(goal.match),
+                                         :rel => 'tooltip',
+                                         :title => format_time(goal.date),
+                                         :data => {:placement => 'top', :container => 'body'}}
+                        = time_ago_in_words(goal.date)
+                        ago

@@ -1,0 +1,201 @@
+@media (min-width: 768px) {
+    .play .sidebar {
+        /* Contains all of the special wells on the left */
+        width: 340px;
+        float: left;
+        margin-right: 20px;
+    }
+    .play .navbar-container {
+        /* Contains the datacenter navigation bar */
+        display: inline-block;
+        width: 360px;
+    }
+}
+
+@media (min-width: 992px) {
+    .play .sidebar {
+        width: 300px;
+    }
+    .play .navbar-container {
+        width: 620px;
+    }
+}
+
+.play .navbar-container .navbar {
+    /* Remove Bootstrap's bottom margin because the server-containers have a top one */
+    margin: 0;
+}
+
+.play .server-container {
+    /* Contains one server thumbnail and allows it to flow around the sidebar */
+    display: inline-block;
+    width: 300px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 991px) {
+    .play .server-container {
+        margin: 10px 30px;
+    }
+}
+
+@media (max-width: 767px) {
+    .play .server-container {
+        display: block;
+        margin: 10px auto;
+    }
+}
+
+.play .sidebar small {
+    font-weight: normal;
+    color: #666;
+}
+
+.play .sidebar table {
+    width: 100%;
+}
+
+.play .sidebar th {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    padding: 0 0 20px 0;
+}
+
+.play .connect td {
+    padding: 20px 0;
+}
+
+.play .connect .details {
+    font-size: 14px;
+    padding-left: 30px;
+}
+
+.play .connect .details .location {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.play .connect .hostname input {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    width: 136px;
+    height: 60px;
+    border: 0;
+    border-radius: 4px;
+    box-shadow: none;
+    color: white;
+    background-color: #0088cc;
+    padding: 20px;
+    margin: 0;
+}
+
+.play .connect .hostname input:hover {
+    cursor: pointer;
+}
+
+.play .seen {
+    font-size: 14px;
+}
+
+.play .seen .disguised {
+    font-size: 14px;
+    text-decoration: line-through;
+}
+
+.play .seen .server {
+    width: 100px;
+    text-align: right;
+    font-weight: bold;
+}
+
+.play .thumbnail {
+    margin-bottom: 0;
+}
+
+.play .server-box {
+    width: 290px;
+    height: 244px;
+    margin: 0;
+}
+
+.play .server-box .top-box {
+    height: 42px;
+    background-color: rgba(255,255,255,0.7);
+    padding: 8px;
+
+}
+
+.play .server-box .top-box small {
+    font-size: 14px;
+    font-weight: normal;
+    color: #666;
+}
+
+.play .server-box a {
+    color: black;
+}
+
+.play .server-box .title {
+    display: inline;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.play .server-box .players {
+    display: inline;
+    float: right;
+    font-size: 18px;
+}
+
+.play .server-box .bottom-box {
+    position: relative;
+    height: 52px;
+    background-color: rgba(255,255,255,0.7);
+    padding: 8px;
+    margin-top: 150px;
+}
+
+.play .server-box .bottom-box small {
+    font-size: 12px;
+    font-weight: normal;
+    color: #666;
+}
+
+.play .server-box .current-map-label {
+    display: block;
+    position: absolute;
+    width: 40px;
+    padding-right: 8px;
+    text-align: right;
+    font-size: 12px;
+    color: #666;
+}
+
+.play .server-box .current-map {
+    display: block;
+    position: absolute;
+    left: 56px;
+    font-size: 16px;
+}
+
+.play .server-box .next-map-label {
+    display: block;
+    position: absolute;
+    top: 28px;
+    width: 40px;
+    padding-right: 8px;
+    text-align: right;
+    font-size: 12px;
+    color: #666;
+}
+
+.play .server-box .next-map {
+    display: block;
+    position: absolute;
+    top: 28px;
+    left: 56px;
+    font-size: 12px;
+}

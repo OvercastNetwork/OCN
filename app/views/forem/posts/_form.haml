@@ -1,0 +1,22 @@
+= f.input :text, :as => :pagedown, label: false
+.help-block.collapse
+    Character limit exceeded! Please reduce the length of your post.
+= f.hidden_field :converted, :value => true
+- if params[:reply_to_id]
+    = f.hidden_field :reply_to_id, :value => params[:reply_to_id]
+
+#wmd-help.modal.fade
+    .modal-dialog
+        .modal-content
+            .modal-header
+                %button.close{:data => {:dismiss => "modal"}} &times;
+                %h3.modal-title Markdown and Emoji Help
+            .modal-body
+                %p.center Click either image for help with Markdown or Emoji.
+                .row
+                    .col-md-6
+                        %a{:href => "http://chibicode.github.io/markdown-toolbar-cheatsheet/", :target => "_blank"}
+                            %img{:src => asset_path("help/markdown.png"), :width => "250px"}
+                    .col-md-6
+                        %a{:href => "http://emoji.muan.co/", :target => "_blank"}
+                            %img{:src => asset_path("help/emoji.png"), :width => "250px"}

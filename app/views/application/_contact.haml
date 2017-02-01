@@ -1,0 +1,31 @@
+.modal.fade#contact
+    .modal-dialog
+        .modal-content
+            = simple_form_for Inquiry.new, :url => "/inquire" do |f|
+                %input.subj{:type => "hidden", :name => "type", :value => ""}
+                .modal-header
+                    %button.close{:data => {:dismiss => "modal"}} &times;
+                    %h3.modal-title
+                        Contact #{ORG::NAME}
+                        %small.subject
+                .modal-body
+                    .row
+                        .col-md-6
+                            .form-group
+                                = f.label :username, :class => "control-label"
+                                = f.text_field :username, :required => true, :class => "form-control"
+                            .form-group
+                                = f.label :message, :class => "control-label"
+                                = f.text_area :message, :rows => 10, :class => "form-control"
+                        .col-md-6
+                            .form-group
+                                = f.label :email, :class => "control-label"
+                                = f.email_field :email, :required => true, :class => "form-control"
+                            .form-group
+                                = f.label :subject, :class => "control-label"
+                                = f.text_field :subject, :required => true, :class => "form-control"
+                            %p We usually respond within 1-2 days if you provide a valid email
+                            %p Please be as clear and concise as possible. It will help us process your inquiry faster.
+                .modal-footer
+                    %a.btn.btn-default{:href => "#", :data => {:dismiss => "modal"}} Close
+                    %input.btn.btn-primary{:type => "submit", :value => "Send", :data => {"disable-with" => "Sending..."}}

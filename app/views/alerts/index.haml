@@ -1,0 +1,31 @@
+- content_for :title do "My Alerts" end
+
+%section
+    .page-header
+        %h1
+            My Alerts
+            %a.btn.btn-primary.pull-right{:href => main_app.read_all_alerts_path, :data => {:method => "post", :confirm => "Are you sure you want to mark all alerts as read?"}}
+                %i.fa.fa-tasks.fa-inverse
+                Mark all read
+    .row
+        .col-md-12
+            .table-container
+                %table.table.table-bordered.table-striped
+                    %thead
+                        %tr
+                            %th Alert
+                            %th Read
+                    %tbody
+                        - if !@all_alerts
+                            %p You have no alert history!
+                        - else
+                            - @all_alerts.each do |alert|
+                                - if alert.valid?
+                                    %tr
+                                        %td= render partial: 'alerts/alert', object: alert
+                                        %td{:rel => alert.read? ? 'tooltip' : nil, :title => alert.read? ? format_time(alert.read_at) : nil, :data => alert.read? ? {:placement => 'left', :container => 'body'} : nil}
+                                            - if alert.read?
+                                                = "Read " + time_ago_in_words(alert.read_at, false, :vague => true) + " ago"
+                                            - else
+                                                Not read yet
+                = paginate @all_alerts if @all_alerts

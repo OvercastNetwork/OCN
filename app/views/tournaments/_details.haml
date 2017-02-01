@@ -1,0 +1,25 @@
+.row
+    .col-md-12.tournament-banner
+        = render partial: 'tournament', locals: {tournament: @tournament}
+.row
+    .col-md-12
+        %p{:style => 'margin-top: 36px;'}
+            = render_tournament_desc(@tournament.details)
+.row
+    .col-md-12{:style => 'text-align: center; margin-top: 24px;'}
+        - if Time.now < @tournament.registration_start
+            %div.alert.alert-info
+                Registration opens
+                %big= format_time(@tournament.registration_start, show_zone: true)
+                which is in
+                %h3= time_ago_in_words(@tournament.registration_start)
+        - elsif Time.now < @tournament.registration_end
+            %div.alert.alert-warning
+                Registration closes
+                %big= format_time(@tournament.registration_end, show_zone: true)
+                which is in
+                %h3= time_ago_in_words(@tournament.registration_end)
+        - else
+            %div.alert.alert-danger
+                Registration closed
+                %big= format_time(@tournament.registration_end, show_zone: true)

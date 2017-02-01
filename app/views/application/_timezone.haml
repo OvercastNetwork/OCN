@@ -1,0 +1,9 @@
+%script{:type => 'text/javascript', :src => '//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js'}
+:javascript
+    $(document).ready(function () {
+      $.ajax({
+        type: "PUT",
+        url: "/set_time_zone",
+        data: {"time_zone_name": jstz.determine().name()}
+      })
+    });

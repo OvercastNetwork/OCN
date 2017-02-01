@@ -1,0 +1,17 @@
+- if @can[:appeal][:comment]
+    %a.action.btn.btn-default{:href => '#action', :data => {:toggle => 'modal', :type => 'comment'}} Add Comment
+- if @can[:appeal][:escalate][0]
+    %a.action.btn.btn-warning{:href => '#action',
+                              :rel => @can[:appeal][:escalate][1] ? 'tooltip' : nil,
+                              :title => @can[:appeal][:escalate][1],
+                              :data => {:toggle => 'modal', :type => 'escalate'}} Escalate
+- elsif @can[:appeal][:escalate][1]
+    %a.action.btn.btn-warning{:disabled => '', :rel => 'tooltip', :title => @can[:appeal][:escalate][1]} Escalate
+- if @can[:appeal][:close]
+    %a.action.btn.btn-danger{:href => '#action', :data => {:toggle => 'modal', :type => 'close'}} Close
+- if @can[:appeal][:open]
+    %a.action.btn.btn-success{:href => '#action', :data => {:toggle => 'modal', :type => 'open'}} Open
+- if @can[:appeal][:lock]
+    %a.action.btn.btn-danger{:href => '#action', :data => {:toggle => 'modal', :type => 'lock'}} Lock
+- if @can[:appeal][:unlock]
+    %a.action.btn.btn-success{:href => '#action', :data => {:toggle => 'modal', :type => 'unlock'}} Unlock

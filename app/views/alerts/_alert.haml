@@ -1,0 +1,8 @@
+%a{href: main_app.alert_path(alert)}
+    - alert.rich_message.each do |element|
+        - if element[:user]
+            = render_user(element[:user])
+        != render_alert(element[:message])
+        - if element[:time]
+            = time_ago_in_words(alert.updated_at, false, vague: true)
+            ago

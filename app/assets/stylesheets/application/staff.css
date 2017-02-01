@@ -1,0 +1,45 @@
+.staff-entry {
+    display:block;
+    text-align: center;
+    color: #666;
+    margin-bottom:40px;
+}
+
+.staff-entry a {
+    text-decoration: none !important;
+    color: #666;
+}
+
+.staff-entry>a>* {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.staff-entry .staff-username {
+    display: inline-block;
+    margin: 0.75em auto 0.3em;
+    padding-bottom: 0.3em;
+    border-bottom: 0.125em solid #666;
+    font-size: 150%;
+    overflow: hidden;
+}
+
+.staff-entry .staff-role {
+    font-size: 85%;
+}
+
+.staff-entry .staff-social {
+    margin-top: 0.5em;
+    font-size:130%;
+}
+
+.staff-entry .staff-social a {
+    color: #999;
+}
+
+.staff-entry .staff-social img {
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+}

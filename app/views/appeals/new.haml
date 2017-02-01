@@ -1,0 +1,71 @@
+- content_for :title do "New Appeal - " + current_user.username end
+
+%section
+    .page-header
+        %h1
+            Appealing Infractions for
+            = current_user.username
+    .row
+        .col-md-12
+            %p View your other appeals:
+            - if !@appeals.nil?
+                = render :partial => 'common/appeals', :locals => {:appeals => @appeals}
+            - else
+                %center
+                    %p No appeals to display.
+            %hr
+            %p Select which infraction you would like to appeal:
+            - if @punishments.count >= 1
+                .table-container
+                    %table.table.table-bordered.table-striped#appeals_table
+                        %thead
+                            %tr
+                                %th Punisher
+                                %th Punished
+                                %th Reason
+                                %th Type
+                                %th Expires
+                                %th Date
+                                %th
+                        %tbody
+                            - @punishments.each_with_index do |p|
+                                %tr
+                                    %td= link_to_punisher(p)
+                                    %td= link_to_user(p.punished)
+                                    %td= p.reason
+                                    %td
+                                        %span{:style => "color: " + p.reason_color}
+                                            = p.type.titleize
+                                    %td{:rel => p.expires? ? 'tooltip' : nil, :title => p.expires? ? format_time(p.expire) : nil, :data => p.expires? ? {:placement => 'left', :container => 'body'} : nil}
+                                        = p.expire_in_words
+                                    %td{:rel => 'tooltip', :title => format_time(p.date), :data => {:placement => 'left', :container => 'body'}}
+                                        %a{:href => punishment_path(p)}
+                                            = time_ago_in_words(p.date, false, :vague => true)
+                                            ago
+                                    %td
+                                        %a.action.btn.btn-primary.btn-xs{:href => '#action', :data => {:toggle => 'modal', :id => p.id.to_s}} Open Appeal
+                                - if p.evidence.presence
+                                    %tr
+                                        %td{:colspan => 7}
+                                            %strong Evidence:
+                                            = safe_formatted_html(p.evidence)
+            - else
+                %center
+                    %p No punishments to display.
+    .modal.fade#action
+        .modal-dialog
+            .modal-content
+                = form_tag appeals_path, :method => :post do |f|
+                    .modal-header
+                        %button.close{:data => {:dismiss => "modal"}} &times;
+                        %h3.modal-title#action-text
+                            Open Appeal
+                    .modal-body
+                        .form-group
+                            %label.control-label Explanation
+                            %textarea.form-control{:name => "explanation", :rows => 3, :placeholder => "Explain why you are appealing this punishment", :required => true}
+
+                        %input#action-id{:type => "hidden", :name => "punishment", :value => ""}
+                    .modal-footer
+                        %a.btn.btn-default{:href => "#", :data => {:dismiss => "modal"}} Cancel
+                        %input#appeals-submit.btn.btn-primary{:type => "submit", :value => "Submit your appeal", :data => {"disable-with" => "Saving..."}}

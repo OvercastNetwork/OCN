@@ -1,0 +1,78 @@
+- content_for :title do "Player Stats" end
+
+%section
+    .page-header.playerstats
+        %h1
+            Player Stats
+    .row
+        .col-md-12
+            .form-inline.pull-right
+                .form-group
+                    %label.sr-only Find Player
+                    .input-group
+                        %input.form-control.input-sm.typeahead#search-username{:name => "user", :type => "text", :placeholder => "Username"}
+                        .input-group-btn
+                            %button.btn.btn-sm.btn-primary#search-button Find Player
+                - if user_signed_in?
+                    .form-group
+                        = link_to 'Find Me', url_for(params.merge(:user => current_user_safe.username)), class: "btn btn-sm btn-warning"
+            .form-inline
+                .form-group
+                    %label Playing
+                    %select.form-control.input-sm.playerstats-control#playerstats-game
+                        - @families.each do |family, label|
+                            %option{:value => family, :selected => @family == family}= label
+                .form-group
+                    %label for
+                    %select.form-control.input-sm.playerstats-control#playerstats-time
+                        - @times.each do |key, value|
+                            %option{:value => key, :selected => @time == key}= value
+                .form-group
+                    %label sorted by
+                    %select.form-control.input-sm.playerstats-control#playerstats-sort{disabled: @time_only}
+                        - @sorts.each do |key, value|
+                            %option{:value => key, :selected => @sort == key}= value
+            %br
+    .row
+        .col-md-12
+            = paginate @stats
+            .table-container
+                %table.table.table-bordered.table-striped
+                    %thead
+                        %tr
+                            %th{:width => "8%"}
+                            %th{:width => "22%"} Playing Time
+                            %th{:width => "8%"} Kills
+                            %th{:width => "8%"} Deaths
+                            %th{:width => "8%"} Killed
+                            %th{:width => "8%"} K/D
+                            %th{:width => "8%"} K/K
+                            %th Name
+                    %tbody
+                        - @stats.each do |stat|
+                            - user = @users[stat.id]
+                            - value = stat.stat(@sort, @family)
+                            - if value < @value
+                                - @value = value
+                                - @rank = @count
+                            - @count += 1
+                            %tr{class: user && user == @user && 'info'}
+                                %td
+                                    = @rank
+                                %td
+                                    = format_playing_time(stat.playing_time(@family))
+                                %td
+                                    = stat.pretty_stat(:kills, @family) unless @time_only
+                                %td
+                                    = stat.pretty_stat(:deaths, @family) unless @time_only
+                                %td
+                                    = stat.pretty_stat(:deaths_player, @family) unless @time_only
+                                %td
+                                    = stat.pretty_stat(:kd, @family) unless @time_only
+                                %td
+                                    = stat.pretty_stat(:kk, @family) unless @time_only
+                                %td
+                                    - if user
+                                        = avatar_for(user, 16, glow: true)
+                                        = link_to_user(user)
+            = paginate @stats

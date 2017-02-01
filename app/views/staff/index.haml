@@ -1,0 +1,32 @@
+- content_for :title do 'Staff' end
+
+%section
+    .page-header
+        %h1
+            Staff
+            %small These folks help run and maintain the network
+    - @groups.each do |group|
+        - next if group.magic? || !User.in_group(group).exists?
+        .row.staff-group
+            .col-md-12
+                %h2{:style => 'color: ' + group.html_color_css}
+                    = group.name
+                    %small= group.members.count
+                %p.small= group.description
+                %hr
+        - group.members_by_seniority.in_groups_of(4, false).each do |row|
+            .row
+                - row.each do |member|
+                    .col-md-3.col-sm-6
+                        .staff-entry
+                            %a{:href => user_path(member.username)}
+                                = avatar_for(member.username, 90)
+                                %div.staff-username{:style => "color: #{group.badge_color}; border-bottom-color: #{group.badge_color};" }= member.username
+                                %div.staff-role= member.membership_in(group).staff_role.presence || group.name.singularize
+                            %div.staff-social
+                                - if member.twitter
+                                    %a{:href => "http://twitter.com/" + member.twitter, :target => "_blank"}
+                                        %img{src: asset_path('twitter_icon.png')}
+                                - if member.public_email
+                                    %a{:href => "mailto:#{member.public_email}"}
+                                        %i.fa.fa-envelope

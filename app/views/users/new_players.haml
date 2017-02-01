@@ -1,0 +1,42 @@
+- content_for :title do "New Players" end
+
+%section
+    .page-header
+        %h1
+            New Players
+    .row
+        .col-md-12
+            .table-container
+                %table.table.table-bordered.table-striped
+                    %thead
+                        %tr
+                            %th{:width => "50%"} Name
+                            %th{:width => "5%"} Version
+                            %th{:width => "10%"} Where
+                            %th{:width => "10%"} When
+                            %th{:width => "10%"} Duration
+                    %tbody
+                        - @players.each do |player|
+                            - last_seen = player.last_sighting
+                            %tr
+                                %td
+                                    = avatar_for(player, 16, glow: true)
+                                    = link_to_user(player)
+                                %td
+                                    = player.mc_client_version
+                                %td
+                                    - if last_seen
+                                        = last_seen.server.name
+                                        = "[#{last_seen.server.datacenter}]"
+                                %td.last-seen
+                                    - if last_seen
+                                        - if last_seen.online?
+                                            - if current_user_safe.can_teleport_to?(player)
+                                                = teleport_button(player)
+                                            .online online
+                                        - else
+                                            = time_ago_in_words(last_seen.time, false, :vague => true)
+                                            ago
+                                %td
+                                    - if last_seen
+                                        = distance_of_time_in_words(player.mc_first_sign_in_at, last_seen.last_online_at)

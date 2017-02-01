@@ -1,0 +1,12 @@
+.like-icon {
+    color: #777;
+}
+
+.like-icon:hover {
+    color: #555;
+    text-decoration: none;
+}
+
+.like-icon.liked {
+    color: red;
+}

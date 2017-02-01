@@ -1,0 +1,694 @@
+/*
+ *= require select2
+ *= require select2-bootstrap
+
+ *= require peek
+ *= require peek/views/performance_bar
+ *= require peek/views/rblineprof
+
+ *= require_self
+
+ *= require application/submenu
+ *= require application/datatables
+ *= require application/shop
+ *= require application/friendships
+ *= require application/stats
+ *= require application/host
+ *= require application/trophies
+ *= require application/santa
+ *= require application/maps
+ *= require application/pagedown
+ *= require application/regulars_faq
+ *= require application/play
+ *= require application/user
+ *= require application/footer
+ *= require application/searchbox
+ *= require application/staff
+*/
+
+body {
+    padding-bottom: 40px;
+    font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+hr {
+    border-top-color: #BBB;
+}
+
+@media (max-width: 991px) {
+    .navbar-header {
+        float: none;
+    }
+    .navbar-left,.navbar-right {
+        float: none !important;
+    }
+    .navbar-toggle {
+        display: block;
+    }
+    .navbar-collapse {
+        border-top: 1px solid transparent;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+    .navbar-fixed-top {
+		top: 0;
+		border-width: 0 0 1px;
+	}
+    .navbar-collapse.collapse {
+        display: none!important;
+    }
+    .navbar-nav {
+        float: none!important;
+		margin-top: 7.5px;
+	}
+	.navbar-nav>li {
+        float: none;
+    }
+    .navbar-nav>li>a {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    .collapse.in{
+  		display:block !important;
+	}
+}
+
+@media (min-width: 992px) {
+    .container{
+        width:992px;
+    }
+}
+
+@media (max-width: 767px) {
+    .page-header h1 small {
+        display: none;
+    }
+}
+
+.forum-sidebar h4 {
+    padding-bottom: 5px;
+    border-bottom: 1px solid #ddd;
+}
+
+@media (min-width: 992px) {
+    #subforum-list.collapse {
+        /* Always display forum sidebar on full-size screens */
+        display: block !important;
+        height: initial !important;
+    }
+}
+
+@media (max-width: 991px) {
+    #subforum-list {
+        /* Add a visual separator to the subforum list if it appears above the main content */
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #ddd;
+    }
+}
+
+.forum-footer {
+    border-top: 1px solid #ddd;
+    margin-top: 20px;
+}
+
+.hidden-post {
+    background-color: rgba(0,0,0,0.1);
+}
+
+.pagination {
+    margin: 0;
+}
+
+.well.post img {
+    max-width: 660px;
+}
+
+.navbar-default {
+    margin-bottom: 0;
+}
+
+.navbar-brand {
+    font-weight: 300;
+}
+
+.navbar-brand img {
+    margin-top: -6px;
+    margin-right: 6px;
+}
+
+.navbar-nav > .active > a {
+    color: #333333;
+}
+
+.navbar-collapse ul.nav li:hover {
+    background-color: #E5E5E5;
+}
+
+#top-navbar-collapse-button {
+    padding-left: 13px;
+    padding-right: 13px;
+}
+
+#top-navbar-collapse-button .badge {
+    position:  absolute;
+    top: 2px;
+    right: 2px;
+    padding: 2px 4px;
+    font-size: 75%;
+    background-color: #f0ad4e;
+}
+
+.navbar-collapse .badge {
+    padding: 0.1em 0.4em;
+    font-size: 75%;
+    top: -1px;
+    position: relative;
+    background-color: #f0ad4e;
+}
+
+.page-header {
+    margin-top: 0;
+    margin-bottom: 30px;
+}
+
+.dropdown-menu .active > a {
+    color: #EEE;
+}
+
+.dropdown-menu .active > a:hover {
+    color: #FFF;
+}
+
+#subforum-list .nav li a {
+    padding: 3px 40px 3px 10px;
+    /*border-radius: 3px;*/
+}
+
+#subforum-list .nav .unread {
+    position: relative;
+    top: -1px;
+    right: -30px;
+}
+
+#subforum-list.affix {
+    top: 10px;
+}
+
+#subforum-list.affix-bottom {
+    top: auto;
+    bottom: 260px;
+    position: fixed;
+}
+
+.label-purple {
+    background-color: purple;
+}
+
+.label-yellow {
+    background-color: #d9b500;
+}
+
+.label-pink {
+    background-color: #ee00ff;
+}
+
+.label-light-blue {
+    background-color: #00d5ff;
+}
+
+.label, .badge {
+    text-shadow: none;
+}
+
+.avatar {
+    display: inline-block;
+    background-color: #000;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+    margin-top: 2px;
+}
+
+.carousel {
+    height: 480px;
+    overflow: hidden;
+    max-width: 100%;
+    width: 100%;
+}
+
+.carousel img {
+    min-height: 480px;
+    min-width: 950px;
+    width: 100%;
+}
+
+.popover-content > p {
+    font-size: 14px;
+}
+
+span.label > [class^="icon-"], [class*=" icon-"] {
+    margin-top: 1px;
+}
+
+ul.dropdown-menu {
+    z-index: 2000;
+}
+
+.listing {
+    clear: both;
+    padding-left: 10px;
+    padding-right: 15px;
+}
+
+.listing .headings {
+    font-weight: bold;
+}
+
+.listing .row {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.listing .row.topic {
+    border-top: 1px solid #ddd;
+}
+
+.listing > .row > div {
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
+.listing > .row:nth-of-type(even) {
+    background-color: #f9f9f9;
+}
+
+@media(max-width: 767px) {
+    .listing .latest-post {
+        margin-top: 8px;
+        padding-left: 40px;
+        font-size: 85%;
+    }
+    .listing .latest-post small {
+        font-size: inherit;
+    }
+}
+
+.forum-header {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.forum-header h3 {
+    margin-top: 0;
+}
+
+.posts {
+    margin-top: 25px;
+}
+
+.forum-post {
+    overflow: hidden;
+    padding-bottom: 5px;
+}
+
+.post-content {
+    line-height: 22px;
+}
+
+.post-content.not-converted {
+    margin-bottom: 15px;
+}
+
+.post-content > * {
+    margin-bottom: 15px;
+}
+
+.post-divider {
+    margin-top: 0px;
+}
+
+.peek-rblineprof-file pre {
+    white-space: pre;
+    word-wrap: normal;
+}
+
+.jumbotron.main {
+    background-color: transparent;
+    height: 470px;
+    overflow: hidden;
+    position: relative;
+    padding: 40px 0;
+    color: #fff;
+    text-align: center;
+    text-shadow: 0 1px 10px rgba(0,0,0,.5), 0 0 30px rgba(0,0,0,.1);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#020031', endColorstr='#6d3353',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+    -webkit-box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
+     -moz-box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
+          box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
+}
+
+.jumbotron.main h1 {
+    font-size: 80px;
+    font-weight: bold;
+    letter-spacing: -1px;
+    line-height: 1;
+}
+
+.jumbotron.main p {
+    font-size: 24px;
+    font-weight: 300;
+    line-height: 30px;
+    margin-bottom: 30px;
+    text-shadow: 0 1px 10px rgba(0,0,0,.5), 0 0 30px rgba(0,0,0,.9);
+}
+
+.jumbotron.main a {
+    color: #fff;
+    color: rgba(255,255,255,.5);
+    -webkit-transition: all .2s ease-in-out;
+     -moz-transition: all .2s ease-in-out;
+          transition: all .2s ease-in-out;
+}
+
+.jumbotron.main a:hover {
+    color: #fff;
+    text-shadow: 0 0 10px rgba(255,255,255,.25);
+}
+
+.masthead.main .btn {
+    padding: 20px 24px;
+    font-size: 28px;
+    font-weight: 400;
+    color: #fff;
+    border: 0;
+    -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+          border-radius: 6px;
+    -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25), 0 2px 10px rgba(0,68,204,.01);
+     -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25), 0 2px 10px rgba(0,68,204,.01);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25), 0 2px 10px rgba(0,68,204,.01);
+}
+
+.masthead.main .btn:active {
+    -webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.1);
+       -moz-box-shadow: inset 0 2px 4px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.1);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.1);
+}
+
+.masthead.main {
+    padding: 70px 0 80px;
+    margin-bottom: 0;
+    color: #fff;
+}
+.masthead.main h1 {
+    font-size: 72px;
+    line-height: 1;
+    letter-spacing: -2px;
+}
+.masthead.main p {
+    font-size: 18px;
+    font-weight: 200;
+    line-height: 1.25;
+}
+@media screen and (min-width: 480px) {
+    .masthead.main p {
+        font-size: 24px;
+    }
+}
+@media screen and (min-width: 768px) {
+    .masthead.main p {
+        font-size: 32px;
+    }
+}
+@media screen and (min-width: 992px) {
+    .masthead.main h1 {
+        font-size: 110px;
+    }
+    .masthead.main p {
+        font-size: 40px;
+    }
+}
+
+.masthead-links {
+    margin: 0;
+    list-style: none;
+}
+.masthead-links li {
+    display: inline;
+    padding: 0 10px;
+    color: rgba(255,255,255,.25);
+}
+
+.bs-docs-social {
+    padding: 15px 0;
+    text-align: center;
+    background-color: #f5f5f5;
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #ddd;
+}
+
+.bs-docs-social-buttons {
+    margin-left: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+    list-style: none;
+}
+.bs-docs-social-buttons li {
+    display: inline-block;
+    padding: 5px 8px;
+    line-height: 1;
+    *display: inline;
+    *zoom: 1;
+}
+
+.subhead {
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+.subhead h1 {
+    font-size: 60px;
+}
+.subhead p {
+    margin-bottom: 20px;
+}
+.subhead .navbar {
+    display: none;
+}
+
+.profile-timestamp {
+    color: grey;
+    font-size: 75%;
+}
+
+.post-timestamp {
+    color: grey;
+}
+
+.marketing {
+    text-align: center;
+    color: #5a5a5a;
+}
+.marketing h1 {
+    margin: 60px 0 10px;
+    font-size: 60px;
+    font-weight: 200;
+    line-height: 1;
+    letter-spacing: -1px;
+}
+.marketing h2 {
+    font-weight: 200;
+    margin-bottom: 5px;
+}
+.marketing p {
+    font-size: 16px;
+    line-height: 1.5;
+}
+.marketing .marketing-byline {
+    margin-bottom: 40px;
+    font-size: 20px;
+    font-weight: 300;
+    line-height: 25px;
+    color: #999;
+}
+.marketing img {
+    display: block;
+    margin: 0 auto 0px;
+}
+.tournament-banner img {
+    width: 940px;
+    height: auto;
+    border-radius: 6px;
+    margin-bottom: 36px;
+
+    -webkit-transition: box-shadow .05s ease-in-out;
+       -moz-transition: box-shadow .05s ease-in-out;
+            transition: box-shadow .05s ease-in-out;
+}
+a.tournament-banner:hover img {
+    -webkit-box-shadow: 0 0 4px 0 #04c;
+       -moz-box-shadow: 0 0 4px 0 #04c;
+            box-shadow: 0 0 4px 0 #04c;
+}
+
+
+/* Server Admin */
+.status-offline {
+    color: #bbb;
+}
+.status-ok {
+    color: #2a5;
+}
+.status-warning {
+    color: #f80;
+}
+.status-error {
+    color: #d22;
+}
+
+.tiny-input {
+    font-size: 10px !important;
+    height: 12px !important;
+    margin-bottom: 0 !important;
+}
+.dns-disabled {
+    float: left;
+    height: 16px;
+    background-color: #ddd;
+}
+.dns-enabled {
+    float: left;
+    height: 16px;
+    background-color: #2c6;
+}
+.tiny-text {
+    font-size: 80%;
+}
+
+.tp-button {
+    display: inline-block;
+    border-radius: 10px;
+    width: 20px;
+    height: 20px;
+    background-color: #0088cc;
+    font-size: 11px;
+    font-weight: normal;
+    line-height: 20px;
+    position: relative;
+    top: -2px;
+}
+
+.tp-button .fa {
+    color: white;
+    font-size: 11px;
+    font-weight: normal;
+    line-height: 20px;
+    margin-left: 7px;
+}
+
+.transaction-payed {
+    color: #2a5;
+}
+.transaction-declined {
+    color: #d22;
+}
+.transaction-refunded {
+    color: #22a;
+}
+.transaction-invalid {
+    color: #f80;
+}
+
+.breadcrumb > li + li:before {
+    content: "» ";
+}
+
+.nav.nav-tabs {
+    margin-bottom: 20px;
+}
+
+section .navbar {
+    margin-bottom: 20px;
+}
+
+.forum-post img, .about-me img {
+    /* Keep large images in forum posts from overflowing */
+    max-width: 100%;
+    height: auto;
+}
+
+blockquote {
+    /* Override bootstrap 3 changes */
+    font-size: inherit;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.mass-moderation {
+  padding: 3px 8px;
+  margin-right: 8px;
+}
+
+.table-container {
+    /* To allow wide tables to be scrolled horizontally on small screens */
+    clear: both;
+    overflow: auto;
+    overflow-y: hidden;
+}
+
+.account-label {
+    margin-top: 16px;
+}
+
+.account-logo img {
+    margin: 8px 0 12px;
+    height: 40px;
+}
+
+.player-search {
+    width: 200px;
+    padding: 10px 20px;
+}
+
+@media(max-width: 991px) {
+    .navbar-static-top i.fa {
+        width: 24px;
+    }
+}
+
+pre.about-me, .about-me pre {
+    white-space: pre-wrap !important;
+}
+
+.about-me .btn {
+    white-space: normal;
+}
+
+.simple-forum-style .row.topic {
+    border-top: 0;
+}
+
+.simple-forum-style .topic-listing-entry-title {
+    font-size: 140%;
+}
+
+.simple-forum-style .started-by {
+    color: #999;
+}
+
+.posts.simple-forum-style {
+    margin-top: 0 !important;
+}
+
+.topic-listing-entry {
+    padding-left: 40px;
+}
+
+.punishment-box {
+    font-size: 150%;
+}
+
+.punishment-box dt {
+    font-weight: normal;
+    color: #999;
+}

@@ -1,0 +1,17 @@
+- content_for :title do "Channels" end
+
+%section
+    .page-header
+        %h1
+            Channels
+            %small Let's play
+    - if @channels && !@channels.empty?
+        .row
+            .col-md-12
+                = pagination = paginate @channels
+        .row
+            .col-md-12
+                = render partial: 'list', locals: {channels: @channels, first_index: (@channels.current_page - 1) * @channels.options[:limit] + 1}
+        .row
+            .col-md-12
+                = pagination

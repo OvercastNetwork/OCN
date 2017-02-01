@@ -1,0 +1,86 @@
+.dropdown-maps {
+    min-width: 120px;
+}
+
+.maps {
+    margin-top: 20px;
+}
+
+.maps > div {
+    text-align: center;
+}
+
+.map-container {
+    display: inline-block;
+}
+
+.map.thumbnail h1 {
+    margin-bottom: 0;
+}
+
+.map.thumbnail > .img {
+    position: relative;
+}
+
+.map.thumbnail > .img > img {
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+}
+
+.map.thumbnail > .img > .actions {
+    position: absolute;
+    width: 290px;
+}
+
+.map.thumbnail > .img > .actions > .servers {
+    margin-left: 6px;
+    margin-top: 5px;
+}
+
+.map .stars {
+    margin: auto;
+}
+
+@media (max-width: 991px) {
+    .rating .stars {
+        margin: auto;
+    }
+
+    .rating h1 {
+        text-align: center;
+    }
+}
+
+@media (min-width: 992px) {
+    .pull-right-md {
+        float: right;
+    }
+}
+
+.variant-select {
+    margin-bottom: 16px;
+}
+
+.stars {
+    position: relative;
+}
+
+.stars-inner {
+    position: absolute;
+}
+
+.stars-bg {
+    color: #ccc;
+    float: left;
+}
+
+.stars-fg {
+    color: #f89406;
+    float: left;
+    overflow: hidden;
+}
+
+dd {
+    margin-bottom: 16px;
+}

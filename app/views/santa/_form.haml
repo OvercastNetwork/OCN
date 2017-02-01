@@ -1,0 +1,15 @@
+= simple_form_for @gift, url: create_gift_path, method: 'PUT' do |f|
+    = f.hidden_field :user, :disabled => true, :value => current_user.username
+    .form-group
+        = f.label :comment, "Comment (140 characters left)", :class => "control-label", :id => "gift-comment"
+        .controls
+            = f.text_area :comment, :required => true, :rows => "3", :class => "emojify form-control", :maxlength => 140, :placeholder => "Describe why you want it"
+    .form-group
+        = f.label :package, :class => "control-label"
+        - @purchases.each do |id, purchase|
+            .radio
+                %label
+                    = f.radio_button :package, id
+                    #{purchase.package.name} (#{purchase.price_text})
+        %br
+        = f.submit :class => "btn btn-primary", :value => "Create Gift Request"

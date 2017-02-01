@@ -1,0 +1,9 @@
+%ul.thumbnails.list-unstyled
+    - trophies.in_groups_of(4, false) do |group|
+        - group.each do |trophy|
+            %li.col-md-3.col-sm-6
+                .thumbnail.trophy{:rel => "tooltip", :title => trophy.description}
+                    %div{:style => "background: #{trophy.background}; color: #{trophy.color};"}
+                        %i.fa{:class => trophy.css_class}
+                    %h4= trophy.name
+        %li.clearfix

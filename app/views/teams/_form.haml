@@ -1,0 +1,16 @@
+= form_for team, :url => url do |f|
+    .col-md-6
+        .form-horizontal
+            .form-group
+                %label.col-md-4.control-label Name
+                .col-md-8
+                    %input.form-control{:id => 'team_name', :name => 'team[name]', :size => '30', :type => 'text', :required => '', :value => team.name}
+                    %p.help-block You may change the team name later.
+            .form-group
+                %label.col-md-4.control-label Leader
+                .col-md-8
+                    %input.form-control{:disabled => '', :size => '30', :type => 'text', :value => team.leader}
+                    %p.help-block You may not re-assign the team leader role. If the leader leaves the team, it will be disbanded.
+            .form-group
+                .col-md-8.col-md-offset-4
+                    = f.submit "#{action} Team", :class => 'btn btn-primary'

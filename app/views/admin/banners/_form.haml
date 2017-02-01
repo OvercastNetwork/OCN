@@ -1,0 +1,12 @@
+= simple_form_for [:admin, @banner] do |b|
+    %label Message
+    = b.input :text, as: :string, label: false
+    %label Weight
+    = b.input :weight, as: :float, label: false
+    %label Expiration
+    = b.input :expires_at, as: :string, label: false
+    .checkbox.form-group
+        %label
+            = b.check_box :active
+            = b.label "Active"
+    = b.submit :class => "btn"

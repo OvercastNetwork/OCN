@@ -1,0 +1,49 @@
+- content_for :title do "New Punishment - " + @punished.username end
+
+%section
+    .page-header
+        %h1
+            New punishment for
+            = link_to_user(@punished)
+            %a.btn.btn-default.pull-right{:href => punishments_path} Back
+    = form_for @punishment, :html => {:id => 'punishment-form'} do |f|
+        .row
+            .col-md-8
+                %input{:type => "hidden", :name => "user_id", :value => @punished.player_id}
+                .form-group
+                    %label.control-label Reason (required):
+                    = f.text_field :reason, :class => "form-control", :required => true, :autofocus => true
+                .form-group
+                    %label.control-label Evidence (optional):
+                    = f.text_area :evidence, :class => "form-control", :rows => 6
+                .form-group
+                    %label.control-label Infraction type:
+                    = f.select :type, @issueable_types, {}, :class => "form-control"
+            .col-md-4
+                %p
+                    You are issuing a new infraction which will immediately be live across all servers.
+                    %strong Remember to double check all information in this form.
+                %p Any evidence provided will be visible to #{@punished.username}.
+                %hr
+                %p Click the button below when you are ready create this infraction.
+                .form-group
+                    %button.btn.btn-primary#issue-infraction Continue
+    .modal.fade#confirm
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    %button.close{:data => {:dismiss => 'modal'}} &times;
+                    %h3.modal-title.confirm-type
+                .modal-body
+                    %p
+                        You are about to issue a
+                        %strong.confirm-type
+                        to
+                        %strong= @punished.username
+                        for
+                        = surround('"','".') do
+                            %strong#confirm-reason
+                    %p This infraction will be live immediately. Please double check all the details.
+                .modal-footer
+                    %a.btn.btn-default{:href => "#", :data => {:dismiss => "modal"}} Cancel
+                    %button.btn.btn-primary.confirm-type#confirm-submit

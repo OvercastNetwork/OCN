@@ -1,0 +1,69 @@
+- content_for :title do "Punishment for " + @punishment.punished.username end
+
+%section.punishment
+    .page-header
+        %h1.punished
+            Punishment for
+            = link_to_user(@punishment.punished)
+            %small{:rel => "tooltip", :title => format_time(@punishment.date), :data => {:placement => "bottom", :container => "body"}}
+                = time_ago_in_words(@punishment.date, false, :vague => true)
+                ago
+            %a.btn.btn-default.pull-right{:href => punishments_path} Back
+    .row
+        %div{:class => @can[:punishment][:appeal] || @can[:punishment][:view_appeal] ? "col-sm-8" : "col-sm-12"}
+            .panel.punishment-box{:class => @punishment.active ? @punishment.warn? ? "panel-warning" : "panel-danger" : "panel-success"}
+                .panel-heading
+                    - if @can[:punishment][:edit_any]
+                        %a.btn.btn-default.btn-sm.pull-right{:href => edit_punishment_path(@punishment)}
+                            %span.glyphicon.glyphicon-pencil
+                            Edit
+                    %span.punishment-type= @punishment.short_description(current_user)
+                    %small.punisher
+                        issued
+                        = @punishment.automatic ? "automatically" : ""
+                        by
+                        = link_to_punisher(@punishment)
+                .panel-body
+                    %dl.dl-horizontal
+                        %dt reason
+                        %dd= safe_formatted_html(@punishment.reason)
+                        %dt issued
+                        %dd
+                            %span{:rel => "tooltip", :title => format_time(@punishment.date), :data => {:placement => "bottom", :container => "body"}}
+                                = time_ago_in_words(@punishment.date, false, :vague => true)
+                                ago
+                        %dt status
+                        %dd
+                            %span{:rel => @punishment.expires? ? 'tooltip' : nil, :title => @punishment.expires? ? format_time(@punishment.expire) : nil, :data => @punishment.expires? ? {:placement => 'bottom', :container => 'body'} : nil}
+                                = @punishment.status_in_words(current_user).presence || "Active"
+                        - if @server
+                            %dt server
+                            %dd= "#{@server.name} (#{@server.datacenter.upcase})"
+                        - if match = @punishment.match
+                            %dt match
+                            %dd
+                                %a{:href => match_path(match)}= match.map_name
+            - if @punishment.evidence.present? && @can[:punishment][:view_evidence]
+                %h2.page-header Evidence
+                %p This infraction was issued based on the following evidence:
+                %blockquote= safe_formatted_html(@punishment.evidence)
+        .col-sm-4
+            - if @can[:punishment][:view_appeal] && @punishment.appeals.count > 0
+                - @punishment.appeals.each do |appeal|
+                    .panel.panel-info
+                        .panel-heading Appeal Details
+                        .panel-body
+                            %p
+                                An appeal for this infraction was created
+                                = time_ago_in_words(appeal.created_at)
+                                ago, and is currently
+                                = succeed '.' do
+                                    = appeal.status.downcase
+                            %a.btn.btn-sm.btn-default{:href => appeal_path(appeal)}> View appeal
+            - elsif @can[:punishment][:appeal]
+                .panel.panel-info
+                    .panel-heading How to Appeal
+                    .panel-body
+                        Do you disagree with this punishment?
+                        %a{:href => '/appeal'}> Learn more about appealing punishments
+                        \.

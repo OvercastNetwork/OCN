@@ -1,0 +1,33 @@
+- content_for :title do "My Transactions" end
+
+%section
+    .page-header
+        %h1 My Transactions
+    .row
+        .col-md-12
+            .table-container
+                %table.table.table-bordered.table-striped
+                    %thead
+                        %tr
+                            %th{width: "1%"} ID
+                            %th Amount
+                            %th Description
+                            %th When
+                            %th Status
+                    %tbody
+                        - if @transactions == nil
+                            %p You have no transaction history
+                        - else
+                            - @transactions.each_with_index do |transaction, i|
+                                %tr{:class => transaction.status_class}
+                                    %td
+                                        = transaction.id
+                                    %td
+                                        = "$" + transaction.formatted_dollars
+                                    %td
+                                        = transaction.description
+                                    %td{:rel => 'tooltip', :title => format_time(transaction.created_at), :data => {:placement => 'left', :container => 'body'}}
+                                        = time_ago_in_words(transaction.created_at, false, :vague => true) + " ago"
+                                    %td
+                                        = transaction.status_text
+            = paginate @transactions unless @transactions == nil

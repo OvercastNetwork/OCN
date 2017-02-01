@@ -1,0 +1,42 @@
+- unless content_for? :ftitle
+    - content_for :ftitle do 'Home' end
+
+%section
+    .page-header
+        .row
+            .col-md-9
+                .pull-right
+                    %button.btn.btn-warning.btn-sm.visible-xs.visible-sm{:onclick => "$(this).toggleClass('active');", :data => {:toggle => "collapse", :target => "#subforum-list"}}
+                        %i.fa.fa-th-list
+                        Subforums
+                %h1{:style => 'margin-top: 0'}
+                    Forums
+                    %small Socialize with your friends
+            .col-md-3
+                = render :partial => 'forem/search'
+    .row
+        .col-md-3.forum-sidebar
+            %div.collapse#subforum-list
+                = render :partial => 'forem/forums/sidenav'
+            .hidden-xs.hidden-sm
+                = render :partial => 'forem/forums/online_users'
+                = render :partial => 'forem/forums/live_chat'
+        .col-md-9.clearfix
+            - if content_for? :main
+                = yield :main
+            - else
+                .forum-header
+                    %h3 What's New
+                - pagination = paginate @whatsnew unless @whatsnew.nil?
+                - @whatsnew = Forem::TopicsHelper.filter_topics(current_user, @whatsnew)
+                - if !(@whatsnew.nil? || @whatsnew.count < 1)
+                    = pagination
+                    = render :partial => 'forem/topics/listing', :locals => {:topics => @whatsnew, :show_forum => true, :unsubscribe_button => false, :simple_forum_style => false}
+                    = pagination
+                    = render :partial => "host/foot"
+                - else
+                    %center
+                        %p No topics to display.
+        .col-xs-12.visible-xs.visible-sm
+            .forum-footer
+                = render :partial => 'forem/forums/online_users'

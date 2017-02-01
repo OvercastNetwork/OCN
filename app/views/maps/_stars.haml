@@ -1,0 +1,15 @@
+- margin = size / 20
+- offset = 1 + size / 20
+.stars{style: "height: #{size}px; width: #{5 * (size + 1)}px"}
+    .stars-inner
+        - 5.times do
+            .stars-bg.fa.fa-star{style: "font-size: #{size}px; margin: #{margin}px"}
+
+    .stars-inner{style: "left: #{offset}px; top: #{offset}px;"}
+        %nobr
+            - 5.times do |i|
+                - part = score - i
+                - if part >= 1
+                    .stars-fg.fa.fa-star{style: "font-size: #{size}px; margin: #{margin}px;"}
+                - elsif part > 0
+                    .stars-fg.fa.fa-star{style: "font-size: #{size}px; margin: #{margin}px; width: #{0.94 * part * size}px"}

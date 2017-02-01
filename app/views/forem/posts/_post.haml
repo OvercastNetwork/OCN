@@ -1,0 +1,64 @@
+%div{:id => post.id, :class => ('hidden-post' if post.hidden?)}
+    .post-header
+        .pull-right
+            - if post.can_moderate? && defined? @post_actions
+                .btn.btn-default.btn-sm.mass-moderation{:rel => 'popover', :data => {:title => 'Mass Moderation'}}
+                    = fields_for "posts[#{post.id}]" do |f|
+                        = f.check_box('post')
+            - actions = (@post_actions && @post_actions[post]).to_a
+            - if actions.size > 1
+                .btn-group.pull-right
+                    %button.btn.btn-default.btn-sm.dropdown-toggle{:href => "#", :style => 'outline: none', :data => {:toggle => "dropdown"}}
+                        Actions
+                        %span.caret
+                    %ul.dropdown-menu
+                        - actions.each do |text, method, path|
+                            %li= link_to text, path, method: method
+            - elsif actions.size == 1
+                - text, method, path = actions[0]
+                %a.btn.btn-default.btn-sm{href: path, data: {method: method}}= text
+        - unless post.first_post && post.forum.simple_forum_style
+            %div
+                %a.pull-left{:href => user_path(post.user.username), :style => "margin: 4px 5px 0 0;"}
+                    = avatar_for(post.user, 32, style: {'vertical-align' => 'bottom'}, glow: true)
+                %div{:style => "margin-left: 37px;"}
+                    = link_to_user(post.user, style: "font-weight: bold; margin-right: 3px")
+                    - post.user.badge_memberships.each do |mem|
+                        = render_badge(post.user, mem.group, tooltip: mem.staff_role.presence)
+                %div{:style => "margin-left: 37px;"}
+                    - if post.pinned?
+                        %i.fa.fa-bookmark
+                        %span{style: "color: #0a0; font-weight: bold;"} Official Response
+                    - modified = !(post.created_at.to_i == post.updated_at.to_i)
+                    %a.post-timestamp{:href => post_path(post),
+                                      :rel => 'tooltip',
+                                      :title => "#{format_time(post.updated_at)}" + (modified ? " (Posted on #{format_time(post.created_at)})" : ''),
+                                      :data => {:placement => 'right', :container => 'body'}}
+                        %small
+                            - if !modified
+                                posted
+                            - else
+                                updated
+                            = time_ago_in_words(post.updated_at, false, :vague => true)
+                            ago
+                    - if show_topic
+                        %small in reply to
+                        %a{:href => topic_path(post.topic_id), :title => post.topic.forum.category.name + ": " + post.topic.forum.title, :rel => "tooltip"}
+                            %small= post.topic.subject
+    %br
+    .forum-post
+        - if post.reply_to && post.reply_to.can_view?
+            %blockquote
+                .collapse{:id => "collapse-" + post.id.to_s}
+                    = render_post(post.reply_to.text, post.converted)
+                %small
+                    %a{:style => "cursor: pointer;", :data => {:toggle => "collapse", :target => "#collapse-" + post.id.to_s}}
+                        %span{:style => "color: " + html_color(post.reply_to.user)} #{post.reply_to.user}
+                        %span #{time_ago_in_words(post.reply_to.created_at, false, :vague => true)} ago
+                    %a{:style => "color: #999;", :href => post_path(post.reply_to)}
+                        %i.fa.fa-angle-up
+
+        .post-content{:class => (post.converted? ? "converted" : "not-converted")}
+            = render_post(post.text, post.converted)
+            = render_attachment(post.attachment_path)
+%hr.post-divider

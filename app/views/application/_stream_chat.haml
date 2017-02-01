@@ -1,0 +1,6 @@
+%div{style: "height: 50px"}
+    %a.pull-right.btn.btn-default{:href => "#" + channel, :data => {:toggle => "collapse", :stream => channel}} Hide
+    %a{style: "height: 50px; font-size: 24px", href: "https://twitch.tv/#{channel}"}
+        %i.fa.fa-twitch
+        = channel
+%iframe{:src => "https://twitch.tv/#{channel}/chat", :frameborder => 0, :scrolling => "no", :width => 300, :height => 400}

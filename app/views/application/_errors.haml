@@ -1,0 +1,25 @@
+.flash{:style => "margin-top: 20px;"}
+    - if flash[:error] || session[:error]
+        .alert.alert-danger
+            %a.close{:data => {:dismiss => "alert"}} &times;
+            = flash[:error]
+    - if flash[:notice] || session[:notice]
+        .alert.alert-success
+            %a.close{:data => {:dismiss => "alert"}} &times;
+            = flash[:notice]
+    - if flash[:alert] || session[:alert]
+        .alert.alert-info
+            %a.close{:data => {:dismiss => "alert"}} &times;
+            = flash[:alert]
+    - if tournament = Tournament.registration_open.first and !current_page?(main_app.tournament_path(tournament.url))
+        .alert.alert-success#promo-alert{:summary => "This alert will be gone in a few days, don't fret."}
+            Signups for
+            %a{:href => main_app.tournament_path(tournament.url)}= tournament.name
+            close in
+            %strong= time_ago_in_words(tournament.registration_end)
+    -# if !current_page?(main_app.santa_path)
+        .alert.alert-success#secret-santa-alert{:summary => "This alert will be gone in a day or two, don't fret."}
+            %strong Merry Christmas!
+            Check out
+            %a{:href => main_app.santa_path} secret santa
+            and give to others. Everything is 20% off!

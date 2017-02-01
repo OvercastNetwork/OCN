@@ -1,0 +1,39 @@
+- content_for(:title) { if @tournament then "#{@tournament.name} - Live Streams" else "Live Streams" end }
+
+%section
+    .page-header
+        %h1
+            Live Streams
+            - if @subtitle
+                %small
+                    = @subtitle
+            - elsif @tournament
+                %small
+                    = @tournament.name
+                    tournament
+    - if @streams.count == 0
+        .alert.alert-warning
+            %h4 No streams right now
+            Check back later!
+    - elsif @streams.count > 1
+        .row
+            .col-md-10
+                .alert.alert-warning
+                    %h4 Browser lagging from the streams?
+                    Click "Hide stream" to help with lag that is caused by having unwatched stream viewers loaded
+            .col-md-2
+                %a.btn.btn-default#hide-all-streams{:href => "#"} Hide all streams
+    - @streams.each_with_index do |stream, i|
+        %hr
+        .row
+            - if stream.type == 'twitch'
+                - if i % 2 == 0
+                    .col-md-8
+                        = render :partial => 'stream_vid', :locals => {:channel => stream.channel}
+                    .col-md-4
+                        = render :partial => 'stream_chat', :locals => {:channel => stream.channel}
+                - else
+                    .col-md-4
+                        = render :partial => 'stream_chat', :locals => {:channel => stream.channel}
+                    .col-md-8
+                        = render :partial => 'stream_vid', :locals => {:channel => stream.channel}

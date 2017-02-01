@@ -1,0 +1,104 @@
+%nav.navbar.navbar-default.navbar-static-top
+    .container
+        .navbar-header
+            %button.navbar-toggle.collapsed#top-navbar-collapse-button{ :data => {:toggle => "collapse", :target => "#top-navbar-collapse"}}
+                - unless @alerts.blank?
+                    %span.badge= @alert_count
+                %span.fa.fa-bars
+            %a.navbar-brand{:href => main_app.root_path}
+                %img.pull-left{:src => image_path('logo.png'), :height => 34}
+        .navbar-collapse.collapse#top-navbar-collapse
+            -# Remove right margin to prevent wrapping when nav is full
+            %ul.nav.navbar-nav{style: "margin-right: 0;"}
+                %li{:class => (current_page?(main_app.play_path) ? "active" : nil )}
+                    %a{:href => main_app.play_path}
+                        %i.fa.fa-play
+                        Play
+                %li{:class => (controller_name == 'maps' ? "active" : nil )}
+                    %a{:href => main_app.maps_path}
+                        %i.fa.fa-cubes
+                        Maps
+                %li.dropdown{:class => controller_name == 'users' || controller_name == 'channels' ? 'active' : nil}
+                    %a.dropdown-toggle{:href => "#", :data => {:toggle => "dropdown"}}
+                        %i.fa.fa-user
+                        Players
+                        %b.caret
+                    %ul.dropdown-menu
+                        %li
+                            %a{:href => main_app.url_for(controller: '/users', action: 'leaderboard')}
+                                %i.fa.fa-star
+                                Rankings
+                        %li
+                            %a{:href => main_app.url_for(controller: '/users', action: 'stats')}
+                                %i.fa.fa-line-chart
+                                Stats
+                        %li
+                            %a{:href => main_app.channels_path}
+                                %i.fa.fa-youtube-play
+                                Channels
+                        %form.player-search
+                            %input.input-sm.form-control.typeahead#player-search{:name => "search", :type => "text", :placeholder => "Search for a player"}
+                %li.dropdown{:class => %w(teams tournaments).include?(controller_name) ? 'active' : nil}
+                    %a.dropdown-toggle{:href => "#", :data => {:toggle => "dropdown"}}
+                        %i.fa.fa-trophy
+                        League
+                        %b.caret
+                    %ul.dropdown-menu
+                        %li
+                            %a{:href => main_app.teams_path}
+                                %i.fa.fa-group
+                                Teams
+                        %li
+                            %a{:href => main_app.tournaments_path}
+                                %i.fa.fa-flag
+                                Tournaments
+                %li{:class => (["forums", "topics", "categories", "posts"].include?(controller_name) ? "active" : nil)}
+                    %a{:href => main_app.forem_path}
+                        %i.fa.fa-comments
+                        Forum
+                -# SHUTDOWN
+                -# %li{:class => ('active' if 'shop' == controller_name)}
+                    -# %a{:href => main_app.shop_path}
+                        -# %i.fa.fa-shopping-cart
+                        -# Shop
+            %hr.visible-xs.visible-sm{:style => 'margin: 4px; border-color: #e7e7e7;'}
+            %ul.nav.navbar-nav.pull-right
+                - if @nav_live
+                    %li{:class => (current_page?(main_app.live_path) ? 'active' : nil)}
+                        %a{:href => main_app.live_path, :style => 'color: red'}
+                            %i.fa.fa-video-camera
+                            .visible-xs-inline.visible-sm-inline
+                                Live
+                - unless @alerts.blank?
+                    %li.dropdown
+                        %a.dropdown-toggle{:href => "#", :style => 'outline: none', :data => {:toggle => "dropdown"}}
+                            %span.badge.visible-md-inline.visible-lg-inline= @alert_count
+                            .visible-xs-inline.visible-sm-inline
+                                %i.fa.fa-exclamation-circle
+                                Alerts
+                                %b.caret
+                        %ul.dropdown-menu.dropdown-menu-right
+                            - @alerts.each do |alert|
+                                %li= render partial: 'alerts/alert', object: alert
+                            - if @alert_count > 25
+                                %li
+                                    %a{:href => main_app.alerts_path} And #{@alert_count - 25} more...
+                %li.dropdown
+                    %a.dropdown-toggle{:href => "#", :style => 'outline: none; ' + (user_signed_in? ? 'line-height: 0px;' : ''), :data => {:toggle => "dropdown"}}
+                        - if user_signed_in?
+                            = avatar_for(current_user, 20, :style => {'margin-right' => '4px'})
+                        - else
+                            %i.fa.fa-user
+                        .visible-xs-inline.visible-sm-inline
+                            Account
+                        %b.caret
+                    %ul.dropdown-menu.dropdown-menu-right
+                        - if user_signed_in?
+                            - @nav.each do |item|
+                                = render_navigation(item)
+                            %li= link_to "Logout", main_app.destroy_user_session_path, :method => :delete
+                        - else
+                            %li
+                                %a{:href => main_app.new_user_session_path} Login
+                            %li
+                                %a{:href => main_app.new_user_registration_path} Register

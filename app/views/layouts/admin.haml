@@ -1,0 +1,4 @@
+= content_for :content do
+    = render 'admin/base/header'
+    = if content_for?(:admin_content) then yield :admin_content else yield end
+= render template: 'layouts/application'

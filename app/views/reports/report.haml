@@ -1,0 +1,32 @@
+- content_for :title do "Report a Player" end
+
+%section
+    .page-header
+        %h1
+            Report a Player
+            %a.btn.btn-primary.pull-right{:href => reports_path}
+                %i.fa.fa-tasks
+                All Reports
+    .row
+        .col-md-12
+            %p Looking to report a player? Please take the following information into consideration.
+    .row
+        .col-md-4
+            %h4 Screenshots / Videos
+            .content
+                %p Moderators <em>may not</em> punish based on screenshots, unless the alleged offense is chat-related.
+            %p For example, video proof is always required for team griefing and hacking.
+        .col-md-4
+            %h4 Make your videos unlisted
+            .content
+                %p Make your videos <strong>unlisted</strong>, not public or private.
+            %p This ensures that the staff, and only the staff, will be able to view your video.
+        .col-md-4
+            %h4 Thanks for your hard work
+            %p The staff appreciates the time you take to gather evidence of rule-breakers.
+            %p Thanks for your commitment to making this network a better place!
+    .row
+        .col-md-12{:style => "text-align: center;"}
+            %h3 Who are you reporting?
+            .form-inline
+                %input.typeahead.form-control#reports{:name => "search", :type => "text", :style => "margin-top: 0;"}

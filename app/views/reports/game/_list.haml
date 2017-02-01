@@ -1,0 +1,24 @@
+.table-container
+    %table.table.table-bordered.table-striped
+        %thead
+            %tr
+                %th{:width => "15%"} Reporter
+                %th{:width => "15%"} Reported
+                %th{:width => "55%"} Reason
+                %th{:width => "15%"} Date
+        %tbody
+            - reports.each do |report|
+                %tr
+                    %td
+                        - if report.reporter
+                            = link_to_user(report.reporter)
+                        - else
+                            %font{:color => "#FA0"} *Console
+                    %td= link_to_user(report.reported)
+                    %td= report.reason
+                    %td
+                        - if report.created_at
+                            - if report.match_id
+                                = time_ago_tag(report.created_at, tag: 'a', href: match_path(report.match_id))
+                            - else
+                                = time_ago_tag(report.created_at)

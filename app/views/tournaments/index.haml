@@ -1,0 +1,20 @@
+- content_for :title do "Tournaments" end
+
+%section
+    - unless @active_tournaments.empty?
+        .page-header
+            %h1
+                = "Current Tournament".pluralize(@active_tournaments.size)
+        -@active_tournaments.each do |tournament|
+            .row
+                .col-md-12
+                    = render :partial => 'tournament', :locals => {:tournament => tournament}
+
+    - unless @inactive_tournaments.empty?
+        .page-header
+            %h1
+                Past Tournaments
+        -@inactive_tournaments.each do |tournament|
+            .row
+                .col-md-12
+                    = render :partial => 'tournament', :locals => {:tournament => tournament}

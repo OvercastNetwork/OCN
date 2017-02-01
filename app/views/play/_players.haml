@@ -1,0 +1,5 @@
+- sessions.each do |session|
+    %a{:href => user_path(session.user), :rel => "tooltip", :title => "#{session.user}"}
+        = avatar_for(session.user, 20, hover: true, link: true)
+        = session.user
+        %br

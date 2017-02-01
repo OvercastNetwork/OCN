@@ -1,0 +1,11 @@
+%ul.nav.nav-pills.nav-stacked
+    %li{:class => (current_page?(forem.root_path) ? 'active' : '')}
+        %a{:href => forem.root_path} What's New?
+    - if user_signed_in?
+        %li{:class => (current_page?(forem.my_subscriptions_path) ? 'active' : '')}
+            %a{:href => my_subscriptions_path} My Subscriptions
+        %li{:class => (current_page?(forem.my_topics_path) ? 'active' : '')}
+            %a{:href => my_topics_path} My Topics
+        %li{:class => (current_page?(forem.my_posts_path) ? 'active' : '')}
+            %a{:href => my_posts_path} My Posts
+= render Forem::Category.all.asc(:order)

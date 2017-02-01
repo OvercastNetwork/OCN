@@ -1,0 +1,43 @@
+%section
+    .page-header
+        %h1
+            Group Members
+            %small{:style => "color: " + @group.html_color_css}= @group.name
+    .row
+        .col-md-12
+            .pull-right= link_to "Add Member", {action: :new}, class: 'btn btn-default'
+            %br
+            %br
+            - pagination = paginate @memberships, window: 7, outer_window: 4, params: @params
+            - counts = page_entries_info @memberships
+            %div= pagination
+            %div.pull-right= counts
+            .table-container
+                %table.table
+                    %thead
+                        %tr
+                            %th
+                                %a{href: admin_group_members_path(@group, @params.merge(order: 'username'))} Username
+                            %th
+                                %a{href: admin_group_members_path(@group, @params.merge(order: 'start'))} Begin
+                            %th
+                                %a{href: admin_group_members_path(@group, @params.merge(order: 'stop'))} Expire
+                            %th Role
+                            %th Active
+                    %tbody
+                        - @memberships.each do |membership|
+                            %tr.member-row
+                                %td.member-username= link_to membership.user.username, admin_group_member_path(@group, membership.user.player_id)
+                                %td.member-start= brief_format_time(membership.start) unless membership.start == Time::INF_PAST
+                                %td.member-stop= brief_format_time(membership.stop) unless membership.stop == Time::INF_FUTURE
+                                %td.member-role= membership.staff_role
+                                %td.member-active
+                                    - if membership.active?
+                                        - if membership.permanent?
+                                            Yes
+                                        - else
+                                            = time_ago_in_words(membership.stop)
+                                    - else
+                                        No
+            %div= pagination
+            %div.pull-right= counts

@@ -1,0 +1,66 @@
+%section
+    .page-header
+        %h1 Register
+    .row
+        .col-md-4
+            %h3 Step 1
+            %p Enter and confirm your email address.
+            %p This will be the email you use to login to the website.
+        .col-md-4
+            %h3 Step 2
+            %p Open Minecraft, click Multiplayer, click Direct Connect, and paste the address given.
+            %p We will receive your Minecraft username and send you an email.
+        .col-md-4
+            %h3 Step 3
+            %p Check your email with a link to verify your ownership and create a password.
+            %p It's recommended that the password is seperate from your Minecraft one for security purposes.
+    .row
+        .col-md-12
+            %br
+            #registration.tabbable.tabs-left
+                %ul.nav.nav-tabs
+                    %li.active.tab1
+                        %a Enter your email
+                    %li.disabled.tab2
+                        %a Confirm your email
+                    %li.disabled.tab3
+                        %a Join the server
+                    %li.disabled.tab4
+                        %a Check your email
+                .tab-content.center
+                    .tab-pane.active#tab1
+                        .alert.alert-danger#email-invalid.hide
+                            The email you entered is invalid, please check it again.
+                        .alert.alert-danger#email-registered.hide
+                            That email belongs to an existing user. Did you
+                            = link_to "forget your password?", new_password_path(resource_name)
+                        %br
+                        .input-append.col-md-6.col-md-offset-3
+                            .input-group.input-group-lg
+                                %input#email{:type => "email", :placeholder => "Email", :class => "form-control"}
+                                %a.btn.btn-primary.input-group-addon{:href => "#tab2", :data => {:toggle => "tab"}} Continue
+                    .tab-pane#tab2
+                        %br
+                        %p
+                            Are you sure
+                            %b#email-confirm
+                            is your correct email?
+                        %a.btn.btn-danger{:href => ""} Start over
+                        %a.btn.btn-primary{:href => "#tab3", :data => {:toggle => "tab"}} Continue
+                    .tab-pane#tab3
+                        %br
+                        %p Please open Minecraft, click Multiplayer, click Direct Connect, and paste this address:
+                        %h2#token{:data => {:token => @token}}= "#{@token}.#{@url}"
+                        %a.hide{:href => "#tab1", :data => {:toggle => "tab"}}
+                        %a.hide{:href => "#tab4", :data => {:toggle => "tab"}}
+                    .tab-pane#tab4
+                        %br
+                        %p
+                            Thank you
+                            %b#username
+                            for registering.
+                        %br
+                        %p
+                            We've sent confirmation instructions to
+                            %b#email-confirm
+                            \-- please check it and follow the link.

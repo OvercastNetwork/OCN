@@ -1,0 +1,35 @@
+.navbar.navbar-default
+    .container-fluid
+        %ul.nav.navbar-nav
+            %li{:class => (current_page?(url_for(action: 'now_playing')) ? "active" : nil)}
+                %a{:href => url_for(action: 'now_playing')} Now Playing
+            %li{:class => (current_page?(url_for(action: 'all')) ? "active" : nil)}
+                %a{:href => url_for(action: 'all')} All Maps
+            %li.dropdown{:class => @gamemode && 'active'}
+                %a.dropdown-toggle{href: '#', 'data-toggle' => 'dropdown'}
+                    - if @gamemode
+                        = @gamemode[:name]
+                    - else
+                        Gamemodes
+                    %b.caret
+                %ul.dropdown-menu
+                    - Map::GAMEMODES.each do |gamemode, details|
+                        %li{:class => (gamemode == @gamemode_id ? "active" : nil)}
+                            %a{:href => url_for(action: 'gamemode', gamemode: gamemode)}= details[:name]
+                    %li{:class => ('ranked' == @gamemode_id ? "active" : nil)}
+                        %a{:href => url_for(action: 'gamemode', gamemode: 'ranked')} Ranked
+            %li.dropdown{:class => @server && 'active'}
+                %a.dropdown-toggle{href: '#', 'data-toggle' => 'dropdown'}
+                    - if @server
+                        = "#{@server.name} (#{@server.datacenter})"
+                    - else
+                        Rotations
+                    %b.caret
+                %ul.dropdown-menu
+                    - @servers_by_datacenter.each do |datacenter, servers|
+                        %li.dropdown-submenu
+                            %a{href: "#"}= datacenter
+                            %ul.dropdown-menu.dropdown-scrollable
+                                - servers.each do |server|
+                                    %li{:class => (@server == server ? "active" : nil)}
+                                        %a{:href => url_for(action: 'rotation', server: server)}= server.name

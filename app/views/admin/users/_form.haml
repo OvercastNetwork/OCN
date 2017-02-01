@@ -1,0 +1,31 @@
+= simple_form_for [:admin, @user] do |f|
+    - User::Profile::SHORT_FIELD_NAMES.in_groups_of(2,false).each do |group|
+        .row
+            - group.each do |name|
+                .col-md-6
+                    .form-inline
+                        .checkbox.pull-right
+                            %label
+                                Restricted
+                                %input{:name => "restricted[#{name}]", :type => :checkbox, :checked => @user.restricted_fields.include?(name.to_s)}
+                    = f.input name
+    .row
+        .col-md-12
+            .form-inline
+                .checkbox.pull-right
+                    %label
+                        Restricted
+                        %input{:name => "restricted[about]", :type => :checkbox, :checked => @user.restricted_fields.include?('about')}
+            = f.input :about, :as => :text
+    = f.submit :class => "btn btn-primary"
+- if @user.channels_for(:youtube).exists?
+    .row
+        .col-md-12
+            %h2 Channels
+            %a.pull-right.btn.btn-danger.btn-sm{:href => clear_channels_admin_user_path(@user.uuid), :data => {:method => :post}}
+                %span.glyphicon.glyphicon-remove-circle
+                Clear channels
+            %dl.dl-horizontal
+                %dt YouTube:
+                %dd= link_to_youtube_channel(@user)
+            %small Note: Clearing channels does not remove the connection, it only clears the list on our side. The user must first disconnect the channel themselves.

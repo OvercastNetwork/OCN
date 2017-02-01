@@ -1,0 +1,37 @@
+#!/usr/bin/env ruby
+# This command will automatically be run when you run "rails" with Rails 3 gems installed from the root of your application.
+
+APP_PATH = File.expand_path('../../config/application',  __FILE__)
+require File.expand_path('../../config/boot',  __FILE__)
+
+
+# Add some shortcuts for "rails server":
+#
+#     rails octc       # public website
+#     rails avatar     # avatar server
+#     rails api        # API
+
+if %w[octc avatar api].include? ARGV[0]
+    ENV['OCN_ROLE'] = ARGV[0]
+    ARGV[0] = 'server'
+end
+
+case ENV['OCN_ROLE']
+    when 'octc'
+        port = 3000
+        pid = 'tmp/pids/octc.pid'
+    when 'avatar'
+        port = 3005
+        pid = 'tmp/pids/avatar.pid'
+    when 'api'
+        port = 3010
+        pid = 'tmp/pids/api.pid'
+    else
+        port = pid = nil
+end
+
+ARGV << "--port=#{port}" if port && ARGV.none?{|arg| arg =~ /^(-p|--port)/ }
+ARGV << "--pid=#{pid}" if pid && ARGV.none?{|arg| arg =~ /^(-P|--pid)/ }
+
+
+require 'rails/commands'

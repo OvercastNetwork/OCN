@@ -1,0 +1,6 @@
+- if page.current?
+    %li.active
+        %a= page
+- else
+    %li
+        %a{:href => url}= page

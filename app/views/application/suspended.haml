@@ -1,0 +1,17 @@
+- content_for :title do @player.username end
+
+%section
+    .page-header
+        %h1
+            = @player.username
+            %small Account Suspended
+
+    .row
+        .col-md-3
+            %a.thumbnail{:href => "#", :style => "width: 168px; height: 168px;"}
+                = avatar_for(@player, 168)
+        .col-md-9
+            .alert.alert-block.alert-danger
+                %h4 Account Suspended
+                This account is suspended. If you believe this is in error, please contact us at
+                %a{:href => "mailto:#{ORG::EMAIL}"} #{ORG::EMAIL}

@@ -1,0 +1,30 @@
+- content_for :title do 'Appeals' end
+
+%section
+    .page-header
+        .btn-group.pull-right
+            %a.btn.btn-default.dropdown-toggle{:href => '#', :style => 'outline: none', :data => {:toggle => 'dropdown'}}
+                #{@sort.capitalize} Appeals
+                %span.caret
+            %ul.dropdown-menu
+                - @valid_sorts.each do |sort|
+                    %li{:class => (sort == @sort ? 'active' : "")}
+                        %a{:href => appeals_path + '?sort=' + sort + (@punisher ? "&punisher=#{@punisher.username}" : '')}
+                            = sort.capitalize
+        %h1
+            Appeals
+            %small<
+                - if @punisher
+                    for
+                    = @punisher.username
+                    's punishments
+                - else
+                    That pertain to you
+    .row
+        .col-md-12
+            - if !(@appeals.nil? || @appeals.count < 1)
+                = render :partial => 'common/appeals', :locals => {:appeals => @appeals}
+                = paginate @appeals
+            - else
+                %center
+                    %p No appeals to display.

@@ -1,0 +1,24 @@
+.table-container
+    %table.table.table-bordered.table-striped.appeals
+        %thead
+            %tr
+                %th Status
+                %th Poster
+                %th Latest action
+                %th Last updated
+                %th
+        %tbody
+            - appeals.each_with_index do |appeal|
+                %tr[appeal]{:class => appeal.color}
+                    %td.status= appeal.status
+                    %td.punished= link_to_user(appeal.punished)
+                    %td.last-action
+                        - last_action = appeal.actions.desc(:created_at).first
+                        - if last_action
+                            = render partial: 'common/rich', object: last_action.rich_description
+                        - else
+                            No actions
+                    %td.last-updated{:rel => 'tooltip', :title => format_time(appeal.updated_at), :data => {:placement => 'left', :container => 'body'}}
+                        = time_ago_in_words(appeal.updated_at) + ' ago'
+                    %td
+                        %a{:href => appeal_path(appeal)} View appeal

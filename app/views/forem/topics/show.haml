@@ -1,0 +1,22 @@
+- content_for :ftitle do strip_tags(render_topic_title(@topic, plain: true)) end
+
+- content_for :main do
+    :css
+        .btn-toolbar > .btn.btn-default{ margin-left: 10px; }
+
+    = form_tag forum_moderate_posts_path(@topic.forum), :method => :put do
+        = render :partial => 'forem/topics/head', :locals => { :topic => @topic }
+        - unless @topic.forum.simple_forum_style
+            = render :partial => 'forem/topics/actions', :locals => {:topic => @topic, :posts => @posts, :posts_page => @posts_page}
+        .clearfix
+        .posts{:class => @topic.forum.simple_forum_style ? 'simple-forum-style' : ''}
+            - unless @topic.forum.simple_forum_style
+                %hr.post-divider
+            - if !(@posts.nil? || @posts.count < 1)
+                = render :partial => 'forem/posts/post', :collection => @posts, :locals => {:show_topic => false}
+            - else
+                %center
+                    %p No posts to display.
+        = render :partial => 'forem/topics/actions', :locals => {:topic => @topic, :posts => @posts, :posts_page => @posts_page}
+
+= render :file => 'forem/forums/index', :controller => "forums"

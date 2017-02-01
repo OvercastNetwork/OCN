@@ -1,0 +1,20 @@
+= simple_form_for [:admin, @tournament] do |f|
+    = f.input :name, as: :string
+    = f.input :url, as: :string, label: "Slug"
+    .form-group.checkbox
+        %label
+            = f.input_field :active, as: :boolean
+            Current tournament?
+    = f.input :details, as: :text, input_html: { style: "width: 900px; height: 200px;" }, label: "Details (HTML)"
+    = f.input :end, as: :string, label: "End Time", input_html: { value: format_time_field(@tournament.end) }
+    .form-group.checkbox
+        %label
+            = f.input_field :can_register_teams, as: :boolean
+            Allow registration?
+    = f.input :registration_start, as: :string, label: "Registration Open", input_html: { value: format_time_field(@tournament.registration_start) }
+    = f.input :registration_end, as: :string, label: "Registration Close", input_html: { value: format_time_field(@tournament.registration_end) }
+    = f.input :min_players_per_team, as: :integer
+    = f.input :max_players_per_team, as: :integer
+    = f.input :min_players_per_match, as: :integer
+    = f.input :max_players_per_match, as: :integer
+    = f.submit :class => "btn btn-primary"

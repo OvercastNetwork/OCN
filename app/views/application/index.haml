@@ -1,0 +1,6 @@
+- content_for :splash do
+    = render :partial => "splash"
+
+%style body { padding-bottom: 40px; }
+
+%script $(function(){$('#hero').carousel('cycle')});

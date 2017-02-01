@@ -1,0 +1,7 @@
+= simple_form_for @topic, :url => create_topic_path do |f|
+  = f.input :subject, :input_html => {:class => "emojify"}
+
+  = f.simple_fields_for :posts do |post|
+    = render :partial => "forem/posts/form", :locals => { :f => post }
+
+  = f.submit "Create Topic", :class => "btn btn-primary pull-right", :disable_with => "Creating..."

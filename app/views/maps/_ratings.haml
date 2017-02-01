@@ -1,0 +1,32 @@
+- if ratings
+    .col-md-4.rating
+        - if ratings.confident?
+            = render partial: 'stars', locals: {size: 46, score: ratings.mean}
+            %h1
+                = sprintf('%.2f', ratings.mean)
+                %small Average Rating
+        - else
+            %h4 Not enough player ratings
+    .col-md-8
+        .table-container
+            %table.table.table-bordered
+                %thead
+                    %tr
+                        %th{colspan: 2, style: "text-align: center;"}
+                            = ratings.count
+                            Votes
+                %tbody
+                    - max = ratings.dist.max
+                    - 5.times.each do |score|
+                        - pct = ratings.dist[score].to_f * 99 / max
+                        - color = %w{e66 f92 fd2 ad2 0d2}[score]
+                        %tr{style: "height: 24px;"}
+                            %td
+                                %b{style: "margin: 10px;"}= score + 1
+                            %td{style: "width: 100%"}
+                                - if max > 0
+                                    %div{style: "text-align: right; padding-right: 6px; background-color: ##{color}; height: 20px; width: #{pct}%;"}
+                                        = ratings.dist[score]
+- else
+    .col-md-12
+        %h4 Not enough player ratings

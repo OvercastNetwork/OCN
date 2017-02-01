@@ -1,0 +1,26 @@
+- if @buyer
+    Hello, #{@buyer},
+- else
+    Hello,
+%br
+%br
+Congratulations on your purchase of the #{@package} premium package!
+- if @self
+    You should automatically have the purchased perks the next time you play. We know you will love it!
+- else
+    The user '#{@recipient}' should automatically have the purchased perks the next time they play. We know they will love it!
+%br
+%br
+The price of #{@price} was successfully charged through the payment method you provided.
+%br
+%br
+On behalf of everyone at #{ORG::NAME}, thank you for your contribution.
+%br
+%br
+If you have any questions, feel free to reply to this email.
+%br
+%br
+Thanks,
+%br
+%br
+#{ORG::NAME} Staff

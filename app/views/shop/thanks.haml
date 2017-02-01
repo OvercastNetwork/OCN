@@ -1,0 +1,29 @@
+- content_for :title do "Shop" end
+%section
+    .page-header
+        %h1
+            Shop
+            %small Help support #{ORG::NAME}
+    .row
+        .col-md-6
+            %h3 &hearts; Thank you #{@transaction.user && @transaction.user.username} &hearts;
+            %p
+                We greatly appreciate your support. From the bottom of our hearts, we thank you.
+        .col-md-6
+            %h3 Purchase Success!
+            %p
+                - if @transaction.purchase.recipient == current_user_safe
+                    You should have premium perks the next time you play
+                - else
+                    = link_to_user(@transaction.purchase.recipient)
+                    should have premium perks the next time they play
+            - if @transaction.email_sent?
+                %p
+                    An email receipt was sent to
+                    %strong= @transaction.email
+            %p
+                The ID for this transaction is
+                %strong= @transaction.id
+            %p
+                If you have any questions or issues, please don't hesitate to email
+                %a{:href => "mailto:#{ORG::EMAIL}?subject=Transaction #{@transaction.id}"} #{ORG::EMAIL}

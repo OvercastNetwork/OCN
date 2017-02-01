@@ -1,0 +1,18 @@
+%section
+    .row
+        .col-md-12
+            .pull-right
+                .label.label-danger Lockout
+                .label.label-warning Sandbox
+            %form.form-inline
+                = token_tag nil
+                %select{name: 'status', style: "width: 100px;", class: "form-control input-sm"}
+                    %option{value: ''} All
+                    - Transaction::Status::MAP.each do |key, value|
+                        %option{value: value, selected: (true if @status == value)}= key.capitalize
+                = user_select_field(nil, 'buyer_id', @buyer, allow_clear: true, placeholder: "Buyer")
+                = user_select_field(nil, 'recipient_id', @recipient, allow_clear: true, placeholder: "Recipient")
+                %input.btn.btn-sm.btn-primary{type: 'submit', value: "Filter"}
+                %a.btn.btn-sm.btn-default{href: admin_transactions_path} Clear
+            = render partial: 'list', locals: {transactions: @transactions}
+            = paginate @transactions

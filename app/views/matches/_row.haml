@@ -1,0 +1,31 @@
+- exclude = [] unless local_assigns[:exclude]
+%tr
+    %td
+        %a{:href => "/matches/" + match.id.to_s,
+           :rel => ('tooltip' unless match.loaded?),
+           :title => (format_time(match.unload) unless match.loaded?),
+           :data => ({:placement => 'left', :container => 'body'} unless match.loaded?)}
+            = match.when_text
+    %td
+        = match.server == nil ? "Unknown" : content_tag(:a, match.server.display_name, :href => main_app.play_path)
+    - unless exclude.include?(:map)
+        %td
+            - if match.map
+                = link_to match.map.name, map_path(match.map)
+    %td
+        = match.length
+    %td
+        = Participation.match(match).count
+    %td
+        - if engagement
+            %div{class: engagement.result_color}= engagement.result_text
+        - elsif match.end?
+            - if match.winning_teams.size == 1
+                - team = match.winning_teams[0]
+                %strong{style: "color: #{team.html_color}"}= team.name
+            - elsif match.winning_users.size == 1
+                - user = match.winning_users[0]
+                = avatar_for(user, 16)
+                = link_to_user(user)
+            - elsif match.winning_team
+                = match.winning_team

@@ -1,0 +1,7 @@
+%section
+    .row
+        .col-md-12
+            = link_to "Clone this server", clone_admin_server_path(@server), class: 'btn btn-default pull-right'
+    .row
+        = form_for @server, :url => admin_server_path(@server) do |f|
+            = render :partial => "form", :locals => {:f => f}

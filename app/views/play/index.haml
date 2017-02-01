@@ -1,0 +1,56 @@
+- content_for :title do "Play" end
+%section.clearfix.play
+    .page-header
+        %h1
+            Servers
+            %small Play anywhere, anytime
+    .sidebar>
+        .well.connect
+            %table.table
+                %thead
+                    %tr
+                        %th{colspan: 2} Connect To
+                %tbody
+                    - @portal_infos.each do |info|
+                        %tr
+                            %td.hostname
+                                %input.input{type: "text", value: info[:portal].hostname, onClick: "this.select();", readonly: true}
+                            %td.details
+                                - if @portal_infos.size > 1
+                                    .location= info[:portal].long_name
+                                - else
+                                    .location Global
+                                %strong= info[:players]
+                                %small players
+                                %br
+                                %strong= info[:servers]
+                                %small servers
+        - unless @friends.empty?
+            .well.seen
+                %table.table
+                    %thead
+                        %tr
+                            %th{colspan: 2} Online Friends
+                    %tbody
+                        = render partial: 'players_by_server', locals: {servers: @friends, global: @global}
+        - unless @staff.empty?
+            .well.seen
+                %table.table
+                    %thead
+                        %tr
+                            %th{colspan: 2} Online Staff
+                    %tbody
+                        = render partial: 'players_by_server', locals: {servers: @staff, global: @global}
+    - if @portal_infos.size > 1
+        .navbar-container>
+            .navbar.navbar-default
+                .container-fluid
+                    %ul.nav.navbar-nav
+                        %li{class: ('active' if @global)}
+                            %a{href: play_path} Global
+                        - Portal.listed.each do |portal|
+                            %li{class: ('active' if portal == @portal)}
+                                %a{href: portal_path(portal)}= portal.long_name
+    - @servers.each do |server|
+        .server-container>
+            = render partial: 'server', locals: {server: server, global: @global}

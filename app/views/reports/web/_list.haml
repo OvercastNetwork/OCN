@@ -1,0 +1,28 @@
+.table-container
+    %table.table.table-bordered.table-striped
+        %thead
+            %tr
+                %th Status
+                %th Reporter
+                %th Reported
+                %th Reason
+                %th Latest action
+                %th Updated
+                %th
+        %tbody
+            - reports.each do |report|
+                %tr{:class => report.color}
+                    %td
+                        %small= report.status
+                    %td= link_to_user(report.reporter)
+                    %td= link_to_user(report.reported)
+                    %td= limited_text_tag(report.reason, 40, tag: 'small')
+                    %td
+                        - last_action = report.actions.last
+                        - if last_action
+                            = render partial: 'common/rich', object: last_action.rich_description
+                        - else
+                            No actions
+                    %td= time_ago_tag(report.updated_at, tag: 'small')
+                    %td
+                        %a{:href => report_path(report)} View

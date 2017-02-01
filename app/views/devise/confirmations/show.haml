@@ -1,0 +1,30 @@
+%section
+    .page-header
+        %h1 Confirm Your Account
+    .row
+        .col-md-8
+            = devise_error_messages!
+            = form_for(@user, :url => finalize_confirmation_path, method: :put) do |f|
+
+                %div
+                    = f.label :email
+                    %input{:type => :text, :disabled => true, :value => @user.unconfirmed_email}
+
+                %div
+                    = f.label :username
+                    %input{:type => :text, :disabled => true, :value => @user.username}
+
+                %div
+                    = f.label :password
+                    = f.password_field :password
+
+                %div
+                    = f.label :password_confirmation
+                    = f.password_field :password_confirmation
+                %div
+                    %p
+                        By clicking "Confirm Account" you agree to our
+                        %a{:href => terms_path, :target => :blank} Terms of Service
+                %div
+                    = f.hidden_field :confirmation_token
+                    = f.submit "Confirm Account", :class => "btn btn-primary"

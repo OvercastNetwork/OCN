@@ -1,0 +1,24 @@
+- if map = server.current_match.map
+    - sessions = server.joined_sessions
+    .thumbnail
+        .server-box{style: %[background-image: url("#{map.thumbnail_url}");]}
+            .top-box
+                - if current_user_safe.can_teleport_to?(server)
+                    = teleport_button(server)
+                .title= server_name(server, global: global)
+                .players
+                    = sessions.size
+                    %small
+                        \/
+                        = map.max_players
+                        players
+            .bottom-box
+                %div
+                    .current-map-label playing
+                    .current-map
+                        %nobr= link_to map.name, map_path(map)
+                - if server.next_map
+                    %div
+                        .next-map-label next
+                        .next-map
+                            %nobr= link_to server.next_map.name, map_path(server.next_map)

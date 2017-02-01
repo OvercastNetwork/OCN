@@ -1,0 +1,23 @@
+%section
+    .row
+        .col-md-12
+            %form.form-inline.pull-right{:method => :post, :action => update_membership_admin_trophies_path}
+                = token_tag nil
+                %input.form-control.input-sm{:type => "text", :name => "id", :placeholder => "Trophy Identifier"}
+                %input.form-control.input-sm{:type => "text", :name => "user", :placeholder => "Username"}
+                .btn-group
+                    %button.btn.btn-success{:type => "submit", :name => "task", :value => "add"} Add
+                    %button.btn.btn-danger{:type => "submit", :name => "task", :value => "remove"} Remove
+            .table-container
+                %table.table
+                    %thead
+                        %tr
+                            %th Identifier
+                            %th Name
+                            %th Description
+                    %tbody
+                        - @trophies.each do |trophy|
+                            %tr
+                                %td= trophy.id
+                                %td= trophy.name
+                                %td= trophy.description

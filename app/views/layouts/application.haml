@@ -1,0 +1,40 @@
+!!!
+%html{:lang => "en"}
+    %head
+        = csrf_meta_tag
+        %meta{:charset => "utf-8"}
+        %meta{:name => "viewport", :content => "width=device-width, initial-scale=1"}
+        %meta{:name => "theme-color", :content => "#337AB7"}
+        %title
+            - if content_for? :title
+                #{yield :title} - #{ORG::NAME}
+            - elsif content_for? :ftitle
+                #{yield :ftitle} - #{ORG::NAME} Forum
+            - else
+                #{ORG::NAME} - Minecraft PvP
+        - if content_for? :noindex
+            %meta{:name => "robots", :content => "noindex"}
+        = stylesheet_link_tag "//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css", "application", "//fonts.googleapis.com/css?family=Lato:700,400,300", "//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css"
+        = javascript_include_tag "libraries", "//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js", "application"
+        = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.0/bootstrap3-typeahead.min.js"
+        -# SHUTDOWN
+        -# if current_page?(main_app.shop_path)
+            = javascript_include_tag "https://js.braintreegateway.com/v2/braintree.js"
+        - if current_page?(main_app.live_path)
+            = javascript_include_tag "//player.twitch.tv/js/embed/v1.js"
+        = render :partial => "analytics"
+        - if user_signed_in? && @timezone.nil?
+            = render :partial => "timezone"
+        - if content_for? :head
+            = yield :head
+    %body
+        = render :partial => "peek/bar"
+        = render :partial => "nav"
+        -# Content for :splash is outside the container i.e. full width of the browser
+        = yield :splash if content_for?(:splash)
+        .container
+            = render :partial => "errors"
+            = if content_for?(:content) then yield :content else yield end
+            %hr
+            = render :partial => "contact"
+            = render :partial => "footer"

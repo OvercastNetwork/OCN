@@ -1,0 +1,10 @@
+- content_for :ftitle do @category.name end
+
+%section
+    .page-header
+        %h1
+            Forums
+            %small Socialize with your friends
+    .row
+        .col-md-12
+            = render @category

@@ -1,0 +1,173 @@
+- content_for :title do "Report - " + @report.reported.username end
+
+%section
+    .page-header
+        %h1
+            Report for
+            = link_to_user(@report.reported)
+            %small
+                - if @report.closed?
+                    Closed
+                - elsif @report.open? && !@report.escalated?
+                    Open
+                - else
+                    Escalated
+            %a.btn.btn-default.pull-right{:href => reports_path}
+                %i.fa.fa-tasks
+                All Reports
+    .row
+        .col-md-8
+            .row
+                .col-md-4 What rules has #{@report.reported.username} broken?
+                .col-md-8
+                    %blockquote= safe_formatted_html(@report.reason)
+            .row
+                %br
+                .col-md-4 What evidence do you have? One piece per line.
+                .col-md-8
+                    %blockquote= safe_formatted_html(@report.evidence)
+            .row
+                %br
+                .col-md-4 Any other miscellaneous information?
+                .col-md-8
+                    %blockquote= safe_formatted_html(@report.misc_info)
+        - unless @issueable_types.empty?
+            .col-md-4
+                .panel.panel-default
+                    .panel-heading
+                        %h4 Issue a punishment
+                    .panel-body
+                        %input.form-control#extra-data{:type => 'text', :name => 'reason', :placeholder => 'Reason...', :required => ''}
+                        %br
+                        %textarea.form-control#evidence{:type => 'text', :name => 'evidence', :placeholder => 'Evidence (optional)...', :required => '', :rows => 6}
+                        .help-block.small<
+                            Evidence entered here will be visible to
+                            = @report.reported
+                            \. Check it carefully before issuing the infraction.
+                        - unless (@issueable_types & Punishment::Type::GAME).empty?
+                            %h6.text-uppercase
+                                %i.fa.fa-play
+                                In-game
+                            .btn-group{:style => 'margin-top: 4px;'}
+                                - if @issueable_types.include?(Punishment::Type::WARN)
+                                    %a.action.btn.btn-warning{:href => '#action', :data => {:toggle => 'modal', :type => 'punish', :subtype => 'game'}} Warn
+                                - if @issueable_types.include?(Punishment::Type::KICK)
+                                    %a.action.btn.btn-warning{:href => '#action', :data => {:toggle => 'modal', :type => 'punish', :subtype => 'game'}} Punish
+                                - if @issueable_types.include?(Punishment::Type::BAN)
+                                    %a.action.btn.btn-warning{:href => '#action', :data => {:toggle => 'modal', :type => 'punish', :subtype => 'game'}} Perma
+                        - unless (@issueable_types & Punishment::Type::FORUM).empty?
+                            %h6.text-uppercase
+                                %i.fa.fa-comments
+                                Forum
+                            .btn-group{:style => 'margin-top: 4px;'}
+                                - if @issueable_types.include?(Punishment::Type::FORUM_WARN)
+                                    %a.action.btn.btn-primary{:href => '#action', :data => {:toggle => 'modal', :type => 'punish', :subtype => 'forum'}} Warn
+                                - if @issueable_types.include?(Punishment::Type::FORUM_BAN)
+                                    %a.action.btn.btn-primary{:href => '#action', :data => {:toggle => 'modal', :type => 'punish', :subtype => 'forum'}} 7 Day
+                                    %a.action.btn.btn-primary{:href => '#action', :data => {:toggle => 'modal', :type => 'punish', :subtype => 'forum'}} 30 Day
+                                    %a.action.btn.btn-primary{:href => '#action', :data => {:toggle => 'modal', :type => 'punish', :subtype => 'forum'}} Perma
+                        - unless (@issueable_types & Punishment::Type::TOURNEY).empty?
+                            %h6.text-uppercase
+                                %i.fa.fa-trophy
+                                Tourney
+                            .btn-group{:style => 'margin-top: 4px;'}
+                                - if @issueable_types.include?(Punishment::Type::TOURNEY_WARN)
+                                    %a.action.btn.btn-danger{:href => '#action', :data => {:toggle => 'modal', :type => 'punish', :subtype => 'tourney'}} Warn
+                                - if @issueable_types.include?(Punishment::Type::TOURNEY_BAN)
+                                    %a.action.btn.btn-danger{:href => '#action', :data => {:toggle => 'modal', :type => 'punish', :subtype => 'tourney'}} Ban
+    .row
+        .col-md-12
+            %br
+            - if @report.escalated?
+                .alert.alert-warning
+                    %strong This report has been escalated.
+                    Only higher staff may provide assistance.
+    .page-header
+        %h2
+            = succeed "'s" do
+                = link_to_user(@report.reported)
+            other punishments
+    .row
+        .col-md-12
+            - if !(@punishments.nil? || @punishments.empty?)
+                - unless @displayed_statuses.empty?
+                    .pull-right{:style => 'margin: -20px 0 10px;'}
+                        - if @displayed_statuses.include? 'inactive'
+                            %span.label.label-success Appealed
+                        - if @displayed_statuses.include? 'contested'
+                            %span.label.label-info Contested
+                        - if @displayed_statuses.include? 'automatic'
+                            %span.label.label-yellow Automatic
+                        - if @displayed_statuses.include? 'stale'
+                            %span.label.label-danger Stale
+                = render :partial => 'common/punishments', :locals => {:punishments => @punishments, :displayed_statuses => @displayed_statuses}
+            - else
+                %center
+                    %p No punishments to display.
+    - if @web_reports
+        .page-header
+            %h2
+                Web reports for
+                = link_to_user(@report.reported)
+                %small 20 most recent
+        .row
+            .col-md-12
+                - if !@web_reports.empty?
+                    = render :partial => "reports/web/list", :locals => {:reports => @web_reports}
+                - else
+                    %center
+                        %p No reports to display.
+    - if @game_reports
+        .page-header
+            %h2
+                In-game reports for
+                = link_to_user(@report.reported)
+                %small 20 most recent
+        .row
+            .col-md-12
+                - if !@game_reports.empty?
+                    = render :partial => "reports/game/list", :locals => {:reports => @game_reports}
+                - else
+                    %center
+                        %p No reports to display.
+    .page-header.clearfix
+        %h2 History
+        .pull-right.btn-group
+            - if @can[:report][:comment]
+                %a.action.btn.btn-default{:href => '#action', :data => {:toggle => 'modal', :type => 'comment'}} Add Comment
+            - if @can[:report][:escalate][0]
+                %a.action.btn.btn-warning{:href => '#action', :rel => @can[:report][:escalate][1] ? 'tooltip' : nil, :title => @can[:report][:escalate][1], :data => {:toggle => 'modal', :type => 'escalate'}} Escalate
+            - elsif @can[:report][:escalate][1]
+                %a.action.btn.btn-warning{:disabled => '', :rel => 'tooltip', :title => @can[:report][:escalate][1]} Escalate
+            - if @can[:report][:close]
+                %a.action.btn.btn-danger{:href => '#action', :data => {:toggle => 'modal', :type => 'close'}} Close
+            - if @can[:report][:open]
+                %a.action.btn.btn-success{:href => '#action', :data => {:toggle => 'modal', :type => 'open'}} Open
+            - if @can[:report][:lock]
+                %a.action.btn.btn-danger{:href => '#action', :data => {:toggle => 'modal', :type => 'lock'}} Lock
+            - if @can[:report][:unlock]
+                %a.action.btn.btn-success{:href => '#action', :data => {:toggle => 'modal', :type => 'unlock'}} Unlock
+    .row
+        .col-md-12
+            = render :partial => 'common/actions', :locals => {:actions => @report.actions.asc(:created_at)}
+    .modal.fade#action
+        .modal-dialog
+            .modal-content
+                = form_tag report_actions_path(@report), :method => :post do |f|
+                    .modal-header
+                        %button.close{:data => {:dismiss => 'modal'}} &times;
+                        %h3.modal-title#action-text
+                            Action
+                    .modal-body
+                        .form-group
+                            %label.control-label Comment
+                            %textarea.form-control{:name => "comment", :rows => 3}
+
+                        %input#action-value{:type => "hidden", :name => "type", :value => ""}
+                        %input#action-title{:type => "hidden", :name => "title", :value => ""}
+                        %input#action-data{:type => "hidden", :name => "data", :value => ""}
+                        %input#action-evidence{:type => "hidden", :name => "evidence", :value => ""}
+                        %input#action-subtype{:type => "hidden", :name => "subtype", :value => ""}
+                    .modal-footer
+                        %a.btn.btn-default{:href => "#", :data => {:dismiss => "modal"}} Cancel
+                        %input#action-btn.btn.btn-primary{:type => "submit", :value => "Send", :data => {"disable-with" => "Saving..."}}

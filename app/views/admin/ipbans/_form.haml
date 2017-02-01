@@ -1,0 +1,6 @@
+= simple_form_for [:admin, @ipban] do |f|
+    = f.input :ip
+    = f.input :to
+    = f.input :mask
+    = f.input :description
+    = f.submit :class => "btn btn-primary"

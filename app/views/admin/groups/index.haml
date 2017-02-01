@@ -1,0 +1,18 @@
+%section
+    .row
+        .col-md-12
+            .table-container
+                %table.table
+                    %thead
+                        %tr
+                            %th{:width => "5%"} Priority
+                            %th Name
+                            %th Description
+                            %th
+                    %tbody
+                        - @groups.each do |group|
+                            %tr.group-row
+                                %td.group-priority= group.priority
+                                %td.group-name{:style => "color: " + group.html_color_css}= group.name
+                                %td.group-description= group.description
+                                %td= link_to "Edit", admin_group_members_path(group)

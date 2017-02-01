@@ -1,0 +1,56 @@
+.row.topic
+    - count = topic.unread_count_for(current_user)
+    - if unsubscribe_button
+        %a.btn.btn-xs.btn-warning.pull-right{:style => "margin-right: 15px;", :href => unsubscribe_topic_path(topic), :rel => 'tooltip', :title => 'Unsubscribe?', :data => {:method => "post", :placement => "top", :container => "body"}}
+            %i.fa.fa-times
+        - topic_class = "col-xs-11 col-sm-6"
+    - else
+        - if simple_forum_style
+            - topic_class = "col-xs-12"
+        - else
+            - topic_class = "col-xs-12 col-sm-7"
+    %div{:class => topic_class}
+        - if user_signed_in? && !simple_forum_style
+            - if count
+                .pull-left
+                    - if count > 0
+                        %span.label.label-warning= count
+                    - else
+                        %span.label.label-default= count
+        - if simple_forum_style
+            %a.pull-left{:style => "position:relative; margin: 6px 5px 0 0;"}
+                = avatar_for(topic.user, 32, style: {'vertical-align' => 'top'}, glow: true)
+        %div.topic-listing-entry
+            %div.topic-listing-entry-title
+                - if count == nil || count == 0
+                    = link_to render_topic_title(topic, emoji_size: 16), topic_path(topic)
+                - else
+                    = link_to render_topic_title(topic, emoji_size: 16), root_path + "topics/" + topic.id.to_s + "/unread"
+                = render :partial => 'forem/topics/icons', :locals => {:topic => topic} unless simple_forum_style
+            %small.started-by
+                %a{:style => "color: " + html_color(topic.user), :href => user_path(topic.user.username)}= topic.user
+                %span{:rel => 'tooltip', :title => format_time(topic.created_at), :data => {:placement => "top", :container => "body"}}= time_ago_in_words(topic.created_at, false, :vague => true) + " ago"
+                - if show_forum
+                    %small in
+                    %a{:href => forum_path(topic.forum)}
+                        %small
+                            = topic.forum.category.name
+                            &#8594;
+                            = topic.forum.title
+    - unless simple_forum_style
+        .col-xs-12.col-sm-3
+            %div{:style => "position:relative"}
+                - if (last_post = topic.last_post) && (last_user = last_post.user)
+                    %a.pull-left.hidden-xs{:style => "position:relative; margin: 4px 5px 0 0;"}
+                        = avatar_for(last_user, 32, style: {'vertical-align' => 'bottom'}, glow: true)
+                    .latest-post
+                        %span.visible-xs-inline
+                            Latest:
+                            = avatar_for(last_user, 14, style: {'margin-left' => '3px', 'vertical-align' => 'bottom'}, glow: true)
+                        = link_to_user(last_user)
+                        .visible-xs-inline.visible-sm-block.visible-md-block.visible-lg-block
+                            %small= link_to_latest_post(last_post)
+        .hidden-xs.col-sm-1.text-center
+            %strong= topic.posts_count
+        .hidden-xs.col-sm-1.text-center
+            %strong= topic.views_count

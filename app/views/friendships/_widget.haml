@@ -1,0 +1,46 @@
+- if user_signed_in? && !is_same_user?(user)
+    - if friendship = Friendship.betwixt(current_user_safe, user).one
+        .btn-group.pull-right
+            - if friendship.accepted?
+                %a.btn.btn-primary.disabled
+                    %i.fa.fa-star.fa-inverse
+                    = user.username + ' is your friend'
+                %button.btn.btn-primary.dropdown-toggle{:style => 'outline: none', :data => {:toggle => 'dropdown'}}
+                    %span.caret
+                %ul.dropdown-menu{:role => 'menu'}
+                    %li
+                        %a{:href => friendship_path(friendship), :data => {:method => :delete, :confirm => 'Are you sure you want to unfriend ' + user.username + '?'}} Unfriend
+            - elsif friendship.friended == current_user_safe
+                %a.btn.btn-primary{:href => pending_friendships_path}
+                    %i.fa.fa-star-o.fa-inverse
+                    = user.username + ' has requested to be your friend'
+                %button.btn.btn-primary.dropdown-toggle{:style => 'outline: none', :data => {:toggle => 'dropdown'}}
+                    %span.caret
+                %ul.dropdown-menu{:role => 'menu'}
+                    %li
+                        %a{:href => friendship_path(friendship, :decision => true), :data => {:method => :put, :'disable-with' => 'Accepting...'}} Accept
+                    -if friendship.undecided?
+                        %li
+                            %a{:href => friendship_path(friendship, :decision => false), :data => {:method => :put, :'disable-with' => 'Denying...'}} Deny
+            - elsif friendship.friender == current_user_safe
+                - if friendship.undecided?
+                    %a.btn.btn-primary{:href => pending_friendships_path}
+                        %i.fa.fa-star-o.fa-inverse
+                        Friend request sent
+                    %button.btn.btn-primary.dropdown-toggle{:style => 'outline: none', :data => {:toggle => 'dropdown'}}
+                        %span.caret
+                    %ul.dropdown-menu{:role => 'menu'}
+                        %li
+                            %a{:href => friendship_path(friendship), :data => {:method => :delete, :'disable-with' => 'Cancelling...'}} Cancel
+                - else
+                    %a.btn.btn-primary.disabled
+                        %i.fa.fa-star-o.fa-inverse
+                        Friend request sent
+                    %button.btn.btn-primary.dropdown-toggle{:style => 'outline: none', :data => {:toggle => 'dropdown'}}
+                        %span.caret
+                    %ul.dropdown-menu{:role => 'menu'}
+                        %li.disabled
+                            %a{:href => '#'} Cancel
+    - elsif user.accept_friend_requests?
+        %a.btn.btn-primary.pull-right{:href => friendships_path(:user_id => user.id), :data => {:method => :post, :'disable-with' => 'Sending request...'}}
+            Add as Friend

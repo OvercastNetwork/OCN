@@ -1,0 +1,17 @@
+= simple_form_for [:admin, @forum] do |f|
+    .form-group
+        = f.select(:category_id, Forem::Category.all.map {|t| [t.name, t.id]}, {:include_blank => 'None'}, :class => "form-control")
+    = f.input :title
+    = f.input :description, as: :text, :input_html => {:rows => 3}
+    = f.input :order
+    .checkbox.form-group
+        %label
+            = f.check_box :home_viewable
+            = f.label "Viewable in what's new?"
+    .checkbox.form-group
+        %label
+            = f.check_box :simple_forum_style
+            = f.label "Simple forum style (no post counts, don't display latest post in index)"
+    %br
+    %br
+    = f.submit :class => "btn btn-primary"

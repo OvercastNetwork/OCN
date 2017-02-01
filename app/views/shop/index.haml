@@ -1,0 +1,110 @@
+:css
+
+:javascript
+    window.braintreeClientToken = "#{@braintree_client_token}";
+- content_for :title do "Shop" end
+%section.shop
+    %form#shop-form{method: "POST", action: shop_purchase_path}
+        = token_tag nil
+        %input{type: "hidden", name: "package_id", id: "package-field", value: @package && @package.id}
+        %input{type: "hidden", name: "price", id: "price-field", value: @package && @package.price}
+            .row
+                .col-md-9
+                    %h2 Ready to play Overcast your own way?
+                    %img.pull-right{src: asset_path("shop/centurion.png"), width: "150"}
+                    %p.lead
+                        As a premium player, you can team up with your friends, join full servers, and play more ranked matches every day.
+                    %p.lead
+                        You will also be helping to keep the servers up and running, and fund development of exciting new features.
+                .col-md-3
+                    .package#perks
+                        .title Premium Perks
+                        .content
+                            %ul
+                                %li
+                                    %i.fa.fa-check
+                                    5 ranked matches per day
+                                %li
+                                    %i.fa.fa-check
+                                    Join full matches *
+                                %li
+                                    %i.fa.fa-check
+                                    Choose your team *
+                                %li
+                                    %i.fa.fa-check
+                                    Fly in lobbies
+                                %li
+                                    %i.fa.fa-check
+                                    Badge next to your name
+            .row
+                .col-md-12
+                    %hr
+            - unless user_signed_in?
+                .row
+                    .col-md-12{style: "text-align: center;"}
+                        %strong
+                            You must be
+                            %a{href: new_user_session_path} signed in
+                            to use the shop
+                .row
+                    .col-md-12
+                        %hr
+            .row
+                .col-md-2
+                    %h2 Step 1
+                    Choose a player
+                .col-md-10{style: "padding-top: 20px;"}
+                    = user_select_field('', 'recipient_id', @recipient, disabled: !user_signed_in?)
+                    %span.user-search-error
+            .row
+                .col-md-12
+                    %hr
+            .row
+                .col-md-2
+                    %h2 Step 2
+                    %p Choose a package
+                    %p Upgrade later by paying the difference
+                - @packages.each do |package|
+                    .col-md-2{style: "padding-bottom: 10px;"}
+                        .package-select{"data-package-id" => package.id, "data-price" => package.price, class: ('selected' if @package == package)}
+                            .package{rel: ("tooltip" if package.description?),
+                                     'data-placement' => "bottom",
+                                     'data-original-title' => package.description}
+
+                                .title{class: "package-#{package.name.downcase}",
+                                       style: "color: #{package.group.badge_text_color}; background-color: #{package.group.badge_color}"}
+                                    = package.name
+                                .content
+                                    .purchased Purchased
+                                    .details
+                                        .regular
+                                            .price &nbsp;
+                                        .time &nbsp;
+                                        .sale
+                                            .price &nbsp;
+                                            .discount.badge.badge-info &nbsp;
+            .row
+                .col-md-12
+                    %hr
+            .row
+                .col-md-2
+                    %h2 Step 3
+                    %p.visible-xs.visible-sm
+                        Click PayPal button
+                        %strong or
+                        enter credit/debit card
+                    .visible-md.visible-lg
+                        Click PayPal button
+                        %br
+                        %strong &nbsp; or
+                        %br
+                        Enter credit/debit card
+                .col-md-10
+                    #payment-container
+                    %input.buy-button.btn.btn-primary.btn-lg.disabled{type: "submit", value: "Buy Now"}
+            .row
+                .col-md-12
+                    %hr
+            .row
+                .col-md-12
+                    .fine-print * To ensure fairness, team choosing and joining full teams is only available on unranked servers

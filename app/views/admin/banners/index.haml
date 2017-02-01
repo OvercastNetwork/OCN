@@ -1,0 +1,24 @@
+%section
+    .row
+        .col-md-12
+            .pull-right= link_to "New", new_admin_banner_path, :class => "btn btn-default"
+            - pagination = paginate @banners
+            = pagination
+            %table.table
+                %thead
+                    %tr
+                        %th{width: "55%"} Message
+                        %th{width: "10%"} Weight
+                        %th{width: "20%"} Expiration
+                %tbody
+                    - @banners.each do |banner|
+                        %tr{class: ("success" if banner.active_at)}
+                            %td= banner.text
+                            %td= banner.weight
+                            - if banner.expires?
+                                %td= format_relative_time(banner.expires_at)
+                            - else
+                                %td= ""
+                            %td= link_to "Edit", edit_admin_banner_path(banner)
+                            %td= link_to "Delete", admin_banner_path(banner), method: "delete", :confirm => "Are you sure?"
+            = pagination

@@ -1,0 +1,7 @@
+- rich.each do |element|
+    - if element[:user]
+        = link_to_user(element[:user])
+    - if element[:link]
+        = link_to element[:message], element[:link]
+    - elsif element[:message]
+        = element[:message]

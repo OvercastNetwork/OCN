@@ -1,0 +1,23 @@
+.col-md-6
+    %h4 Main Details
+    .form-horizontal
+        .form-group
+            %label.col-md-4.control-label ID
+            .col-md-8
+                = f.text_field :_id, :disabled => !@family._id.blank?, :class => "form-control"
+        .form-group
+            %label.col-md-4.control-label Name
+            .col-md-8
+                = f.text_field :name, :class => "form-control"
+        .form-group
+            %label.col-md-4.control-label Priority
+            .col-md-8
+                = f.text_field :priority, :class => "form-control"
+        .form-group
+            .checkbox.col-md-8.col-md-offset-4
+                %label
+                    = f.check_box :public
+                    Public
+        .form-group
+            .col-md-8.col-md-offset-4
+                = f.submit "Save Changes", :class => "btn btn-primary"

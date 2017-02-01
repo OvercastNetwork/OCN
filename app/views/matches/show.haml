@@ -1,0 +1,70 @@
+- content_for :title do "Match on " + @match.map_name end
+
+%script $(".nav-tabs").tab("show"); $(function(){$("[rel=tooltip]").tooltip();});
+
+%section
+    .page-header
+        %h1
+            Match on
+            - if @match.map
+                %a{href: map_path(@match.map)}= @match.map.name
+            - else
+                an unknown map
+            %small{:rel => ('tooltip' unless @match.loaded?),
+                   :title => (format_time(@match.unload) unless @match.loaded?),
+                   :data => ({:placement => 'left', :container => 'body'} unless @match.loaded?)}
+                = @match.when_text
+            - if current_user_safe.has_permission?('match', 'validate', true)
+                - if @some_invalid
+                    = link_to "Validate", validate_match_path(valid: true), method: 'post', class: 'btn btn-warning pull-right'
+                - if @some_valid
+                    = link_to "Invalidate", validate_match_path(valid: false), method: 'post', class: 'btn btn-warning pull-right'
+    .row
+        .col-md-4
+            - if @match.map
+                %a{href: map_path(@match.map)}
+                    %img.thumbnail{src: image_path(@match.map.thumbnail_url)}
+            - else
+                %img.thumbnail{src: image_path(Map.missing_thumbnail_url)}
+        .col-md-4
+            - if @match.server
+                %h2
+                    %a{href: play_path}= @match.server.name
+                    %small server
+            %h2
+                = @match.length
+                %small match length
+        .col-md-4
+            %h2
+                = @kill_count
+                %small kills
+            %h2
+                = @death_count
+                %small deaths
+
+            - unless @weapons.empty?
+                %h2
+                    = @most_common.gsub("_", " ").titlecase
+                    %small most common weapon
+                %h2
+                    = @least_common.gsub("_", " ").titlecase
+                    %small least common weapon
+    .row
+        .col-md-12
+            %hr
+            %h1{style: "margin-top: 20px;"} Teams
+    .row
+        - @teams.each do |team_name, members|
+            - next if members.empty?
+            .col-md-4
+                %h4
+                    = team_name
+                    %small
+                        = members.count.to_s
+                    - if @winning_team_name
+                        - if @winning_team_name == team_name
+                            %span.label.label-success.pull-right Winning Team
+                        - elsif team_name != 'Observers'
+                            %span.label.label-danger.pull-right Losing Team
+                - members.to_a.shuffle.each do |user, _|
+                    = avatar_for(user, 32, style: {'margin-bottom' => '3px'}, hover: true, link: true)

@@ -1,0 +1,41 @@
+- content_for :title do "Tournaments - " + @tournament.name end
+%section
+    .page-header
+        %h1
+            Tournament Info
+
+    = render partial: 'details'
+
+    .row
+        .col-md-12
+            .page-header
+                %h2
+                    Team Registration
+                    %small= @team.name
+        .col-md-6
+            .table-container
+                %table.table.table-bordered.table-striped
+                    %thead
+                        %tr
+                            %th Name
+                            %th Status
+                            %th Actions
+                    %tbody
+                        - @team.accepted_members.each do |team_member|
+                            - user = team_member.user
+                            - tourney_member = @entrant.members.find_by(user: team_member.user)
+                            %tr{:class => tourney_member.nil? ? 'disabled' : tourney_member.confirmed? ? 'success' : 'info'}
+                                %td
+                                    %a{:href => user_path(user), :style => 'color: ' + html_color(user)}
+                                        = user.username
+                                %td
+                                    = tourney_member.nil? ? 'Unregistered' : tourney_member.confirmed? ? 'Confirmed' : 'Pending'
+                                %td
+                                    - if tourney_member.nil?
+                                        %a.btn.btn-xs.btn-success{href: tournament_add_user_path(@tournament.url, user_id: user.id), data: {method: 'post'}} Add
+                                    - else
+                                        %a.btn.btn-xs.btn-danger{href: tournament_remove_user_path(@tournament.url, user_id: user.id), data: {method: 'post'}} Remove
+                                        - if tourney_member.confirmed?
+                                            %a.btn.btn-xs.btn-warning{href: tournament_unconfirm_user_path(@tournament.url, user_id: user.id), data: {method: 'post'}} Un-confirm
+                                        - else
+                                            %a.btn.btn-xs.btn-info{href: tournament_confirm_user_path(@tournament.url, user_id: user.id), data: {method: 'post'}} Confirm

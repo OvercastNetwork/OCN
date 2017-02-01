@@ -1,0 +1,10 @@
+- if topic.locked?
+    %i.fa.fa-lock{:title => "Locked", :rel => "tooltip"}
+- if topic.pinned?
+    %i.fa.fa-thumb-tack{:title => "Pinned", :rel => "tooltip"}
+- if topic.has_pinned_post?
+    %i.fa.fa-bookmark{:title => "Official Response", :rel => "tooltip"}
+- if topic.hidden?
+    %i.fa.fa-trash-o{:title => "Hidden", :rel => "tooltip"}
+- if topic.archived?
+    %i.fa.fa-archive{:title => "Archived", :rel => "tooltip"}

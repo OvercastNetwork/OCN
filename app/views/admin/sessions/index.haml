@@ -1,0 +1,36 @@
+%section
+    .row
+        .col-md-12
+            %form.form-inline
+                = token_tag nil
+                %input.form-control{name: 'before', placeholder: "Date", value: @before}
+                %input.form-control{name: 'ip', placeholder: "IP", value: @ip}
+                = user_select_field(nil, 'user_id', @user, allow_clear: true, placeholder: "User")
+                %input.btn.btn-sm.btn-primary{type: 'submit', value: "Filter"}
+                %a.btn.btn-sm.btn-default{href: admin_sessions_path} Clear
+    .row
+        .col-md-12
+            %hr
+            - pagination = paginate @sessions
+            = pagination
+            %table.table.table-condensed
+                %thead
+                    %tr
+                        %th{width: "18%"} Start
+                        %th{width: "18%"} Finish
+                        %th{width: "10%"} Duration
+                        %th{width: "10%"} Server
+                        %th{width: "10%"} IP
+                        %th{width: "17%"} User
+                        %th{width: "17%"} Nickname
+                %tbody
+                    - @sessions.each do |session|
+                        %tr{class: ("success" if session.online?)}
+                            %td= format_time(session.start)
+                            %td= format_time(session.end) if session.end
+                            %td= duration_shorthand(session.start, session.end) if session.end
+                            %td= "#{session.server.datacenter} #{session.server.name}" if session.server
+                            %td= session.ip
+                            %td= link_to_user(session.player) if session.player
+                            %td= session.nickname
+            = pagination

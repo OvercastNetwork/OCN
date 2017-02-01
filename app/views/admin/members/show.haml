@@ -1,0 +1,9 @@
+%section
+    .page-header
+        %h1
+            Group Member
+            %small
+                %a{:href => admin_group_members_path(@group), :style => "color: " + @group.html_color_css}= @group.name
+    .row
+        .col-md-6
+            = render partial: 'form', locals: {url: admin_group_member_path(@group, @membership.user.player_id)}

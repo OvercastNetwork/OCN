@@ -1,0 +1,44 @@
+- content_for :title do "Friendships" end
+
+%section
+    .page-header
+        %h1 Friendships
+    .row
+        .col-md-12
+            %ul.nav.nav-tabs
+                %li{:class => @all ? "active" : ""}
+                    %a{:href => friendships_path} All Friends
+                %li.pull-right{:class => @denied ? "active" : ""}
+                    %a{:href => denied_friendships_path} Denied Requests
+                %li.pull-right{:class => @requests ? "active" : ""}
+                    %a{:href => pending_friendships_path} Pending Requests
+            .tab-content
+                .tab-pane#requests{:class => @requests ? "active" : ""}
+                    .table-container
+                        %table.table.table-bordered.table-striped
+                            %thead
+                                %tr
+                                    %th{:width => "40%"} Who
+                                    %th{:width => "30%"} Action
+                                    %th{:width => "30%"} Sent At
+                            %tbody
+                                - if @requests == nil || @requests.count == 0
+                                    %p You have no pending requests!
+                                - else
+                                    - @requests.each_with_index do |request, i|
+                                        %tr
+                                            - outgoing = is_same_user?(request.friender)
+                                            %td
+                                                #{outgoing ? 'You to ' : nil}
+                                                = avatar_for(outgoing ? request.friended : request.friender, 16, glow: true)
+                                                %a{:href => user_path(outgoing ? request.friended : request.friender), :style => 'color: ' + html_color(outgoing ? request.friended : request.friender)}= outgoing ? request.friended : request.friender
+                                                #{outgoing ? nil : ' to you'}
+                                            %td
+                                                - if !outgoing
+                                                    .text-nowrap
+                                                        %a.btn.btn-primary.btn-xs{:href => friendship_path(request, :decision => true), :data => {:method => :put, :'disable-with' => "Accepting..."}} Accept
+                                                        %a.btn.btn-warning.btn-xs{:href => friendship_path(request, :decision => false), :data => {:method => :put, :'disable-with' => "Denying..."}} Deny
+                                                - else
+                                                    %a.btn.btn-warning.btn-xs{:href => friendship_path(request), :data => {:method => :delete, :'disable-with' => 'Cancelling...'}} Cancel
+                                            %td{:rel => 'tooltip', :title => format_time(request.sent_date), :data => {:placement => 'left', :container => 'body'}}= time_ago_in_words(request.sent_date, false, :vague => true) + " ago"
+                        = paginate @requests unless @requests == nil

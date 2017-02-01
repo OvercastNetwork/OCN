@@ -1,0 +1,28 @@
+footer li.heading {
+    padding-left: 12px;
+    margin-bottom: 8px;
+}
+
+footer li a {
+    font-size: 75%;
+    padding: 6px 12px !important;
+}
+
+footer .follow-us li a {
+    padding: 4px 12px;
+    margin-bottom: 3px !important;
+}
+
+footer .follow-us li img {
+    width: 22px;
+    height: 22px;
+    margin-right: 3px;
+}
+
+footer .img-responsive {
+    margin: 0 auto;
+}
+
+footer .copyright {
+    font-size: 85%;
+}

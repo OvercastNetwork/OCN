@@ -1,0 +1,9 @@
+- content_for :title do "Edit Team - #{@team.name}" end
+
+%section
+    .page-header
+        %h1
+            Editing
+            = @team.name
+    .row
+        = render :partial => 'form', :locals => {:team => @team, :action => 'Update', :url => team_path(@team)}

@@ -1,0 +1,156 @@
+.last-seen .online {
+    font-size: 16px;
+    font-weight: bold;
+    color: #468847;
+}
+
+.last-seen .offline {
+    font-size: 16px;
+    font-weight: bold;
+    color: rgb(153, 153, 153);
+}
+
+.last-seen .time {
+    font-size: 14px;
+    font-weight: bold;
+    color: rgb(153, 153, 153);
+}
+
+.last-seen .server {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.last-seen .datacenter {
+    display: inline;
+    font-size: 16px;
+}
+
+.last-seen .nickname {
+    font-size: 13px;
+    font-weight: bold;
+    color: rgb(153, 153, 153);
+}
+
+.heads, .last-seen {
+    margin-bottom: 15px;
+}
+
+.heads .name {
+    font-size: 16px;
+    font-weight: bold;
+    color: rgb(153, 153, 153);
+}
+
+.heads .number {
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.heads .mutual-friends {
+    font-size: 13px;
+    font-weight: bold;
+    color: rgb(153, 153, 153);
+}
+
+.heads .avatar {
+    margin-bottom: 3px;
+    margin-right: 3px;
+}
+
+.heads>div {
+    /* Reduced padding on avatar boxes */
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.glow {
+    outline: none;
+    border-color: #9ecaed;
+    box-shadow: 0 0 4px 1px #0CB035;
+}
+
+.stats {
+    margin-bottom: 15px;
+}
+
+.stats .well {
+    padding: 19px;
+}
+
+.stats a {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+.stats .name {
+    font-weight: bold;
+    color: rgb(153, 153, 153);
+}
+
+.stats .number {
+    font-weight: bold;
+}
+
+.stats .rank {
+    display: inline-block;
+    width: 50%;
+    min-width: 130px;
+    height: 52px;
+}
+
+.stats .rank .name {
+    font-size: 16px;
+    margin-bottom: 3px;
+}
+
+.stats .rank .number {
+    font-size: 36px;
+}
+
+.stats .unqualified {
+    font-size: 13px;
+    font-weight: bold;
+    color: rgb(153, 153, 153);
+    text-align: center;
+}
+
+.stats .rule {
+    background-color: #ddd;
+    height: 1px;
+    margin-top: 25px;
+}
+
+.stats .total {
+    display: inline-block;
+    width: 25%;
+    min-width: 65px;
+    padding-top: 20px;
+}
+
+.stats .total .name {
+    font-size: 13px;
+    font-weight: bold;
+    color: rgb(153, 153, 153);
+}
+
+.stats .total .number {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.result-win {
+    color: #2a5;
+}
+
+.result-tie {
+    color: #03a;
+}
+
+.result-loss {
+    color: #d22;
+}
+
+.result-forfeit {
+    color: rgb(153, 153, 153);
+}

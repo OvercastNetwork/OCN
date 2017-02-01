@@ -1,0 +1,11 @@
+by
+- authors = [*map.authors, *map.author_names].take(limit)
+- if authors.empty?
+    = ORG::NAME
+- else
+    - authors.each_with_index do |a, i|
+        = succeed (authors.count == (i + 1) ? '' : ',') do
+            - if a.is_a? User
+                %a{:href => "/" + a.username}= a.username
+            - else
+                = a

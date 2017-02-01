@@ -1,0 +1,38 @@
+- content_for :title do "Appeal Punishments" end
+
+%section
+    .page-header
+        %h1
+            Appeal Punishments
+            %a.btn.btn-default.pull-right{:href => appeals_path}
+                %i.fa.fa-tasks
+                All Appeals
+    .row
+        .col-md-12
+            %p Looking to appeal a punishment? Please take the following information into consideration before appealing.
+    .row
+        .col-md-4
+            %h4 What can be appealed?
+            %p If you have been caught cheating, your appeal will be denied.
+            %p Appeals exist in order to catch mistakes, not to argue about the rules, or your personal virtues.
+        .col-md-4
+            %h4 How are appeals resolved?
+            %p The moderator who punished you will review the evidence, and remove the punishment if they find it was in error.
+            %p You can escalate an appeal to have it reviewed by a senior staff member, but this will delay the resolution.
+        .col-md-4
+            %h4 Privilege, not a right
+            %p Playing on our servers is a privilege.
+            %p If you abused or have shown promise to abuse the network, your appeal will be denied.
+    .row
+        .col-md-6.col-md-offset-3.col-xs-8.col-xs-offset-2.text-center
+            - if user_signed_in?
+                - if !@can_appeal
+                    .alert.alert-info You don't have punishments to appeal or appeals to view
+                %a.btn.btn-lg.btn-primary{:href => (!@can_appeal ? "#" : new_appeal_path), :class => (@punishments == 0 ? "disabled" : "")} Ok, let's go &raquo;
+            - else
+                %br
+                %a.btn.btn-lg.btn-inverse{:href => new_user_registration_path} Register
+                %a.btn.btn-lg.btn-primary{:href => new_user_session_path} Login
+                %br
+                %br
+                %p Please login if you have an account. If not, registration is quick and painless.

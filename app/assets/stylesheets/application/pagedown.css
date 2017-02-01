@@ -1,0 +1,21 @@
+#post-editor.tab-content {
+    overflow: visible;
+}
+
+#wmd-input-text {
+    margin-top: 10px;
+    height: 400px;
+    max-height: 900px;
+}
+
+li.textcomplete-item img {
+    margin-right: 10px;
+}
+
+.dropdown-menu > li.textcomplete-item > a {
+    font-weight: bold;
+}
+
+.textcomplete-wrapper .dropdown-menu a:hover {
+    cursor: pointer;
+}

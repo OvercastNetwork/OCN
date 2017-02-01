@@ -1,0 +1,108 @@
+- content_for :title do @team.name end
+
+%section
+    .page-header
+        .pull-right
+            %br
+            .btn-group
+                - if @leader
+                    %a.btn.btn-default.btn-sm{:href => edit_team_path(@team)} Manage
+                - if current_user
+                    - if @team.is_accepted_member?(current_user) && !@team.membership_locked?(current_user)
+                        %a.btn.btn-sm.btn-danger{:href => team_remove_member_path(@team, :user => current_user.id), :data => {:method => 'post', :confirm => "Are you sure you want to leave? #{@team.leader == current_user ? 'Your team will be disbanded.' : 'This can not be un-done.'}"}} Leave
+                    - elsif @team.is_invited?(current_user)
+                        %a.btn.btn-sm.btn-success{:href => team_update_invitation_path(@team, :decision => true), :data => {:method => 'post'}} Accept Invitation
+                        %a.btn.btn-sm.btn-warning{:href => team_update_invitation_path(@team, :decision => false), :data => {:method => 'post'}} Decline Invitation
+        %h1= @team.name
+    .row
+        .col-md-12
+            - if @team.mumble_token? && (@team.is_accepted_member? || current_user_safe.admin?)
+                .pull-right
+                    Mumble Token:
+                    %code= @team.mumble_token
+            %h4 Stats
+            %hr
+            %h3
+                %center
+                    .row
+                        .col-md-4
+                            %small Wools
+                            = @stats[:wools]
+                        .col-md-4
+                            %small Cores
+                            = @stats[:cores]
+                        .col-md-4
+                            %small Monuments
+                            = @stats[:destroyables]
+                    .row
+                        .col-md-3
+                            %small KK ratio
+                            = @stats[:kk]
+                        .col-md-3
+                            %small KD ratio
+                            = @stats[:kd]
+                        .col-md-3
+                            %small Kills
+                            = @stats[:kills]
+                        .col-md-3
+                            %small Deaths
+                            = @stats[:deaths]
+    .row
+        .col-md-12
+            %h4
+                Members
+                %small= @team.member_count
+            %hr
+            = paginate @members
+            .table-container
+                %table.table.table-bordered.table-striped
+                    %thead
+                        %tr
+                            %th Name
+                            %th Role
+                            - if @leader
+                                %th Status
+                            %th Accepted at
+                            - if @leader
+                                %th Actions
+                    %tbody
+                        - @members.each do |member|
+                            %tr
+                                %td
+                                    = avatar_for(member.user, 20, link: true, style: {'margin-right' => '4px'}, glow: true)
+                                    = link_to_user(member.user)
+                                %td
+                                    = @team.leader == member.user ? 'Leader' : 'Member'
+                                - if @leader
+                                    %td
+                                        = member.accepted ? 'Accepted' : 'Invited'
+                                - if member.accepted
+                                    %td{:rel => 'tooltip', :title => format_time(member.accepted_at), :data => {:placement => 'left', :container => 'body'}}
+                                        = time_ago_in_words(member.accepted_at, false, :vague => true) + ' ago'
+                                - else
+                                    %td N/A
+                                - if @leader
+                                    %td
+                                        - unless member.user_id == current_user.id
+                                            - member_locked = @team.membership_locked?(member.user)
+                                            - msg = member.accepted ? {:verb => 'Eject', :message => "permanently remove #{member.user} from"} : {:verb => 'Cancel', :message => "cancel #{member.user.username}'s invitation to"}
+                                            %a.btn.btn-danger.btn-xs{:href => member_locked ? nil : team_remove_member_path(@team, :user => member.user_id), :data => member_locked ? nil : {:method => :post, :confirm => "Are you sure you want to #{msg[:message]} the team?"}, :disabled => member_locked ? '' : nil}= msg[:verb]
+                                        - if current_user.admin? && @team.leader != member.user
+                                            %a.btn.btn-warning.btn-xs{:href => team_reassign_leader_path(@team, :user => member.user_id), :data => {:method => :post}}= 'Set Leader'
+            = paginate @members
+    - if @leader
+        .row
+            .col-md-12
+                %hr
+        .row
+            .col-md-5
+                %br
+                %form.form-inline{:method => :post, :action => team_add_member_path(@team)}
+                    = token_tag nil
+                    %input.form-control.typeahead#teams{:name => 'user', :type => 'text', :autocomplete => 'off', :placeholder => 'Username'}
+                    %input.btn.btn-primary{type: 'submit', name: 'submit', value: 'Invite'}
+                    - if Tournament.can_manage?
+                        %input.btn.btn-danger{type: 'submit', name: 'submit', value: 'Force Add'}
+            .col-md-7
+                %h4 Add Members
+                %p Adding a user to your team will send them an invitation. Once this invitation is accepted, the user will become a member of your team. Invitations may be cancelled if sent in error.

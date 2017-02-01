@@ -1,0 +1,29 @@
+%section
+    .row
+        .col-md-12
+            .pull-right= link_to "New IP Ban", new_admin_ipban_path, :class => "btn btn-default"
+            .table-container
+                %table.table
+                    %thead
+                        %tr
+                            %th IP Range
+                            %th Mask
+                            %th Description
+                            %th Block Count
+                            %th
+                            %th
+                    %tbody
+                        - @ipbans.each do |ipban|
+                            %tr
+                                %td{width: "40%"}
+                                    %code= ipban.ip
+                                    - if ipban.to
+                                        to
+                                        %code= ipban.to
+                                %td{width: "10%"}
+                                    - if ipban.mask
+                                        %code= ipban.mask
+                                %td{width: "40%"}= ipban.description
+                                %td{width: "10%"}= ipban.blocked
+                                %td= link_to "Edit", edit_admin_ipban_path(ipban)
+                                %td= link_to "Delete", admin_ipban_path(ipban), :method => :delete, :confirm => "Are you sure?"

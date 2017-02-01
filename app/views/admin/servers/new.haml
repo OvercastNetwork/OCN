@@ -1,0 +1,4 @@
+%section
+    .row
+        = form_for @server, :url => admin_servers_path do |f|
+            = render :partial => "form", :locals => {:f => f}

@@ -1,0 +1,19 @@
+.carousel.slide#hero{:style => "position: absolute;"}
+    .carousel-inner{:style => "z-index: -1"}
+        .item{:class => "active"}
+            %img{:src => image_path(@image)}
+
+.jumbotron.main.masthead
+    .container
+        -# Shutdown
+        %h1= ORG::NAME
+.bs-docs-social
+    .container
+        %ul.bs-docs-social-buttons
+            %li Latest Announcements:
+            - @topics.each do |topic|
+                %li
+                    %a{:href => forem.topic_path(topic),
+                       :rel => "tooltip",
+                       :title => "Created " + time_ago_in_words(topic.created_at, false, :vague => true) + " ago",
+                       :data => {:placement => "bottom"}}= render_topic_title(topic, emoji_size: 16)

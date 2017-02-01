@@ -1,0 +1,37 @@
+:css
+    td {
+        vertical-align: middle !important;
+    }
+
+    img.thumb {
+        height: 30px !important;
+        margin-right: 8px;
+    }
+.table-container
+    %table.table.table-bordered.table-striped{style: "margin-top: 16px;"}
+        %thead
+            %tr
+                - if first_index
+                    %th{width: "1%"} Rank
+                %th Channel
+                %th Player
+                %th{width: "1%"}= link_to 'Videos', params.merge(sort: 'videos')
+                %th{width: "1%"}= link_to 'Subscribers', params.merge(sort: 'subscribers')
+                %th{width: "1%"}= link_to 'Views', params.merge(sort: 'views')
+        %tbody
+            - channels.each_with_index do |channel, index|
+                %tr
+                    - if first_index
+                        %td= first_index + index
+                    %td
+                        %a{href: channel.url}
+                            - if channel.thumbnail_url
+                                %img.thumb{src: channel.thumbnail_url, align: 'middle'}
+                            = channel.name
+                    %td
+                        - channel.users.each_with_index do |user, i|
+                            = ", " unless i == 0
+                            = link_to_user(user)
+                    %td= channel.videos
+                    %td= channel.subscribers || 'Private'
+                    %td= channel.views

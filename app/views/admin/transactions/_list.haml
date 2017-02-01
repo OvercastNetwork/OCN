@@ -1,0 +1,40 @@
+.table-container
+    %table.table{style: "font-size: 85%;"}
+        %thead
+            %tr
+                %th Updated at (UTC)
+                %th Amount
+                %th Buyer
+                %th Recipient
+                %th IP
+                %th Processor
+                %th Ext. ID
+                %th Status
+                %th Edit
+        %tbody
+            - if transactions.empty?
+                %tr
+                    %td No transactions
+            - else
+                - transactions.each do |transaction|
+                    %tr{class: transaction_row_class(transaction)}
+                        %td
+                            %nobr= transaction.updated_at.getutc.strftime("%F %T")
+                        %td= "$" + transaction.formatted_dollars
+                        %td
+                            = link_to_user(transaction.user)
+                        %td
+                            = link_to_user(transaction.purchase.recipient) if transaction.purchase?
+                        %td
+                            = transaction.ip
+                        %td
+                            = transaction.processor_name
+                        %td
+                            - if url = transaction.processor_url
+                                %a{href: url}= transaction.processor_id
+                            - else
+                                = transaction.processor_id
+                        %td{class: transaction_status_class(transaction)}
+                            = transaction.status_text
+                        %td
+                            %a.btn.btn-sm.btn-default{:href => admin_transaction_path(transaction)} Edit

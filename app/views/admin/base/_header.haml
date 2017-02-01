@@ -1,0 +1,7 @@
+%ol.breadcrumb
+    - *prefix, last = breadcrumb_trail
+    - prefix.each do |name, href|
+        %li
+            %a{href: href}= name
+    %li.active
+        = last[0]

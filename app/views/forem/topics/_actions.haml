@@ -1,0 +1,43 @@
+%br
+.btn-toolbar.pull-right{:style => 'margin: 0 0 10px;'}
+    - if forem_user
+        .btn-group.pull-right
+            - sub_count = format_counted("Subscriber", topic.subscriptions.count)
+            -if topic.subscriber?(forem_user)
+                %a.btn.btn-default.btn-sm{:href => unsubscribe_topic_path(topic), rel: 'tooltip', title: sub_count, data: {method: 'post'}} Unsubscribe
+            - else
+                %a.btn.btn-default.btn-sm{:href => subscribe_topic_path(topic), rel: 'tooltip', title: sub_count, data: {method: 'post'}} Subscribe
+            - if topic.can_reply?
+                %a.btn.btn-primary.btn-sm{:href => new_topic_post_path(topic)} Reply
+    - if @can_moderate_posts
+        .btn-group
+            %button.btn.btn-sm.btn-success{:type => 'submit', :name => 'event', :value => 'approve'} Show
+            %button.btn.btn-sm.btn-warning{:type => 'submit', :name => 'event', :value => 'hide'} Hide
+    - if @can_moderate_topic
+        .btn-group.pull-right
+            %button.btn.btn-default.btn-sm.dropdown-toggle{:style => 'outline: none; margin-right: 5px;', :data => {:toggle => 'dropdown'}}
+                Topic
+                %span.caret
+            %ul.dropdown-menu
+                - if topic.can_hide?
+                    %li
+                        = link_to 'Hide', toggle_hide_topic_path(topic), :method => :put
+                - if topic.can_approve?
+                    %li
+                        = link_to 'Unhide', toggle_hide_topic_path(topic), :method => :put
+                - if topic.can_lock?
+                    %li
+                        = link_to 'Lock', toggle_lock_topic_path(topic), :method => :put
+                - if topic.can_unlock?
+                    %li
+                        = link_to 'Unlock', toggle_lock_topic_path(topic), :method => :put
+                - if topic.can_pin?
+                    %li
+                        = link_to 'Pin', toggle_pin_topic_path(topic), :method => :put
+                - if topic.can_unpin?
+                    %li
+                        = link_to 'Unpin', toggle_pin_topic_path(topic), :method => :put
+                - if topic.can_edit_title? || topic.can_move?
+                    %li
+                        = link_to 'Rename/Move...', edit_topic_path(topic)
+= paginate posts_page unless posts.nil?

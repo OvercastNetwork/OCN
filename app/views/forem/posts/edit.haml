@@ -1,0 +1,25 @@
+- content_for :ftitle do @topic.subject end
+
+- content_for :main do
+    = render :partial => 'forem/topics/head', :locals => { :topic => @topic }
+    %br
+    - if @converted
+        .alert.alert-warning
+            %strong This post has been converted to markdown
+            Saving it may make it look different
+    %a.btn.btn-danger.btn-sm.pull-right{:href => request.referer} Abort
+    .tabbable
+        %ul.nav.nav-tabs
+            %li.active
+                %a{:href => "#tab1", :data => {:toggle => "tab"}} Your Post
+            %li
+                %a{:href => "#tab2", :data => {:toggle => "tab"}} Original Content
+        .tab-content#post-editor
+            .tab-pane.active#tab1
+                = simple_form_for [@topic, @post] do |f|
+                    = render :partial => "form", :locals => { :f => f }
+                    = f.submit "Save Changes", :class => "btn btn-primary pull-right", :data => {:disable_with => "Saving..."}
+            .tab-pane#tab2
+                = render :partial => "forem/posts/post", :locals => { :post => @post, :show_topic => true }
+
+= render :file => 'forem/forums/index', :controller => "forums"

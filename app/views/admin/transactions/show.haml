@@ -1,0 +1,150 @@
+%section
+    .row
+        .col-md-12
+            .btn-group.pull-right
+                %a.btn.btn-default{href: give_package_admin_transaction_path(@transaction), 'data-method' => 'post'} Give Package
+                %a.btn.btn-default{href: revoke_package_admin_transaction_path(@transaction), 'data-method' => 'post'} Revoke Package
+                %a.btn.btn-default{href: refund_admin_transaction_path(@transaction), 'data-method' => 'post'}
+                    - if @transaction.processor_can_void?
+                        Void Transaction
+                    - else
+                        Refund Transaction
+        = form_for @transaction, :url => admin_transaction_path(@transaction) do |f|
+            .col-md-6
+                %h4 Main Details
+                .form-horizontal
+                    .form-group
+                        %label.col-md-4.control-label Created at
+                        %p.form-control-static.col-md-7
+                            = @transaction.created_at.getutc.strftime("%F %T")
+                    .form-group
+                        %label.col-md-4.control-label Updated at
+                        %p.form-control-static.col-md-7
+                            = @transaction.updated_at.getutc.strftime("%F %T")
+                    .form-group
+                        %label.col-md-4.control-label Total
+                        .col-md-7
+                            = f.text_field :total, :class => "form-control"
+                            %p.help-block Total amount, in cents
+                    .form-group
+                        %label.col-md-4.control-label Description
+                        .col-md-7
+                            = f.text_field :description, :class => "form-control"
+                            %p.help-block Description of the purchase
+                    .form-group
+                        %label.col-md-4.control-label Buyer
+                        .col-md-7
+                            = user_select_field(:transaction, :user_id, @transaction.user)
+                    .form-group
+                        %label.col-md-4.control-label Status
+                        .col-md-7
+                            = f.select :status, [["Unpayed", 0], ["Payed", 1], ["Declined", 2], ["Invalid", 3], ["Refunded", 4]], {}, :class => "form-control"
+                    .form-group
+                        %label.col-md-4.control-label Note
+                        .col-md-7
+                            = f.text_field :note, :class => "form-control"
+                            %p.help-block Special note, displayed if status 3
+                    .form-group
+                        %label.col-md-4.control-label Email
+                        .col-md-7
+                            = f.text_field :email, :class => "form-control"
+                    .form-group
+                        .checkbox.col-md-7.col-md-offset-4
+                            %label
+                                = f.check_box :email_sent
+                                Email sent
+                    .form-group
+                        %label.col-md-4.control-label IP
+                        .col-md-7
+                            = f.text_field :ip, :class => "form-control"
+                    .form-group
+                        .col-md-7.col-md-offset-4
+                            = f.submit "Save Changes", :class => "btn btn-danger"
+                            .label.label-warning This form is jank, click at your own risk!
+            .col-md-6
+                - if @transaction.purchase?
+                    %h4= @transaction.purchase.purchase_name
+                    .form-horizontal
+                        = fields_for @transaction.purchase do |p|
+                            .form-group
+                                %label.col-md-4.control-label Price
+                                .col-md-7
+                                    = p.text_field :price, :class => "form-control"
+                                    %p.help-block Final price in cents
+                            .form-group
+                                %label.col-md-4.control-label Sale
+                                .col-md-7
+                                    = p.select Purchase.metadata(:sale).foreign_key, [['', nil], *Sale.loaded.asc_by(&:start_at).map{|s| [s.name, s.id.to_s] }], {}, :class => "form-control"
+                                    %p.help-block Sale active at time of purchase
+                            .form-group
+                                %label.col-md-4.control-label Recipient
+                                .col-md-7
+                                    = user_select_field('transaction[purchase]', Purchase.metadata(:recipient).foreign_key, @transaction.purchase.recipient)
+                            - case @transaction.purchase
+                                - when Purchase::Package
+                                    .form-group
+                                        %label.col-md-4.control-label Package
+                                        .col-md-7
+                                            = p.select Purchase::Package.metadata(:package).foreign_key, Package.loaded.asc_by(&:priority).map{|p| [p.name, p.id.to_s] }, {}, :class => "form-control"
+                                    .form-group
+                                        %label.col-md-4.control-label Duration
+                                        .col-md-7
+                                            = p.text_field :duration, :class => "form-control"
+                                            %p.help-block Length it will last (in seconds)
+                                    .form-group
+                                        %label.col-md-4.control-label Activated At
+                                        .col-md-7
+                                            = p.text_field :activated_at, :class => "form-control"
+                %h4= @transaction.processor.processor_name
+                .form-horizontal
+                    = fields_for @transaction.processor do |p|
+                        .form-group
+                            %label.col-md-4.control-label External ID
+                            .col-md-7
+                                = p.text_field :external_id, :class => "form-control"
+                        - case @transaction.processor
+                            - when Transaction::Paypal
+                                .form-group
+                                    %label.col-md-4.control-label Token
+                                    .col-md-7
+                                        = p.text_field :token, :class => "form-control"
+                                .form-group
+                                    %label.col-md-4.control-label Payer ID
+                                    .col-md-7
+                                        = p.text_field :payer_id, :class => "form-control"
+                            - when Transaction::Google
+                                .form-group
+                                    %label.col-md-4.control-label Token
+                                    .col-md-7
+                                        = p.text_field :token, :class => "form-control"
+                            - when Transaction::Braintree
+                                .form-group
+                                    %label.col-md-4.control-label Status (external)
+                                    .col-md-7
+                                        = p.text_field :external_status, :class => "form-control"
+                                .form-group
+                                    %label.col-md-4.control-label Payment Method Nonce
+                                    .col-md-7
+                                        = p.text_field :payment_method_nonce, :class => "form-control"
+                                .form-group
+                                    %label.col-md-4.control-label Environment
+                                    .col-md-7
+                                        = p.text_field :environment, :class => "form-control"
+                            - else
+                                Unknown processor type
+                        .form-group
+                            %label.col-md-4.control-label External Error
+                            .col-md-7
+                                = p.text_field :error_message, :class => "form-control"
+- if @transactions_by
+    %section
+        .row
+            .col-md-12
+                %h3 All by #{@transaction.user.username}
+                = render partial: 'list', locals: {transactions: @transactions_by}
+- if @transactions_for
+    %section
+        .row
+            .col-md-12
+                %h3 All for #{@transaction.purchase.recipient.username}
+                = render partial: 'list', locals: {transactions: @transactions_for}

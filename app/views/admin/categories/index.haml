@@ -1,0 +1,19 @@
+%section
+    .row
+        .col-md-12
+            .pull-right= link_to "New Category", new_admin_category_path, :class => "btn btn-default"
+            .table-container
+                %table.table
+                    %thead
+                        %tr
+                            %th Order
+                            %th Category
+                            %th Edit
+                            %th Delete
+                    %tbody
+                        - @category.each do |category|
+                            %tr
+                                %td= category.order
+                                %td= category.name
+                                %td= link_to "Edit", edit_admin_category_path(category)
+                                %td= link_to "Delete", admin_category_path(category), :method => :delete, :confirm => "Are you sure?"

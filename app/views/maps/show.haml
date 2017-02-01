@@ -1,0 +1,64 @@
+- content_for :title do "Maps" end
+:javascript
+    $(document).ready(function() {
+        $('.variant-select').change(function(e) {
+            document.location = $(e.target.selectedOptions[0]).data('href');
+        });
+    });
+%section
+    .page-header
+        %h1
+            The Maps
+            %small A large variety of unique maps
+    .row
+        .col-md-12
+            = render partial: 'tabs'
+    .row
+        .col-md-8
+            .pull-right-md
+                - if @variants.size >= 2
+                    %select.variant-select.form-control
+                        - @variants.each do |variant|
+                            %option{value: variant.id, selected: variant == @map, 'data-href' => map_path(variant)}
+                                = variant_label(variant)
+                - if @map.can_download?
+                    -# Use POST to prevent denial of service from forged requests
+                    = button_to download_map_path(@map), class: 'btn btn-success pull-right-md' do
+                        %i.fa.fa-download
+                        Download
+            %h1{style: "margin-top: 0;"}
+                = @map.name
+                %small= @map.version.join('.')
+            %b= render partial: 'authors', locals: {map: @map, limit: 999}
+            %dl.dl-horizontal
+                - unless @map.teams.empty?
+                    %dt TEAMS
+                    %dd
+                        - @map.teams.each do |team|
+                            %strong{style: "color: #{team.chat_color.to_html}"}= team.name
+                            = "(#{team.max_players} players)"
+                            %br
+                %dt OBJECTIVE
+                %dd
+                    %strong= @map.objective
+        .col-md-4
+            %img.thumbnail.center-block.img-responsive{src: @map.thumbnail_url}
+    - if @show_map_ratings
+        .row
+            .col-md-12
+                %ul.nav.nav-tabs#ratings-tabs
+                    %li{class: @map.current_ratings.confident? && 'active'}
+                        %a{href: "#ratings-latest", 'data-toggle' => 'tab'} Latest Version (#{@map.version.join('.')})
+                    %li{class: @map.current_ratings.confident? || 'active'}
+                        %a{href: "#ratings-all", 'data-toggle' => 'tab'} All Versions
+        .row.tab-content
+            .tab-pane#ratings-latest{class: @map.current_ratings.confident? && 'active'}
+                = render partial: 'ratings', locals: {ratings: @map.current_ratings }
+            .tab-pane#ratings-all{class: @map.current_ratings.confident? || 'active'}
+                = render partial: 'ratings', locals: {ratings: @map.lifetime_ratings }
+%section
+    .row
+        .col-md-12
+            %hr
+            %h2 Matches on #{@map.name}
+            = render partial: 'matches/list', locals: {matches: @matches, exclude: [:map]}

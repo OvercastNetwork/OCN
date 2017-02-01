@@ -1,0 +1,19 @@
+- content_for :ftitle do @title end
+
+- content_for :main do
+    .forum-header
+        %h3= @title
+    - pagination = paginate @posts
+    - if @posts.count > 0
+        = pagination
+        .clearfix
+        %hr
+        - @posts.each do |post|
+            - next if post.topic.nil? || !post.can_view?(current_user)
+            = render :partial => 'forem/posts/post', :locals => {:post => post, :show_topic => true}
+        = pagination
+    - else
+        %center
+            %p No posts to display.
+
+= render :file => 'forem/forums/index', :controller => 'forums'

@@ -1,0 +1,16 @@
+- if topic.archived? && !topic.forum.simple_forum_style
+    .alert.alert-warning
+        This topic is archived and may not be modified. If you believe this is in error, please contact #{ORG::EMAIL}.
+
+.topic-breadcrumbs.visible-sm.visible-xs
+    %a{href: forem.root_path} Forums
+    &raquo;
+    = link_to topic.forum.title, forum_path(topic.forum)
+.page-header{:style => 'margin: 0px;'}
+    %h3
+        %a{href: topic_path(topic)}
+            = render_topic_title(topic, emoji_size: 20)
+        %small
+            by
+            = link_to_user topic.user
+            = render :partial => 'forem/topics/icons', :locals => {:topic => topic} unless topic.forum.simple_forum_style

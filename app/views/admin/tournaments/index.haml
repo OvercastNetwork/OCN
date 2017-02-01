@@ -1,0 +1,15 @@
+%section
+    .row
+        .col-md-12
+            .pull-right= link_to "New Tournament", new_admin_tournament_path, :class => "btn btn-default"
+            .table-container
+                %table.table
+                    %thead
+                        %tr
+                            %th Name
+                            %th Edit
+                    %tbody
+                        - @tournaments.each do |tournament|
+                            %tr
+                                %td= tournament.name
+                                %td= link_to "Edit", edit_admin_tournament_path(tournament)

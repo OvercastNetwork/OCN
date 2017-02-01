@@ -1,0 +1,511 @@
+- content_for :title do @player.username end
+%section
+    - if @player.suspended?
+        - content_for :noindex, true
+        .row
+            .col-md-12
+                .alert.alert-danger
+                    %strong Account Suspended
+                    This account has been suspended.
+    - if @cake_day
+        .row
+            .col-md-12
+                .alert.alert-warning
+                    %i.fa.fa-gift
+                    %strong Happy Cake Day!
+                    - same_user = is_same_user?(@player)
+                    #{same_user ? 'You' : @player.username} joined us #{@cake_years} year#{@cake_years > 1 ? 's' : nil} ago, today. #{same_user ? 'Thanks for hanging out!' : "Wish #{gender_pronoun_for(@player)[:singular]} a happy Cake Day!"}
+    .row
+        .col-md-12
+            = render partial: 'friendships/widget', locals: {user: @player}
+            %h1{style: "margin-top: 0"}
+                %span{:style => "color: " + html_color(@player)}
+                    = @player.username
+                - if @previous_username
+                    %small (formerly #{@previous_username})
+            - if @actions.size > 0
+                .btn-group.pull-right
+                    %button.btn.btn-default.btn-sm.dropdown-toggle{:data => {:toggle => 'dropdown'}}
+                        %span.glyphicon.glyphicon-cog
+                        %span.caret
+                    %ul.dropdown-menu
+                        - @actions.each do |text, method, path|
+                            %li= link_to text, path, method: method
+            %div
+                - @player.badge_memberships.each do |mem|
+                    = render_badge(@player, mem.group, tooltip: mem.staff_role.presence || mem.stop < Time::INF_FUTURE && "Expires in #{format_package_expire(mem.stop)}")
+    .row{style: "margin-top: 20px"}
+        .col-md-2.col-sm-3.col-xs-6
+            %a{:href => "#", :style => "width: 130px; height: 130px;"}
+                = avatar_for(@player, 130, glow: true)
+            - if @last_sighting
+                .last-seen
+                    - if @last_sighting.online
+                        .online online now
+                        .server
+                            - if @show_server && @last_sighting.server
+                                - if current_user_safe.can_teleport_to?(@player)
+                                    = teleport_button(@player)
+                                %a{:href => main_app.play_path}
+                                    = @last_sighting.server.name
+                                    .datacenter
+                                        = "[#{@last_sighting.server.datacenter}]"
+                        .time{:rel => 'tooltip', :title => format_time(@last_sighting.time), :data => {:placement => 'bottom', :container => 'body'}}
+                            for
+                            = time_ago_in_words(@last_sighting.time, false, :vague => true)
+                        - if @last_sighting.session.nickname
+                            .nickname
+                                as
+                                = @last_sighting.session.nickname
+                    - else
+                        .offline last seen
+                        - if @show_server && @last_sighting.server
+                            .server
+                                - if @show_server && @last_sighting.server
+                                    %a{:href => main_app.play_path}
+                                        = @last_sighting.server.name
+                                        .datacenter
+                                            = "[#{@last_sighting.server.datacenter}]"
+                        .time{:rel => 'tooltip', :title => format_time(@last_sighting.time), :data => {:placement => 'bottom', :container => 'body'}}
+                            = time_ago_in_words(@last_sighting.time, false, :vague => true)
+                            ago
+        .col-md-6.col-sm-3.col-xs-6
+            .row.heads
+                .col-md-4
+                    - kills = @stats.pretty_stat(:kills)
+                    .hidden-sm.hidden-xs
+                        = join_safe(@kills[0...16].map{|kill| avatar_for(kill.victim_obj, 32, hover: true, link: true)})
+                    .name kills
+                    .number{:rel => (big_stat(kills) ? 'tooltip' : ''), :title => "#{kills} kills", :data => {:placement => 'top'}}
+                        = big_stat(kills) ? number_to_human(kills, :format => '%n%u', :units => { :thousand => 'k' }, :precision => 4) : kills
+                .col-md-4
+                    - deaths = @stats.pretty_stat(:deaths)
+                    .hidden-sm.hidden-xs
+                        = join_safe(@deaths[0...16].map{|death| avatar_for(death.killer_obj, 32, hover: true, link: true)})
+                    .name deaths
+                    .number{:rel => (big_stat(deaths) ? 'tooltip' : ''), :title => "#{deaths} deaths", :data => {:placement => 'top'}}
+                        = big_stat(deaths) ? number_to_human(deaths, :format => '%n%u', :units => { :thousand => 'k' }, :precision => 4) : deaths
+                .col-md-4
+                    .hidden-sm.hidden-xs
+                        = join_safe(@friends.map{|friend| avatar_for(friend, 32, hover: true, link: true, glow: true) })
+                    .name friends
+                    .number
+                        = @player.friendships.count
+                    - if !@mutual_friends.nil? && @mutual_friends.length > 0
+                        .mutual-friends{:rel => 'tooltip', :title => @mutual_friends.to_sentence, :data => {:placement => 'bottom'}}
+                            #{@mutual_friends.length} in common
+        .col-md-4.col-sm-6.col-xs-12
+            .stats
+                .well
+                    - if @ordinal
+                        .rank>
+                            .name rank
+                            %a.number{href: url_for(controller: 'users', action: 'leaderboard', page: @ordinal_page)}
+                                = @ordinal
+                                %sup>= @ordinal.ordinalize[-2..-1]
+                        .rank>
+                            .name rating
+                            .number{rel: 'tooltip',
+                                    title: "1 + (wins - losses) / max(matches, #{Ranking::CONFIDENT_MATCHES})",
+                                    data: {placement: 'bottom'}}
+                                = @ranking.formatted_rating
+                    - else
+                        .unqualified
+                            %a{href: url_for(controller: 'users', action: 'leaderboard')}
+                                not enough recent matches for ranking
+                    .rule
+                    %div
+                        .total>
+                            .name matches
+                            .number= @ranking.value.match_count
+                        .total>
+                            .name wins
+                            .number= @ranking.value.wins
+                        .total>
+                            .name losses
+                            .number= @ranking.value.losses
+                        .total>
+                            .name forfeits
+                            .number= @ranking.value.forfeits
+%section
+    .row
+        .col-md-12
+            .tabbable
+                %ul.nav.nav-tabs#user-tabs
+                    %li.active
+                        %a{:href => '#about', :data => {:toggle => 'tab'}} About
+                    %li
+                        %a{:href => '#trophycase', :data => {:toggle => 'tab'}} Trophy Case
+                    %li
+                        %a{:href => '#stats', :data => {:toggle => 'tab'}} Stats
+                    %li
+                        %a{:href => '#pvp-encounters', :data => {:toggle => 'tab'}} PvP
+                    %li
+                        %a{:href => '#objectives', :data => {:toggle => 'tab'}} Objectives
+                    - unless @engagements.empty?
+                        %li
+                            %a{:href => '#matches', :data => {:toggle => 'tab'}} Ranked Matches
+                    - unless @maps.empty?
+                        %li
+                            %a{:href => '#maps', :data => {:toggle => 'tab'}} Maps
+                    - unless @punishments.nil?
+                        %li
+                            %a{:href => '#infractions', :data => {:toggle => 'tab'}} Infractions
+                    - if @appeals.exists?
+                        %li
+                            %a{:href => '#appeals', :data => {:toggle => 'tab'}} Appeals
+                    - unless @reports.values.all?(&:empty?)
+                        %li
+                            %a{:href => '#reports', :data => {:toggle => 'tab'}} Reports
+                    - if @alts_final || current_user_safe.has_permission?('misc', 'name_change', 'index', 'all') || current_user_safe.has_permission?('misc', 'name_change', 'index', 'own') && @same_user
+                        %li
+                            %a{:href => '#alts', :data => {:toggle => 'tab'}} Alts
+                .tab-content{:style => 'overflow: visible;'}
+                    .tab-pane.active#about
+                        .row
+                            - if !@player.public_email.to_s.empty?
+                                .col-md-4.col-sm-6
+                                    %h5 Email
+                                    %blockquote
+                                        %p
+                                            %a{:href => "mailto:#{@player.public_email}"}= @player.public_email
+                            - if !@player.skype.to_s.empty?
+                                .col-md-4.col-sm-6
+                                    %h5 Skype
+                                    %blockquote
+                                        %p
+                                            %a{:href => "skype:#{@player.skype}?userinfo", :target => "_blank"}= @player.skype
+                            - if !@player.twitter.to_s.empty?
+                                .col-md-4.col-sm-6
+                                    %h5 Twitter
+                                    %blockquote
+                                        %p
+                                            %a{:href => "http://twitter.com/#{@player.twitter}", :target => "_blank"}= @player.twitter
+                            - if !@player.facebook.to_s.empty?
+                                .col-md-4.col-sm-6
+                                    %h5 Facebook
+                                    %blockquote
+                                        %p
+                                            %a{:href => "http://facebook.com/#{@player.facebook}", :target => "_blank"}= @player.facebook
+                            - if !@player.steam.to_s.empty?
+                                .col-md-4.col-sm-6
+                                    %h5 Steam
+                                    %blockquote
+                                        %p
+                                            %a{:href => "http://steamcommunity.com/id/#{@player.steam}", :target => "_blank"}= @player.steam
+                            - if @player.channels_for(:youtube).exists?
+                                .col-md-4.col-sm-6
+                                    %h5 YouTube
+                                    %blockquote
+                                        %p
+                                            %a= link_to_youtube_channel(@player)
+                            - if !@player.twitch.to_s.empty?
+                                .col-md-4.col-sm-6
+                                    %h5 Twitch
+                                    %blockquote
+                                        %p
+                                            %a{:href => "http://twitch.tv/#{@player.twitch}", :target => "_blank"}= @player.twitch
+                            - if !@player.github.to_s.empty?
+                                .col-md-4.col-sm-6
+                                    %h5 Github
+                                    %blockquote
+                                        %p
+                                            %a{:href => "https://github.com/#{@player.github}", :target => "_blank"}= @player.github
+                            - if !@player.reddit.to_s.empty?
+                                .col-md-4.col-sm-6
+                                    %h5 Reddit
+                                    %blockquote
+                                        %p
+                                            %a{:href => "http://reddit.com/user/#{@player.reddit}", :target => "_blank"}= @player.reddit
+                            - if !@player.discord.to_s.empty?
+                                .col-md-4.col-sm-6
+                                    %h5 Discord
+                                    %blockquote
+                                        %p{:style => 'color: #666'}
+                                            = @player.discord
+                            - if team = @player.team
+                                .col-md-4.col-sm-6
+                                    %h5 Team
+                                    %blockquote
+                                        %p
+                                            %a{:href => team_path(team)}= team.name
+                        .row
+                            - if !@player.gender.to_s.empty?
+                                .col-sm-6
+                                    %h5 Gender
+                                    %pre= @player.gender
+                            - if !@player.location.to_s.empty?
+                                .col-sm-6
+                                    %h5 Location
+                                    %pre= @player.location
+                            - if !@player.occupation.to_s.empty?
+                                .col-sm-6
+                                    %h5 Occupation
+                                    %pre= @player.occupation
+                            - if !@player.interests.to_s.empty?
+                                .col-sm-6
+                                    %h5 Interests
+                                    %pre= @player.interests
+                        .row
+                            .col-md-12
+                                %h5 About #{@player.username}
+                                %pre.about-me
+                                    - if !@player.about.to_s.empty?
+                                        = render_profile(@player.about)
+                                    - else
+                                        Nothing here yet.
+                    .tab-pane#trophycase
+                        .row
+                            .col-md-12
+                                - if @trophy_count > 0
+                                    = render :partial => "trophies", :locals => {:trophies => @player.trophies.reverse}
+                                - else
+                                    %pre
+                                        Nothing here yet.
+                    .tab-pane#stats
+                        .row
+                            .col-md-3.col-sm-6
+                                %h3{:rel => "tooltip", :title => "First joined on " + vague_format_time(@initial_join), :data => {:placement => "top"}}
+                                    = @days_here
+                                    %small days since first seen
+                            .col-md-3.col-sm-6
+                                %h3
+                                    = @hours_played
+                                    %small hours played
+                            .col-md-3.col-sm-6
+                                %h3
+                                    = @teams_joined
+                                    %small teams joined
+                            .col-md-3.col-sm-6
+                                %h3
+                                    = @player.raindrops
+                                    %small raindrops
+                        %hr
+                        %h4 Forum Stats
+                        .row
+                            .col-md-3.col-sm-6
+                                %h3
+                                    = @forum_posts
+                                    %small forum posts
+                            .col-md-3.col-sm-6
+                                %h3
+                                    = @topics_created
+                                    %small topics started
+                        - @families.each do |name, id|
+                            %hr
+                            %h4
+                                #{name} Stats
+                            .row
+                                .col-md-4
+                                    .row
+                                        .col-sm-6
+                                            %h3
+                                                = @stats.pretty_stat(:kills, id)
+                                                %small kills
+                                        .col-sm-6
+                                            %h3
+                                                = @stats.pretty_stat(:deaths, id)
+                                                %small deaths
+                                .col-md-3
+                                    .row
+                                        .col-sm-6
+                                            %h3
+                                                = @stats.pretty_stat(:kd, id)
+                                                %small kd
+                                        .col-sm-6
+                                            %h3
+                                                = @stats.pretty_stat(:kk, id)
+                                                %small kk
+                                .col-md-5
+                                    .row
+                                        .col-md-6
+                                            %h3
+                                                = (@stats.stat(:playing_time, id).to_f / 1000 / 60 / 60 / 24).round(2)
+                                                %small days played
+                    .tab-pane#pvp-encounters
+                        .row
+                            - if !@encounters.empty?
+                                .col-sm-6
+                                    - @encounters[0..23].to_a.each do |death|
+                                        %p
+                                            = avatar_for(death.killer_obj, 16, link: true)
+                                            - if death.killer_obj != @player
+                                                %b= link_to_user(death.killer_obj)
+                                            killed
+                                            = avatar_for(death.victim_obj, 16, link: true)
+                                            - if death.victim_obj != @player
+                                                %b= link_to_user(death.victim_obj)
+                                            - if death.match && death.match.map_name
+                                                on
+                                                %a{:href => "/maps/#{death.match.map_slug}"}= death.match.map_name
+                                                %a.profile-timestamp{:href => "/matches/" + death.match.id.to_s,
+                                                                     :rel => 'tooltip',
+                                                                     :title => format_time(death.date),
+                                                                     :data => {:placement => 'top', :container => 'body'}}= time_ago_in_words(death.date, false, :vague => true) + " ago"
+                                .col-sm-6
+                                    - @encounters[24..47].to_a.each do |death|
+                                        %p
+                                            = avatar_for(death.killer_obj, 16, link: true)
+                                            - if death.killer_obj != @player
+                                                %b= link_to_user(death.killer_obj)
+                                            killed
+                                            = avatar_for(death.victim_obj, 16, link: true)
+                                            - if death.victim_obj != @player
+                                                %b= link_to_user(death.victim_obj)
+                                            - if death.match && death.match.map_name
+                                                on
+                                                %a{:href => "/maps/#{death.match.map_slug}"}= death.match.map_name
+                                                %a.profile-timestamp{:href => "/matches/" + death.match.id.to_s,
+                                                                     :rel => 'tooltip',
+                                                                     :title => format_time(death.date),
+                                                                     :data => {:placement => 'top', :container => 'body'}}= time_ago_in_words(death.date, false, :vague => true) + " ago"
+                            - else
+                                .col-md-12
+                                    %center
+                                        %p No deaths to display.
+                    .tab-pane#objectives
+                        - if @objectives && !@objectives.empty?
+                            - @objectives.each do |klass, total, objectives|
+                                = render partial: 'objective', locals: {klass: klass, total: total, objectives: objectives}
+                        - else
+                            .row
+                                .col-md-12
+                                    %center
+                                        %p No objectives completed
+                    - unless @engagements.empty?
+                        .tab-pane#matches
+                            .row
+                                .col-md-12
+                                    = render partial: 'matches/list', locals: {matches: @engagements.map(&:match), engagements: @engagements.index_by(&:match)}
+                    - unless @maps.empty?
+                        .tab-pane#maps
+                            .row
+                                .col-md-12
+                                    %h4
+                                        = @maps.size
+                                        = "map".pluralize(@maps.size)
+                                        created by
+                                        = render_user(@player)
+                                    = render partial: 'maps/list', locals: {maps: @maps}
+                    - unless @punishments.nil?
+                        .tab-pane#infractions
+                            .row
+                                .col-md-12
+                                    - if @punishments.count >= 1
+                                        - unless @displayed_statuses.empty?
+                                            .pull-right{:style => 'margin-top: -15px; margin-bottom: 8px'}
+                                                - if @displayed_statuses.include? 'inactive'
+                                                    %span.label.label-success Appealed
+                                                - if @displayed_statuses.include? 'contested'
+                                                    %span.label.label-info Contested
+                                                - if @displayed_statuses.include? 'automatic'
+                                                    %span.label.label-yellow Automatic
+                                                - if @displayed_statuses.include? 'stale'
+                                                    %span.label.label-danger Stale
+                                        = render :partial => 'common/punishments', :locals => {:punishments => @punishments, :displayed_statuses => @displayed_statuses}
+                                    - else
+                                        %center
+                                            %p No punishments to display.
+                    - if @appeals.exists?
+                        .tab-pane#appeals
+                            .row
+                                .col-md-12
+                                    - if @appeals.count >= 1
+                                        = render :partial => 'common/appeals', :locals => {:appeals => @appeals}
+                                    - else
+                                        %center
+                                            %p No appeals to display.
+                    - unless @reports.values.all?(&:empty?)
+                        .tab-pane#reports
+                            - @reports.each do |heading, reports|
+                                - unless reports.empty?
+                                    .row
+                                        .col-md-12
+                                            %h4
+                                                = heading
+                                                = render_user(@player)
+                                            = render :partial => "reports/#{reports[0].scope}/list", :locals => {:reports => reports}
+                    - if @alts_final || current_user_safe.has_permission?('misc', 'name_change', 'index', 'all') || current_user_safe.has_permission?('misc', 'name_change', 'index', 'own') && @same_user
+                        .tab-pane#alts
+                            .row
+                                .col-md-12
+                                    %h3 Name Changes
+                                    .pull-left{:style => 'margin-top: -8px; margin-bottom: 8px'}
+                                        %span.label.label-info= "UUID: #{@player.uuid}"
+                                    .table-container
+                                        %table.table.table-bordered.table-striped
+                                            %thead
+                                                %tr
+                                                    %th Username
+                                                    %th Date
+                                            %tbody
+                                                - @usernames.each do |name|
+                                                    %tr
+                                                        %td
+                                                            %code= name.exact
+                                                        %td= format_time(name.created_at)
+                            - unless @alts_final.nil?
+                                .row
+                                    .col-md-12
+                                        %h3 Alts
+                                        .pull-left{:style => 'margin-top: -8px; margin-bottom: 8px'}
+                                            - unless @player.last_sign_in_ip.nil?
+                                                %span.label.label-info= "Last Web IP: " + @player.last_sign_in_ip
+                                        .pull-right{:style => 'margin-top: -8px; margin-bottom: 8px'}
+                                            %span.label.label-danger Currently Banned
+                                        .table-container
+                                            %table.table.table-bordered.table-striped
+                                                %thead
+                                                    %tr
+                                                        %th{width: "25%"} User
+                                                        %th{width: "15%"} Shared IPs
+                                                        %th{width: "15%"} Last Seen
+                                                        %th{width: "25%"} Last Location
+                                                        %th{width: "15%"} Last IP
+                                                %tbody
+                                                    %tr{:class => @player.is_in_game_banned? ? 'danger' : ''}
+                                                        %td
+                                                            = link_to_user(@player)
+                                                        %td
+                                                            N/A
+                                                        %td
+                                                            N/A
+                                                        %td
+                                                            = describe_user_ip(@player)
+                                                        %td
+                                                            - if @player.mc_last_sign_in_ip
+                                                                = @player.mc_last_sign_in_ip
+                                                                - if current_user_safe.has_permission?('misc','ipban','edit', true)
+                                                                    %a{:href => new_admin_ipban_path(:ip => @player.mc_last_sign_in_ip, :description => @player.username), :class => "pull-right btn btn-xs btn-danger"}
+                                                                        %i.fa.fa-ban
+                                                            - else
+                                                                Unknown
+                                                    - @alts_final.each do |alt|
+                                                        - ips = @player.mc_ips & alt.mc_ips
+                                                        %tr{:class => alt.is_in_game_banned? ? 'danger' : ''}
+                                                            %td
+                                                                = link_to_user(alt)
+                                                                - if alt.usernames.size >= 2
+                                                                    AKA
+                                                                    - alt.usernames.desc(:created_at)[1..-1].each do |name|
+                                                                        %code= name.exact
+                                                            %td= ips.join(', ')
+                                                            - sighting = alt.last_sighting_by
+                                                            - if sighting
+                                                                - if sighting.online
+                                                                    %td{:style => "color: green"} Online
+                                                                - else
+                                                                    %td{:rel => "tooltip",
+                                                                        :title => format_time(sighting.time.to_datetime),
+                                                                        :data => {:placement => 'left', :container => 'body'}}
+                                                                        = time_ago_in_words(sighting.time.to_datetime, false, :vague => true)
+                                                                        ago
+                                                            - else
+                                                                %td Unknown
+                                                            %td
+                                                                = describe_user_ip(alt)
+                                                            %td
+                                                                = alt.mc_last_sign_in_ip
+                                                                - if current_user_safe.has_permission?('misc','ipban','edit', true)
+                                                                    %a{:href => new_admin_ipban_path(:ip => alt.mc_last_sign_in_ip, :description => @player.username), :class => "pull-right btn btn-xs btn-danger"}
+                                                                        %i.fa.fa-ban

@@ -1,0 +1,7 @@
+%section
+    .row
+        .col-md-12
+            %ul.nav.nav-pills.nav-stacked
+                - @admin_nav.each do |nav|
+                    -if can_navigate_to? nav
+                        %li= nav_link(nav)

@@ -1,0 +1,25 @@
+# This file allows you to install gems into the bundle for local
+# development without modifying the project Gemfile. It's a bit
+# hacky, but there is apparently no better way to do this.
+#
+# Instructions for use:
+#
+# 1. Copy this file to LocalGemfile
+# 2. Copy Gemfile.lock to LocalGemfile.lock (this is important, do NOT just generate it)
+# 3. Add local gems to LocalGemfile
+# 3. Set BUNDLE_GEMFILE=LocalGemfile in the environment
+# 4. Run 'bundle install' to update LocalGemfile.lock with the local gems
+#
+# Whenever you change the project Gemfile:
+#
+# 1. Run 'bundle install' without BUNDLE_GEMFILE
+# 2. Copy Gemfile.lock to LocalGemfile.lock
+# 3. Run 'bundle install' with BUNDLE_GEMFILE=LocalGemfile
+
+source 'http://rubygems.org'
+
+group :development do
+    gem 'print_members', :github => 'jedediah/print_members', :branch => 'master'
+end
+
+instance_eval(File.read(File.dirname(__FILE__) + '/Gemfile'))

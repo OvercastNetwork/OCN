@@ -1,0 +1,7 @@
+= simple_form_for [@topic] do |f|
+    - if @topic.can_edit_title?(current_user)
+        = f.input :subject
+    - if @topic.can_move?(current_user)
+        = f.select :forum_id, forum_dropdown, {}, { :class => 'form-control' }
+    %br
+    = f.submit :class => 'btn btn-primary'

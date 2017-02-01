@@ -1,0 +1,25 @@
+.table-container
+    %table.table.table-bordered.table-striped
+        %thead
+            %tr
+                %th{:width => "13%"} Punisher
+                %th{:width => "13%"} Punished
+                %th{:width => "30%"} Reason
+                %th{:width => "10%"} Type
+                %th{:width => "14%"} Status
+                %th{:width => "14%"} Date
+        %tbody
+            - punishments.each_with_index do |p, i|
+                %tr{:class => p.status_color(displayed_statuses)}[p]
+                    %td.punisher= link_to_punisher(p)
+                    %td.punished= link_to_user(p.punished)
+                    %td= safe_formatted_html(p.reason) if p.reason != nil
+                    %td.type
+                        %span{:style => "color: " + p.reason_color}
+                            = p.type.titleize if p.type != nil
+                    %td{:rel => p.expires? ? 'tooltip' : nil, :title => p.expires? ? format_time(p.expire) : nil, :data => p.expires? ? {:placement => 'left', :container => 'body'} : nil}
+                        = p.status_in_words(current_user)
+                    %td{:rel => "tooltip", :title => format_time(p.date), :data => {:placement => 'left', :container => 'body'}}
+                        %a{:href => punishment_path(p)}
+                            = time_ago_in_words(p.date, false, :vague => true) if p.date != nil
+                            ago

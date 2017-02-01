@@ -1,0 +1,63 @@
+- content_for :title do 'Registering for ' + @tournament.name end
+
+%section
+    .page-header
+        %h3= "Registering #{@team.name} for #{@tournament.name}"
+    .row
+        .col-md-12
+            %p
+                You are registering your team for a tournament. Once all selected members of your team have confirmed their |
+                participation, your registration will become finalized and unable to be reversed. Should your team be       |
+                accepted, you (and all of your team members) will be held responsible for showing up to (and participating  |
+                in) the tournament. Failure to do so is in violation of the tournament rules and will result in barring from
+                future tournaments.
+            %hr
+    %form{:method => :post, :action => team_submit_registration_path(@team)}
+        = token_tag nil
+        %input{:type => 'hidden', :name => 'tournament', :value => @tournament.id.to_s}
+        .row
+            .col-md-12
+                %h4 Player selection
+                - min = @tournament.min_players_per_team.round
+                = "Please select the players that you wish to participate in the tournament. You must select at least #{min} player#{min > 1 ? 's' : ''}, but may select no more than #{@tournament.max_players_per_team.round}."
+                %br
+                .table-container
+                    %table.table
+                        %thead
+                            %tr
+                                %th
+                                %th
+                                %th Name
+                                %th KK ratio
+                                %th KD ratio
+                                %th Wools
+                                %th Cores
+                                %th Monuments
+                                %th Member for
+                        %tbody
+                            - @members.each do |member|
+                                - leader = @team.leader == member.user
+                                - stat = PlayerStat::Eternal.find_by(id: member.user_id) || PlayerStat::Eternal.new(:value => {})
+                                %tr
+                                    %td
+                                        %input.member{:type => 'checkbox', :data => {:id => member.user_id}, :name => "registration[members][#{member.user_id}]", :value => 1, :checked => leader ? '' : nil, :disabled => leader ? '' : nil}
+                                    %td= avatar_for(member.user, 56, glow: true)
+                                    %td
+                                        %a{:href => user_path(member.user), :style => 'color: ' + html_color(member.user)}= member.user
+                                    %td= stat.stat(:kk)
+                                    %td= stat.stat(:kd)
+                                    %td= stat.stat(:wool_placed)
+                                    %td= stat.stat(:cores_leaked)
+                                    %td= stat.stat(:destroyables_destroyed)
+                                    %td{:rel => 'tooltip', :title => format_time(member.accepted_at), :data => {:placement => 'top', :container => 'body'}}
+                                        = time_ago_in_words(member.accepted_at, false, :vague => true)
+                %hr
+        .row
+            .col-md-8.pull-right.form-actions
+                %p
+                    Submitting your registration will require each selected team member to confirm their participation.   |
+                    Once all team members have confirmed their participation, your registration will become irreversible, |
+                    and your team will be submitted for acceptance into the tournament. Please double-check your player
+                    list before continuing.
+                %center
+                    %input#registration-submit.btn.btn-primary{:type => 'submit', :value => 'Submit'}

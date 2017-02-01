@@ -1,0 +1,100 @@
+- content_for :title do "Editing punishment for " + @punishment.punished.username end
+
+%section
+    .page-header
+        %h1
+            Editing punishment for
+            = link_to_user(@punishment.punished)
+            %small{:rel => "tooltip", :title => format_time(@punishment.date), :data => {:placement => "bottom", :container => "body"}}
+                = time_ago_in_words(@punishment.date, false, :vague => true)
+                ago
+            %a.btn.btn-default.pull-right{:href => punishment_path(@punishment)} Back
+    .row
+        .col-md-8
+            - if !(@editable.nil? || @editable.empty?)
+                = form_for @punishment do |f|
+                    .form-horizontal
+                        - if @editable.include?(:punisher)
+                            .form-group
+                                %label.col-md-4.control-label Punisher
+                                .col-md-7
+                                    = user_select_field(:punishment, :punisher, @punishment.punisher)
+                                    %p.help-block User who did the punishing - nothing means console
+                        - if @editable.include?(:punished)
+                            .form-group
+                                %label.col-md-4.control-label Punished
+                                .col-md-7
+                                    = user_select_field(:punishment, :punished, @punishment.punished)
+                                    %p.help-block User who was punished
+                        - if @editable.include?(:reason)
+                            .form-group
+                                %label.col-md-4.control-label Reason
+                                .col-md-7
+                                    = f.text_field :reason, :class => "form-control"
+                                    %p.help-block Reason why this user was punished
+                        - if @editable.include?(:evidence)
+                            .form-group
+                                %label.col-md-4.control-label Evidence
+                                .col-md-7
+                                    = f.text_area :evidence, :class => "form-control", :rows => 6
+                                    %p.help-block Evidence provided for this punishment
+                        - if @editable.include?(:type)
+                            .form-group
+                                %label.col-md-4.control-label Punishment Type
+                                .col-md-7
+                                    = f.select :type, @issueable_types, {}, :class => "form-control"
+                                    %p.help-block The type of punishment that was used
+                        - if @editable.include?(:active)
+                            .form-group
+                                .checkbox.col-md-7.col-md-offset-4
+                                    %label
+                                        = f.check_box :active
+                                        Active
+                                    %p.help-block If unchecked, the punishment was appealed
+                        - if @editable.include?(:automatic)
+                            .form-group
+                                .checkbox.col-md-7.col-md-offset-4
+                                    %label
+                                        = f.check_box :automatic
+                                        Automatic
+                                    %p.help-block If checked, the ban was made via plugin/script
+                        - if @editable.include?(:debatable)
+                            .form-group
+                                .checkbox.col-md-7.col-md-offset-4
+                                    %label
+                                        = f.check_box :debatable
+                                        Debatable
+                                    %p.help-block If unchecked, comments are closed and this ban may not be appealed
+                        - if @editable.include?(:expire)
+                            .form-group
+                                %label.col-md-4.control-label Expire Date
+                                .col-md-7
+                                    = f.text_field :expire, value: @expire_text, :class => "form-control"
+                                    .label.label-default Tip
+                                    Times can be pretty much anything e.g.
+                                    %code yesterday
+                                    %code next tuesday
+                                    %code 7 days from now
+                                    %code 4/1, 3:00
+                                    %code april 1st at 3 o'clock
+                        - if @editable.include?(:appealed)
+                            .form-group
+                                .checkbox.col-md-7.col-md-offset-4
+                                    %label
+                                        = f.check_box :appealed
+                                        Tried to appeal
+                                    %p.help-block Tried to appeal a punishment
+                        .form-group
+                            .col-md-7.col-md-offset-4
+                                = f.submit 'Save Changes', :class => 'btn btn-primary'
+            - else
+                %center You do not have permission to modify any attributes of this punishment.
+        .col-md-4
+            %p You are currently editing a punishment and your changes will immediately be live across all servers.
+            %hr
+            %p You should only edit punishments that you have had a part in. Double check all information before saving.
+            %hr
+            - if @can_delete
+                %a.btn.btn-danger{:href => punishment_path(@punishment), :data => {:confirm => 'Are you sure you want to delete this punishment?', :method => :delete}} Delete
+            - else
+                %p You do not have permission to delete this punishment. If you need it removed, please contact a staff member with the appropriate permissions.

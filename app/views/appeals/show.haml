@@ -1,0 +1,137 @@
+- content_for :title do "Appeal - " + @appeal.punished.username end
+- content_for :noindex, true
+
+%section.appeal
+    .page-header
+        %h1
+            Appeal for
+            = link_to_user(@appeal.punished)
+            %small= @appeal.status
+            %a.btn.btn-default.pull-right{:href => appeals_path}
+                %i.fa.fa-tasks
+                All Appeals
+    .row
+        .col-md-12
+            - if @punishments.count >= 1
+                .table-container
+                    %table.table.table-bordered.table-striped.excuses
+                        %thead
+                            %tr
+                                %th Punisher
+                                %th Punished
+                                %th Reason
+                                %th Type
+                                %th Expires
+                                %th Date
+                                - if @can[:appeal][:appeal] || @can[:appeal][:unappeal] || @can[:appeal][:expire]
+                                    %th Actions
+                        %tbody
+                            - @appeal.excuses.each do |excuse|
+                                %tbody[excuse]
+                                    %tr
+                                        %td.punisher= link_to_punisher(excuse.punishment)
+                                        %td.punished= link_to_user(excuse.punishment.punished)
+                                        %td.punishment-reason= excuse.punishment.reason
+                                        %td.type
+                                            %span{:style => "color: " + excuse.punishment.reason_color}
+                                                = excuse.punishment.type.titleize
+                                        %td{:rel => excuse.punishment.expires? ? 'tooltip' : nil,
+                                            :title => excuse.punishment.expires? ? format_time(excuse.punishment.expire) : nil,
+                                            :data => excuse.punishment.expires? ? {:placement => 'left', :container => 'body'} : nil}
+                                            = excuse.punishment.expire_in_words
+                                        %td{:rel => 'tooltip', :title => format_time(excuse.punishment.date), :data => {:placement => 'left', :container => 'body'}}
+                                            %a{:href => punishment_path(excuse.punishment)}
+                                                = time_ago_in_words(excuse.punishment.date, false, :vague => true)
+                                                ago
+                                        - if @can[:appeal][:appeal] || @can[:appeal][:unappeal] || @can[:appeal][:expire]
+                                            %td
+                                                - if @can[:punishments][excuse.punishment.id.to_s][:appeal] && excuse.punishment.active?
+                                                    %a.action.btn.btn-success.btn-xs{:href => '#action', :data => {:toggle => 'modal', :type => 'appeal', :id => excuse.punishment.id.to_s}} Appeal
+                                                - if @can[:punishments][excuse.punishment.id.to_s][:unappeal] && !excuse.punishment.active?
+                                                    %a.action.btn.btn-danger.btn-xs{:href => '#action', :data => {:toggle => 'modal', :type => 'unappeal', :id => excuse.punishment.id.to_s}} Unappeal
+                                                - if @can[:punishments][excuse.punishment.id.to_s][:expire] && excuse.punishment.active?
+                                                    %a.action.btn.btn-warning.btn-xs{:href => '#action', :data => {:toggle => 'modal', :type => 'expire', :id => excuse.punishment.id.to_s}} Expire
+                                    - if excuse.punishment.evidence.presence
+                                        %tr.evidence
+                                            %td.appeal-evidence{:colspan => '7', :style => 'font-size: 90%'}
+                                                %p
+                                                    %strong Evidence:
+                                                = safe_formatted_html(excuse.punishment.evidence)
+                                    %tr.explanation{:id => excuse.punishment.id.to_s}
+                                        %td.appeal-reason{:colspan => '7', :style => 'font-size: 90%'}
+                                            %p
+                                                %strong Explanation:
+                                            = safe_formatted_html(excuse.reason)
+            - else
+                %center
+                    %p No punishments to display.
+    - if @appeal.authorized_ip != nil && @can[:appeal][:view_ip]
+        .alert.alert-warning.clearfix
+            %span
+                %strong This appeal was created from IP:
+                #{@appeal.authorized_ip}
+            %span.pull-right
+                %strong #{@appeal.punished.username}'s last server IP:
+                #{@session_ip}
+    - if @appeal.locked?
+        .alert.alert-danger
+            %strong This appeal is locked.
+            No further action will be taken.
+    - elsif @appeal.escalated?
+        .alert.alert-warning
+            %strong This appeal has been escalated.
+            Only higher staff may provide assistance.
+    - if @web_reports
+        .page-header
+            %h2
+                Web reports for
+                = link_to_user(@appeal.punished)
+                %small 20 most recent
+        .row
+            .col-md-12
+                - if @web_reports.count >= 1
+                    = render :partial => 'reports/web/list', :locals => {:reports => @web_reports}
+                - else
+                    %center
+                        %p No reports to display.
+    - if @game_reports
+        .page-header
+            %h2
+                In-game reports for
+                = link_to_user(@appeal.punished)
+                %small 20 most recent
+        .row
+            .col-md-12
+                - if @game_reports.count >= 1
+                    = render :partial => 'reports/game/list', :locals => {:reports => @game_reports}
+                - else
+                    %center
+                        %p No reports to display.
+    .page-header.clearfix
+        %h2 History
+        .pull-right.btn-group
+            = render :partial => 'actions', :locals => {:can => @can}
+    .row
+        .col-md-12
+            = render :partial => 'common/actions', :locals => {:actions => @appeal.actions.asc(:created_at)}
+            - if @appeal.actions.count > 1
+                .pull-right.btn-group
+                    = render :partial => 'actions', :locals => {:can => @can}
+    .modal.fade#action
+        .modal-dialog
+            .modal-content
+                = form_tag appeal_actions_path(@appeal), :method => :post do |f|
+                    .modal-header
+                        %button.close{:data => {:dismiss => "modal"}} &times;
+                        %h3.modal-title#action-text
+                            Action
+                    .modal-body
+                        .form-group
+                            %label.control-label Comment
+                            %textarea.form-control{:name => "comment", :rows => 3}
+
+                        %input#action-value{:type => "hidden", :name => "type", :value => ""}
+                        %input#action-id{:type => "hidden", :name => "punishment_id", :value => ""}
+                    .modal-footer
+                        %a.btn.btn-default{:href => "#", :data => {:dismiss => "modal"}} Cancel
+                        %input#action-btn.btn.btn-primary{:type => "submit", :value => "Send", :data => {"disable-with" => "Saving..."}}

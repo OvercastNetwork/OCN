@@ -1,0 +1,26 @@
+%section
+    .row
+        .col-md-12
+            .pull-right= link_to "New Stream", new_admin_stream_path, :class => "btn btn-default"
+            - pagination = paginate @streams
+            = pagination
+            .table-container
+                %table.table
+                    %thead
+                        %tr
+                            %th{width: "10%"} Priority
+                            %th Channel
+                            %th{width: "10%"} Live
+                            %th{width: "10%"}
+                            %th{width: "10%"}
+                    %tbody
+                        - @streams.each do |stream|
+                            %tr{class: ('error' if stream.public)}
+                                %td= stream.priority
+                                %td= stream.channel
+                                %td
+                                    - if stream.public
+                                        Yes
+                                %td= link_to "Edit", edit_admin_stream_path(stream)
+                                %td= link_to "Delete", admin_stream_path(stream), method: 'delete'
+            = pagination

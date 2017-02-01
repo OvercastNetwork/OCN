@@ -1,0 +1,30 @@
+- content_for :ftitle do "My Subscriptions" end
+
+- content_for :main do
+    .forum-header.clearfix
+        - if @subscriptions.count > 0
+            %a.btn.btn-sm.btn-warning.pull-right{:style => "margin-right: 15px;", :href => clear_subscriptions_path, :data => {:method => 'post', :confirm => 'Are you sure you want to clear all of your subscriptions?'}} Clear Subscriptions
+        %h3
+            My Subscriptions
+    - if @subscriptions.count > 0
+        = pagination = paginate @subscriptions
+        .listing
+            .row.headings
+                .col-xs-11.col-sm-6{:style => "padding-left: 45px;"}
+                    Topic
+                .hidden-xs.col-sm-3.col-sm-offset-0
+                    Latest
+                .hidden-xs.col-sm-1.text-center
+                    Posts
+                .hidden-xs.col-sm-1.text-center
+                    Views
+            - @subscriptions.each do |sub|
+                - sub.destroy and next if sub.subscribable.nil? || !sub.subscribable.can_index?(current_user)
+                = render :partial => 'forem/topics/topic', :locals => {:topic => sub.subscribable, :show_forum => true, :unsubscribe_button => true, :simple_forum_style => false}
+        = pagination
+        %a.btn.btn-sm.btn-warning.pull-right{:style => "margin-right: 15px;", :href => clear_subscriptions_path, :data => {:method => 'post', :confirm => 'Are you sure you want to clear all of your subscriptions?'}} Clear Subscriptions
+    - else
+        %center
+            %p No topics to display.
+
+= render :file => 'forem/forums/index', :controller => "forums"

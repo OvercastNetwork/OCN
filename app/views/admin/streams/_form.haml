@@ -1,0 +1,8 @@
+= simple_form_for [:admin, @stream] do |f|
+    = f.input :priority, as: :float
+    = f.input :channel, as: :string
+    .checkbox
+        %label
+            = f.input_field :public, as: :boolean, required: false
+            Live?
+    = f.submit :class => "btn btn-primary"

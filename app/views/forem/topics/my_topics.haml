@@ -1,0 +1,16 @@
+- content_for :ftitle do @title end
+
+- content_for :main do
+    .forum-header
+        %h3= @title
+    - pagination = paginate @topics
+    - @topics = Forem::TopicsHelper.filter_topics(current_user, @topics)
+    - if @topics.count > 0
+        = pagination
+        = render :partial => 'forem/topics/listing', :locals => {:topics => @topics, :show_forum => true, :unsubscribe_button => false, :simple_forum_style => false}
+        = pagination
+    - else
+        %center
+            %p No topics to display.
+
+= render :file => 'forem/forums/index', :controller => 'forums'

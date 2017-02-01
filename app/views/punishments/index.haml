@@ -1,0 +1,30 @@
+- content_for :title do "Recent Punishments" end
+
+%section
+    .page-header
+        %h1
+            Recent Punishments
+            - if @punisher
+                %small
+                    issued by
+                    = @punisher
+    .row
+        .col-md-12
+            - pagination = paginate @punishments
+            - @punishments = PunishmentHelper.filter_punishments(current_user, @punishments)
+            - if @punishments.nil? || @punishments.count < 1
+                %center
+                    %p No punishments to display.
+            - else
+                - unless @displayed_statuses.empty?
+                    .pull-right{:style => 'margin-top: -15px; margin-bottom: 8px'}
+                        - if @displayed_statuses.include? 'inactive'
+                            %span.label.label-success Appealed
+                        - if @displayed_statuses.include? 'contested'
+                            %span.label.label-info Contested
+                        - if @displayed_statuses.include? 'automatic'
+                            %span.label.label-yellow Automatic
+                        - if @displayed_statuses.include? 'stale'
+                            %span.label.label-danger Stale
+                = render :partial => 'common/punishments', :locals => {:punishments => @punishments, :displayed_statuses => @displayed_statuses}
+                = pagination

@@ -1,0 +1,33 @@
+li.friendship {
+	text-align: center;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.friend-icon {
+	position: relative;
+	display: inline-block;
+}
+
+.friend-icon > a.label {
+	position: absolute;
+	right: 0;
+	top: 10px;
+}
+
+a.remove-friend {
+	position: relative;
+	float: right;
+	color: black;
+	top: -8px;
+	right: -8px;
+	height: 0;
+	margin: 0;
+	padding: 0;
+	display: none;
+}
+
+a.remove-friend:hover {
+	text-decoration: none;
+	color: #333;
+}

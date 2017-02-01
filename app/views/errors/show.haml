@@ -1,0 +1,5 @@
+- content_for(:title) { message }
+.jumbotron{style: "background: url(#{image_path('404.png')}); background-size: 940px 263px;"}
+    %div{style: "width: 200px; text-align: center; font-weight: bold; color: white; text-shadow: 2px 2px 5px black;"}
+        %div{style: "font-size: 90px; line-height: 90px;"}= status
+        %div{style: "font-size: 30px;"}= message

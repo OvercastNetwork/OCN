@@ -1,0 +1,13 @@
+- actions.each do |action|
+    .media
+        %a.media-left
+            = avatar_for(action.user, if action.comment.blank? then 24 else 56 end)
+        .media-body
+            %h4.media-heading
+                = render partial: 'common/rich', object: action.rich_description
+                - action_anchor = "action-#{action.id}"
+                %a{:href => '#' + action_anchor, :id => action_anchor, :style => 'text-decoration: none'}
+                    %small.pull-right{:rel => 'tooltip', :title => format_time(action.created_at), :data => {:placement => 'top', :container => 'body'}}
+                        = time_ago_in_words(action.created_at, false, :vague => true) + " ago"
+            - unless action.comment.blank?
+                %blockquote= safe_formatted_html(action.comment)

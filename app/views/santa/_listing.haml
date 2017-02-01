@@ -1,0 +1,47 @@
+.table-container
+    %table.table.table-striped
+        %thead
+            %tr
+                %th{:width => "100px"}
+                %th{:width => "50px"} Raindrops
+                %th User
+                %th{:width => "150px"} Package
+                %th Comment
+                - if user_signed_in?
+                    %th{:width => "100px"} Give
+        %tbody
+            - raindrops = raindrops_for(current_user.raindrops) if user_signed_in?
+            - listing.each do |gift|
+                %tr{:id => gift.id, :title => "Expires in " + time_ago_in_words(gift.expires_at)}
+                    %td
+                        %form{:action => santa_raindrops_path, :method => "post"}
+                            = token_tag nil
+                            - if user_signed_in?
+                                - if current_user != gift.user && !gift.purchased?
+                                    %select.form-control.input-sm{:name => "raindrops"}
+                                        %option{:disabled => true} Select Raindrops
+                                        - raindrops.each do |entry|
+                                            %option{:value => entry[:value]}= entry[:display]
+                                    %input{:type => "hidden", :name => "id", :value => gift.id}
+                                    %input.btn.btn-primary.btn-xs{:type => "submit",
+                                                                    :value => "Give Raindrops"}
+                            - else
+                                %input.btn.btn-primary.btn-xs{:type => "submit",
+                                                                :value => "Give Raindrops",
+                                                                :rel => "tooltip",
+                                                                :title => "Sign in to vote for this"}
+                    %td= number_with_delimiter(gift.raindrops)
+                    %td
+                        = avatar_for(gift.user, 32, link: true)
+                        %br
+                        = link_to_user(gift.user)
+                    %td
+                        = gift.package.name
+                        = gift.purchase.price_text if gift.giveable?
+                    %td= gift.comment
+                    %td
+                        - if user_signed_in? && !gift.purchased?
+                            - if current_user != gift.user
+                                %a.btn.btn-primary.btn-xs.final-give{href: shop_path(gift: gift)} Give
+                            - if current_user == gift.user || current_user.admin?
+                                %a.btn.btn-warning.btn-xs{:href => santa_path + "/" + gift.id, :data => {:method => "delete"}} Remove

@@ -1,0 +1,164 @@
+.col-md-6
+    %h4 Main Details
+    .form-horizontal
+        .form-group
+            %label.col-md-4.control-label ID
+            .col-md-7
+                = f.text_field :id, :disabled => true, :class => "form-control"
+        .form-group
+            %label.col-md-4.control-label Bungee Name
+            .col-md-7
+                = f.text_field :bungee_name, :class => "form-control"
+        .form-group
+            %label.col-md-4.control-label Priority
+            .col-md-7
+                = f.text_field :priority, :class => "form-control"
+        .form-group
+            %label.col-md-4.control-label Name
+            .col-md-7
+                = f.text_field :name, :class => "form-control"
+        .form-group
+            %label.col-md-4.control-label Description Key
+            .col-md-7
+                = f.text_field :description, :class => "form-control"
+        .form-group
+            %label.col-md-4.control-label Network
+            .col-md-7
+                = f.select :network, Server::Network.names, {}, :class => "form-control"
+        .form-group
+            %label.col-md-4.control-label Role
+            .col-md-7
+                = f.select :role, Server::Role.names, {}, :class => "form-control"
+        .form-group
+            %label.col-md-4.control-label Family
+            .col-md-7
+                = f.select :family, Family.imap_all.collect{|f| f.id}, {}, :class => "form-control"
+        .form-group
+            %label.col-md-4.control-label Game
+            .col-md-7
+                = f.select :game_id, [nil, *Game.all.map{|g| [g.name, g.id] }]
+        .form-group
+            %label.col-md-4.control-label Realms
+            .col-md-7
+                = f.text_field :realms, value: @server.realms.join(' '), :class => "form-control"
+                %span.help-block Separate multiple realms with spaces
+        .form-group
+            %label.col-md-4.control-label Startup Visibility
+            .col-md-7
+                = f.select :startup_visibility, Server::Visibility.names, {}, :class => "form-control"
+        .form-group
+            %label.col-md-4.control-label Current Visibility
+            .col-md-7
+                = f.select :visibility, Server::Visibility.names, {}, :class => "form-control"
+        .form-group
+            .checkbox.col-md-7.col-md-offset-4
+                %label
+                    = f.check_box :whitelist_enabled
+                    Whitelisted
+        .form-group
+            %label.col-md-4.control-label Operators
+            .col-md-7
+                = user_multi_select_field :server, :operator_ids, @server.operators
+        .form-group
+            %label.col-md-4.control-label Team ID
+            .col-md-7
+                = f.text_field :team_id, :class => "form-control"
+        .form-group
+            %label.col-md-4.control-label Tournament ID
+            .col-md-7
+                = f.text_field :tournament_id, :class => "form-control"
+        .form-group
+            %label.col-md-4.control-label Ensure
+            .col-md-7
+                = f.select :ensure, [nil, "running", "stopping", "starting"], {}, :class => "form-control"
+        .form-group
+            %label.col-md-4.control-label Nextgen Path
+            .col-md-7
+                = f.text_field :update_server_path, :class => "form-control"
+        .form-group
+            %label.col-md-4.control-label Rotation Path
+            .col-md-7
+                = f.text_field :rotation_file, :class => "form-control"
+        .form-group
+            %label.col-md-4.control-label Settings Profile
+            .col-md-7
+                = f.text_field :settings_profile, :class => "form-control"
+        .form-group
+            %label.col-md-4.control-label Resource Pack
+            .col-md-7
+                = f.select :resource_pack_id, [nil, *ResourcePack.all.map{|rp| [rp.name, rp.id] }], {}, :class => "form-control"
+        .form-group
+            .checkbox.col-md-7.col-md-offset-4
+                %label
+                    = f.check_box :resource_pack_fast_update
+                    Resource pack fast update
+        .form-group
+            .col-md-8.col-md-offset-4
+                .btn-group
+                    = f.submit "Save Changes", :class => "btn btn-primary"
+.col-md-6
+    %h4 Location
+    .form-horizontal
+        .form-group
+            %label.col-md-4.control-label Datacenter
+            .col-md-7
+                = f.text_field :datacenter, :class => "form-control"
+        .form-group
+            %label.col-md-4.control-label Box
+            .col-md-7
+                = f.text_field :box_id, :class => "form-control"
+        .form-group
+            %label.col-md-4.control-label IP
+            .col-md-7
+                = f.text_field :ip, value: @server.attributes['ip'], :class => "form-control"
+        .form-group
+            %label.col-md-4.control-label Port
+            .col-md-7
+                = f.text_field :port, :class => "form-control"
+    %h4 DNS
+    .form-horizontal
+        .form-group
+            .checkbox.col-md-7.col-md-offset-4
+                %label
+                    = f.check_box :dns_enabled
+                    Enabled
+        .form-group
+            .checkbox.col-md-7.col-md-offset-4
+                %label
+                    = f.check_box :dns_scheduled
+                    Scheduled
+        .form-group
+            %label.col-md-4.control-label Start
+            .col-md-7
+                = f.text_field :dns_window_start, value: @dns_window_start, autocomplete: 'off', :class => "form-control"
+        .form-group
+            %label.col-md-4.control-label Stop
+            .col-md-7
+                = f.text_field :dns_window_stop, value: @dns_window_stop, autocomplete: 'off', :class => "form-control"
+                %span.help-block HH[:MM[:SS]]
+        .form-group
+            %label.col-md-4.control-label Cloudflare ID
+            .col-md-7
+                = f.text_field :dns_record_id, :class => "form-control"
+        - if @dns_record
+            .form-group
+                %label.col-md-4.control-label DNS Record
+                .col-md-7
+                    %code
+                        = "#{@dns_record.name} #{@dns_record.ttl} #{@dns_record.type} #{@dns_record.content}"
+    %h4 Dynamics
+    .form-horizontal
+        = f.fields_for :dynamics do |dynamics|
+            .form-group
+                .checkbox.col-md-7.col-md-offset-4
+                    %label
+                        = dynamics.check_box :enabled, :checked => @server.dynamics["enabled"]
+                        Enabled
+            .form-group
+                %label.col-md-4.control-label Order
+                .col-md-7
+                    = dynamics.text_field :order, :value => @server.dynamics["order"], :class => "form-control"
+            .form-group
+                %label.col-md-4.control-label Size
+                .col-md-7
+                    = dynamics.text_field :size, :value => @server.dynamics["size"], :class => "form-control"

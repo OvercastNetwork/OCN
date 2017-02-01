@@ -1,0 +1,21 @@
+- exclude = [] unless local_assigns[:exclude]
+- engagements = {} unless local_assigns[:engagements]
+.table-container
+    %table.table.table-bordered.table-striped
+        %thead
+            %tr
+                %th{width: "15%"} When
+                %th Server
+                - unless exclude.include?(:map)
+                    %th Map
+                %th{width: "12%"} Length
+                %th{width: "12%"} Participants
+                %th{width: "20%"}
+                    - if engagements.empty?
+                        Winner
+                    - else
+                        Result
+        %tbody
+            - matches.each do |match|
+                = render partial: 'matches/row', locals: {match: match, exclude: exclude, engagement: engagements[match]}
+= paginate matches if matches.respond_to? :current_page

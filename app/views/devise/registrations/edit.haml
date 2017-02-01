@@ -1,0 +1,220 @@
+%section
+    .row
+        .col-md-4
+            %h2 Login
+            %hr
+            = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f|
+                .form-group
+                    = f.label :email
+                    = f.email_field :email, :disabled => (@disabled.include? :email), :class => 'form-control'
+                .form-group
+                    = f.label :password, "New password"
+                    = f.password_field :password, :disabled => (@disabled.include? :password), :class => 'form-control'
+                .form-group
+                    = f.label :password_confirmation, "New password confirmation"
+                    = f.password_field :password_confirmation, :disabled => (@disabled.include? :password), :class => 'form-control'
+                .form-group
+                    = f.label :current_password
+                    = f.password_field :current_password, :disabled => (@disabled.include? :password), :class => 'form-control'
+                .form-group
+                    = f.submit "Update", :class => "btn btn-primary"
+        .col-md-4
+            %h2 Personal
+            %hr
+            = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f|
+                .form-group
+                    = f.label :gender, "Gender"
+                    = f.select :gender, [nil, "Male", "Female"], { :disabled => (@disabled.include? :gender) }, :class => 'form-control'
+                .form-group
+                    = f.label :location, "Location"
+                    = f.text_field :location, :disabled => (@disabled.include? :location), :class => 'form-control'
+                .form-group
+                    = f.label :occupation, "Occupation"
+                    = f.text_field :occupation, :disabled => (@disabled.include? :occupation), :class => 'form-control'
+                .form-group
+                    = f.label :interests, "Interests"
+                    = f.text_field :interests, :disabled => (@disabled.include? :interests), :class => 'form-control'
+                .form-group
+                    = f.submit "Update", :class => "btn btn-primary"
+        .col-md-4
+            %h2 Settings
+            %hr
+            = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f|
+                .checkbox
+                    = f.label :forem_auto_subscribe do
+                        = f.check_box :forem_auto_subscribe, :disabled => (@disabled.include? :forem_auto_subscribe)
+                        Subscribe to topics when I reply
+                .checkbox
+                    = f.label :quote_notification do
+                        = f.check_box :quote_notification, :disabled => (@disabled.include? :quote_notification)
+                        Alert me when my posts are quoted
+                .checkbox
+                    = f.label :allow_package_gifts do
+                        = f.check_box :allow_package_gifts, :disabled => (@disabled.include? :allow_package_gifts)
+                        Accept shop gifts from other users
+                .checkbox
+                    = f.label :receive_requests do
+                        = f.check_box :receive_requests, :disabled => (@disabled.include? :receive_requests)
+                        Accept friend requests from other users
+                .checkbox
+                    = f.label :display_server do
+                        = f.check_box :display_server, :disabled => (@disabled.include? :display_server)
+                        Show the server I'm playing on in my profile
+                .form-group{style: "margin-top: 16px;"}
+                    = f.label :time_zone_name, 'Time Zone'
+                    = f.time_zone_select :time_zone_name, TZInfo::Timezone.all.sort, { :model => TZInfo::Timezone, :disabled => (@disabled.include? :time_zone_name) }, :class => 'form-control'
+                .form-group
+                    = f.submit "Update", :class => "btn btn-primary"
+    .row
+        .col-md-12
+            %h2 Connected Accounts
+            %hr
+            .row
+                .col-md-2.col-xs-6.account-label
+                    .text-right
+                        - if current_user.find_oauth2_token_for(:youtube)
+                            .label.label-success Connected
+                        - else
+                            .label.label-default Not Connected
+                .col-md-2.col-xs-6.account-logo
+                    %a{href: oauth2_authorize_path(service: 'youtube')}
+                        %img{src: image_path("youtube120.png")}
+                .col-md-8
+                    - if current_user.find_oauth2_token_for(:youtube)
+                        = render partial: 'channels/list', locals: {channels: current_user.channels_for(:youtube), first_index: nil}
+                    - else
+                        %p
+                            Click the logo to connect your YouTube account and display a link to your channel in your
+                            = succeed "." do
+                                %a{href: user_path(current_user)} profile
+                        %p
+                            If you are a member of the
+                            %a{href: letsplay_path} Let's Play
+                            group, you will also get a YouTube badge, and your channel will be listed on the
+                            %a{href: channels_path} channels
+                            page.
+    .row
+        .col-md-12
+            %h2 Other Accounts
+            %hr
+            %p
+                These accounts will be linked from your
+                = succeed "," do
+                    %a{href: user_path(current_user)} profile
+                but otherwise do nothing special (yet).
+
+    = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f|
+        .row
+            .form-group.col-md-4
+                = f.label :public_email, "Public Email"
+                = f.text_field :public_email, :disabled => (@disabled.include? :public_email), :class => 'form-control'
+            .form-group.col-md-4
+                = f.label :skype, "Skype"
+                = f.text_field :skype, :disabled => (@disabled.include? :skype), :class => 'form-control'
+            .form-group.col-md-4
+                = f.label :twitter, "Twitter"
+                = f.text_field :twitter, :disabled => (@disabled.include? :twitter), :class => 'form-control'
+        .row
+            .form-group.col-md-4
+                = f.label :facebook, "Facebook"
+                = f.text_field :facebook, :disabled => (@disabled.include? :facebook), :class => 'form-control'
+            .form-group.col-md-4
+                = f.label :steam, "Steam"
+                = f.text_field :steam, :disabled => (@disabled.include? :steam), :class => 'form-control'
+            .form-group.col-md-4
+                = f.label :twitch, "Twitch"
+                = f.text_field :twitch, :disabled => (@disabled.include? :twitch), :class => 'form-control'
+        .row
+            .form-group.col-md-4
+                = f.label :github, "GitHub"
+                = f.text_field :github, :disabled => (@disabled.include? :github), :class => 'form-control'
+            .form-group.col-md-4
+                = f.label :reddit, "Reddit"
+                = f.text_field :reddit, :disabled => (@disabled.include? :reddit), :class => 'form-control'
+            .form-group.col-md-4
+                = f.label :discord, "Discord"
+                = f.text_field :discord, :disabled => (@disabled.include? :discord), :class => 'form-control'
+        .row
+            .form-group.col-md-8
+                = f.submit "Update", :class => "btn btn-primary", :style => "margin-top: 28px;"
+    - if current_user.can_edit_verified_profile?
+        .row
+            .col-md-12
+                %h2 Verified Info
+                %hr
+                %p
+                    These fields affect site functionality in various ways, and are trusted to be accurate.
+                    Only certain staff members have access these.
+        = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f|
+            .row
+                .form-group.col-md-4
+                    = f.label :external_emails, "External emails (one per line)"
+                    %p Used to identify you in various external places, such as Git commits.
+                    = f.text_area :external_emails, class: 'form-control', style: 'height: 200px', value: resource.external_emails.map{|e| "#{e}\n"}.join
+                .col-md-4
+                    .form-group
+                        = f.label :github_verified, "GitHub username"
+                        %p
+                            Used to identify you on
+                            %a{href: 'https://github.com/'} GitHub
+                        = f.text_field :github_verified, class: 'form-control'
+                    .form-group
+                        = f.label :gitlab_verified, "GitLab username"
+                        %p
+                            Used to identify you on our internal
+                            %a{href: "https://code.#{ORG::DOMAIN}/"} GitLab
+                        = f.text_field :gitlab_verified, class: 'form-control'
+                .col-md-4
+            .row
+                .form-group.col-md-8
+                    = f.submit "Update", class: "btn btn-primary", style: "margin-top: 28px;"
+    .row
+        .col-md-12
+            %h2 Profile
+            %hr
+            = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f|
+                %p
+                    Use this box to add custom content to the bottom of your
+                    = succeed "." do
+                        %a{href: user_path(current_user)} profile
+                    You can use HTML and put anything in here, with a few exceptions:
+                    %ul
+                        %li
+                            Follow our general
+                            %a{href: rules_path} rules
+                            for website behavior.
+                        %li Don't try to break out of the box that contains the content.
+                    %strong Failure to follow these rules will result in your profile being cleared and permanently locked.
+                .form-group
+                    = f.text_area :about, :style => "height: 200px", :class => "emojify form-control", :disabled => (@disabled.include? :about)
+                .form-group
+                    = f.submit "Update", :class => "btn btn-primary"
+    - if current_user.can_auth_with_key?
+        .row
+            .col-md-12
+                %h2 API Key
+                %hr
+        - if current_user.has_api_key?
+            .row
+                .col-md-3
+                    %a.btn.btn-warning{href: generate_api_key_path, data: {method: 'POST', confirm: "Replace your current API key?"}}
+                        Replace API key
+                .col-md-9
+                    Replace your current API key with a newly generated one.
+            .row
+                .col-md-12
+                    &nbsp;
+            .row
+                .col-md-3
+                    %a.btn.btn-danger{href: revoke_api_key_path, data: {method: 'POST', confirm: "Permanently disable your API key?"}}
+                        Revoke API key
+                .col-md-9
+                    Permanently disable your current API key.
+                    You will have to generate a new key to use the API again.
+        - else
+            .row
+                .col-md-3
+                    %a.btn.btn-primary{href: generate_api_key_path, data: {method: 'POST'}}
+                        Generate API key
+                .col-md-9
+                    Generate a secret key that you can use to access the API.

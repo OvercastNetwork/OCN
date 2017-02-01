@@ -1,0 +1,25 @@
+%section
+    .row
+        .col-md-12
+            %h2 API Key
+            %hr
+            %p
+                %h4
+                    Your new API key is
+                    %input{type: 'text',
+                           value: @api_key,
+                           disabled: true,
+                           autocomplete: false,
+                           style: "width: 370px; color: red; font-family: monospace;"}
+            %p
+                This key can be used to access the public API with your identity, so
+                %strong store it somewhere safe and private.
+            %p
+                If your key is ever compromised, generate a new one from the account page.
+            %p.alert.alert-warning
+                %strong Warning!
+                Once you leave this page,
+                %strong it is not possible to recover the key.
+                If you lose it, you will have to generate a new one.
+            %p
+                %a{href: edit_user_registration_path} Return to Account Page

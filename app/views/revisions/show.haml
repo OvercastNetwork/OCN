@@ -1,0 +1,54 @@
+- content_for :title do "Revisions" end
+
+%section
+    .page-header
+        %h1
+            Revisions
+    .row
+        .col-md-12
+            %ul.nav.nav-tabs
+                - @repositories.each do |project|
+                    %li{:class => @repository == project ? "active" : ""}
+                        %a{:href => revision_path(project.id)}= project.title
+            - if @failed
+                .alert.alert-warning
+                    %strong Repository is down
+                    Revisions will appear again when the repository comes back online
+            - if @repository.open?
+                .alert.alert-info
+                    %strong This repository is open source
+                    You can
+                    %a{:href => @repository.public_url} fork it
+
+            != @repository.description_html
+
+            .table-container
+                %table.table.table-bordered
+                    %thead
+                        %tr
+                            %th{:width => "5%"} #
+                            %th{:width => "10%"} Revision
+                            %th{:width => "10%"} Author
+                            %th{:width => "58%"} Description
+                            %th{:width => "17%"} When
+                    %tbody
+                        - @revs.each_with_index do |rev, i|
+                            %tr{ :class => rev.deployed? ? 'success' : nil,
+                                 :rel => rev.deployed? ? 'tooltip' : nil,
+                                 :title => rev.deployed? ? 'Current deployed revision' : nil,
+                                 :data => rev.deployed? ? {:placement => 'left', :container => 'body'} : nil}
+                                %td
+                                    = ((@page - 1) * 20) + (i + 1)
+                                %td
+                                    = rev.sha_brief
+                                %td
+                                    - if rev.author
+                                        = link_to_user(rev.author)
+                                    - else
+                                        = rev.author_name
+                                %td
+                                    = render_commit_message(rev.message)
+                                %td{:rel => 'tooltip', :title => format_time(rev.date), :data => {:placement => 'left', :container => 'body'}}
+                                    = time_ago_in_words(rev.date, false, :vague => true)
+                                    ago
+            = paginate_revs

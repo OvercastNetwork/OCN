@@ -1,0 +1,14 @@
+%section
+    .page-header
+        %h1 Resend Confirmation Instructions
+    .row
+        .col-md-8
+            = devise_error_messages! unless resource.nil?
+            = form_for(resource, :as => resource_name, :url => confirmation_path(resource_name), :html => { :method => :post }, :authenticity_token => false) do |f|
+                %div
+                    = f.label :email
+                    = f.email_field :email
+                %div
+                    = f.submit "Resend confirmation instructions", :class => "btn btn-primary"
+        .col-md-4
+            = render :partial => "devise/shared/links"

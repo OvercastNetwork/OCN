@@ -1,0 +1,37 @@
+- content_for :title do "New Report - " + @user.username end
+
+%section
+    .page-header
+        %h1
+            Reporting
+            = @user.username
+    .row
+        .col-md-12
+            .alert.alert-info
+                %strong Confidentiality Agreement
+                By creating this report you acknowledge that your evidence may be shared with
+                = succeed '.' do
+                    = @user.username
+                While we will not tell
+                = @user.username
+                you created the report, if there is revealing information in your evidence
+                = @user.username
+                may know you created the report.
+            %form.form-horizontal{:method => :post, :action => reports_path, :id => 'reportForm'}
+                = token_tag nil
+                %input{:type => "hidden", :name => "user_id", :value => @user.id}
+                .form-group
+                    %label.control-label.col-md-3 What rules has #{@user.username} broken?
+                    .col-md-9
+                        %textarea.form-control{:name => "report[rules]", :rows => 3, :required => ''}
+                .form-group
+                    %label.control-label.col-md-3 What evidence do you have? One piece per line.
+                    .col-md-9
+                        %textarea.form-control{:name => "report[evidence]", :rows => 3, :required => ''}
+                .form-group
+                    %label.control-label.col-md-3 Any other miscellaneous information?
+                    .col-md-9
+                        %textarea.form-control{:name => "report[misc]", :rows => 3, :placeholder => "Time occurred, server occurred on, etc."}
+                .form-group
+                    .col-md-9.col-md-offset-3
+                        %input#submit.btn.btn-primary{:type => "submit", :value => "File Report", :data => {'disable-with' => 'Saving...'}}

@@ -1,0 +1,155 @@
+%script{src: "https://www.google.com/jsapi"}
+:css
+    #google-visualization-errors-all-3 {
+        display: none !important;
+    }
+
+    #throbber {
+        position: relative;
+        height: 0;
+        z-index: 1;
+        left: 452px;
+        top: 172px;
+    }
+
+    #chart {
+        width: 960px;
+        height: 400px;
+    }
+
+    #slider {
+        width: 960px;
+        height: 60px;
+    }
+
+:javascript
+    google.load('visualization', '1.1', {'packages':['line', 'controls']});
+    google.setOnLoadCallback(initChart);
+
+    var CHARTS = ['revenue', 'players'];
+
+    function queryChart(params) {
+        params.charts = CHARTS;
+        $.ajax({
+            type: 'POST',
+            url: 'charts/data',
+            data: $.param(params),
+            success: function(response) {
+                var data = new google.visualization.DataTable();
+                $(response.columns).each(function() {
+                    data.addColumn(this.type, this.name);
+                });
+
+                $(response.rows).each(function() {
+                    this[0] = new Date(Date.parse(this[0]));
+                    data.addRow(this);
+                });
+
+                if(params.success) {
+                    params.success(data);
+                }
+            }
+        });
+    }
+
+    function initChart() {
+        var chart = new google.charts.Line(document.getElementById('chart'));
+        var chartOptions = {
+            //interpolateNulls: true,
+            width: 960,
+            height: 400,
+            series: {
+                0: {axis: "Dollars"},
+                1: {axis: "Players"}
+            },
+            axes: {
+                y: {
+                    Dollars: {
+                        label: "Dollars",
+                    },
+                    Players: {
+                        label: "Players",
+                    },
+                    all: {
+                        range: {
+                            min: 0
+                        }
+                    }
+                }
+            }
+        };
+
+        google.visualization.events.addListener(chart, 'ready', function(ev) {
+            $('#throbber').hide();
+        });
+
+        function refreshChart(begin, end) {
+            $('#throbber').show();
+            setTimeout(function() {
+                queryChart({
+                    begin: begin,
+                    end: end,
+                    slices: 300,
+                    success: function(data) {
+                        chart.draw(data, chartOptions);
+                    }
+                });
+            }, 0);
+        }
+
+        var dummyChart = new google.visualization.ChartWrapper({
+            chartType: 'Line',
+            containerId: 'dummy_chart',
+            options: {
+                width: 0,
+                height: 0
+            }
+        });
+
+        var slider = new google.visualization.ControlWrapper({
+            controlType: 'google.visualization.ChartRangeFilter',
+            containerId: 'slider',
+            options: {
+                filterColumnLabel: 'Time',
+                ui: {
+                    chartType: 'LineChart',
+                    chartOptions: {
+                        chartArea: {
+                            width: 960,
+                            height: 60
+                        }
+                    }
+                }
+            }
+        });
+
+        var dashboard = new google.visualization.Dashboard(document.getElementById('slider'));
+        dashboard.bind(slider, dummyChart);
+
+        google.visualization.events.addListener(slider, 'statechange', function(ev) {
+            if(!ev.inProgress) {
+                var state = slider.getState();
+                refreshChart(state.range.start, state.range.end);
+            }
+        });
+
+
+        $(document).ready(function() {
+            $('#throbber').show();
+            queryChart({
+                slices: 300,
+                success: function(data) {
+                    dashboard.draw(data);
+                    chart.draw(data, chartOptions);
+                }
+            });
+        });
+    }
+%section
+    .row
+        .col-md-12
+            #throbber
+                %img{src: asset_path("throbber.png")}
+            #chart
+            #slider
+            #dummy_chart{style: "display: none"}
