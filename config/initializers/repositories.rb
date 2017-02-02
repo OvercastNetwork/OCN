@@ -1,5 +1,12 @@
 Repository.define do
     repositories provider: :github, namespace: 'OvercastNetwork' do
+        repository :data do
+            klass           Repository::Data
+            repo            'Data'
+            branch          'master'
+            services        [:data]
+        end
+
         visible? true do
             repository :plugins do
                 title           "ProjectAres"
