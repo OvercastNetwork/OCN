@@ -45,7 +45,7 @@ module UserHelper
         end
 
         def avatar_url_for(user, size, local: true)
-            "#{avatar_url_prefix_for(user, local: local)}/#{size}@2x.png"
+            "#{avatar_url_prefix_for(user, local: local)}?size=#{size}"
         end
 
         def user_path?(path)
