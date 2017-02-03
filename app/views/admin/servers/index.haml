@@ -58,7 +58,8 @@
                                 %th{width: 70} Box
                                 %th{width: 160}= bungee ? "IP" : "Token"
                                 %th{width: 160} Name
-                                %th{width: 70} Nextgen
+                                - if @nextgen_repo
+                                    %th{width: 70} Nextgen
                                 %th{width: 70}= bungee ? "Bungee" : "Bukkit"
                                 %th{width: 70} Plugins
                                 %th{width: 70} Players
@@ -83,7 +84,8 @@
                                     %td= server.box_id
                                     %td= bungee ? server.ip : server.bungee_name
                                     %td{class: ('status-ok' if server.visibility == Server::Visibility::PUBLIC)}= server.name
-                                    %td= revision(server.deployed_revision) if server.online?
+                                    - if @nextgen_repo
+                                        %td= revision(server.deployed_revision) if server.online?
                                     %td= revision(server.deployed_application_revision) if server.online?
                                     %td= revision(server.deployed_revision('Plugins')) if server.online?
                                     %td= server.num_online
