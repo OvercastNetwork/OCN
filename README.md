@@ -102,7 +102,8 @@ You can inspect fields of the server object with `server.field`.
 To see the ID of the server, type `server.id.to_s`.
 This 24-digit hex number is the primary key of the server in the database, and will end up in the `config.yml` file for the API plugin.
 
-Next, setup a [BungeeCord](https://github.com/OvercastNetwork/BungeeCord) server with the API and Commons plugins from the [ProjectAres](https://github.com/OvercastNetwork/ProjectAres) repo
+Next, setup a [BungeeCord](https://github.com/OvercastNetwork/BungeeCord) server
+with the API and Commons plugins from the [ProjectAres](https://github.com/OvercastNetwork/ProjectAres) repo
 (make sure to use our custom BungeeCord fork, the upstream version won't work).
 In the `config.yml` file for the API plugin, fill in the top section to match the server record you just created:
 
@@ -138,7 +139,6 @@ If this is the only lobby in the database, you can quickly retrieve it with `Ser
 
 Setup a [SportBukkit](https://github.com/OvercastNetwork/SportBukkit) instance with the appropriate [plugins](https://github.com/OvercastNetwork/ProjectAres) for a lobby.
 In the `config.yml` for the API plugin, enter the details from the lobby server record.
-You will also have to enter the server ID in the ProjectAres `config.yml` file, along with connection details for MongoDB.
 
 Start the server with a shell command similar to this:
 
