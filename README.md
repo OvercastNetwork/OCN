@@ -156,14 +156,9 @@ To create the initial admin user for the website, type this command into rails c
 		User.without_attr_protection {
 				User.create!(email: 'your@email', username: 'your_username', 
 				password: 'password', password_confirmation: 'password', 
-				admin: true, "uuid" 'uuid')
+				admin: true, "uuid" 'uuid').confirm!
 		}
 
-Make sure your user has been confirmed by running
-
-	u = User.first
-	u.confirm!
-	u.save!	
 
 ## Create a PGM instance
 
