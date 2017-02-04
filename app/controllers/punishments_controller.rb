@@ -132,20 +132,6 @@ class PunishmentsController < ApplicationController
 
         return redirect_to_back punishment_path(@punishment), :alert => 'You do not have permission to edit this punishment.' unless @can_delete || !@editable.empty?
 
-        if @editable.include?(:expire)
-            @expires = Hash.new
-            @punishment.expire = Time.at(0) if @punishment.expire == nil
-
-            @days_total = (@punishment.expire - @punishment.date).in_days.to_i
-            @days_left = (@punishment.expire - Time.now).in_days.to_i
-
-            @expires.merge!({"Never - Permanent ban" => nil})
-
-            60.downto(-60) do |n|
-                @expires.merge!({n.to_s + " day" + (n == 1 ? "" : "s") + " from now - " + (n - @days_left + @days_total).to_s + " day ban" => @punishment.expire - (@days_left - n).days})
-            end
-        end
-
         if @editable.include?(:type)
             @issueable_types = Punishment::Type::ALL.select {|type| Punishment.can_issue?(type, current_user) }
             @editable.delete(:type) if @issueable_types.empty?

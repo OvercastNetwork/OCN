@@ -72,8 +72,8 @@ module UserHelper
             user.html_color
         end
 
-        PROFILE_URL_REGEX = %r<http(?:s?)://oc\.tc/(?:users/)?(\w{1,16})\b>
-        AVATAR_URL_REGEX = %r<http(?:s?)://avatar\.oc\.tc/(\w{1,16})\b>
+        PROFILE_URL_REGEX = %r<http(?:s?)://#{Regexp.quote(ORG::DOMAIN)}/(?:users/)?(\w{1,16})\b>
+        AVATAR_URL_REGEX = %r<http(?:s?)://avatar\.#{Regexp.quote(ORG::DOMAIN)}/(\w{1,16})\b>
 
         def transform_user_tags(text)
             text.gsub(/\[(user|avatar|avatar[_-]user):(\w{1,16}|[0-9a-fA-F-]{32,})\]/) do |tag|
@@ -88,7 +88,7 @@ module UserHelper
         end
 
         def transform_profile_urls(text)
-            text.gsub(%r<http(?:s?)://oc\.tc/(?:users/)?(\w{1,16})\b>).each do |url|
+            text.gsub(%r<http(?:s?)://#{Regexp.quote(ORG::DOMAIN)}/(?:users/)?(\w{1,16})\b>).each do |url|
                 begin
                     username = $1
                     uri = URI.parse(url)
@@ -104,7 +104,7 @@ module UserHelper
         end
 
         def transform_avatar_url_prefixes(text)
-            text.gsub(%r<http(?:s?)://avatar\.oc\.tc/(\w{1,16})\b>).each do |url|
+            text.gsub(%r<http(?:s?)://avatar\.#{Regexp.quote(ORG::DOMAIN)}/(\w{1,16})\b>).each do |url|
                 username = $1
                 if user = User.by_past_username(username)
                     yield user

@@ -1,6 +1,7 @@
 FactoryGirl.define do
     factory :punishment do
         type Punishment::Type::BAN
+        playing_time_ms 0
         sequence(:reason)       {|n| "Reason for punishment #{n}" }
         sequence(:punished)     {|n| create(:user, username: "BadPlayer#{n}") }
         sequence(:punisher)     {|n| create(:user, username: "Moderator#{n}") }

@@ -36,33 +36,33 @@ class PunishmentTest < ActiveSupport::TestCase
         guilty = create(:user)
         create(:kick, punished: guilty)
 
-        assert_equal (Type::BAN, 7.days), Punishment.calculate_next_game(guilty)
+        assert_equal [Punishment::Type::BAN, 7.days], Punishment.calculate_next_game(guilty)
 
         create(:ban, punished: guilty)
 
-        assert_equal (Type::BAN, nil), Punishment.calculate_next_game(guilty)
+        assert_equal [Punishment::Type::BAN, nil], Punishment.calculate_next_game(guilty)
     end
 
     test "forum punish sequence" do
         guilty = create(:user)
 
-        assert_equal (Type::FORUM_WARN, nil), Punishment.calculate_next_forum(guilty)
+        assert_equal [Punishment::Type::FORUM_WARN, nil], Punishment.calculate_next_forum(guilty)
 
         create(:forum_warn, punished: guilty)
 
-        assert_equal (Type::FORUM_WARN, nil), Punishment.calculate_next_forum(guilty)
+        assert_equal [Punishment::Type::FORUM_WARN, nil], Punishment.calculate_next_forum(guilty)
 
         create(:forum_warn, punished: guilty)
 
-        assert_equal (Type::FORUM_BAN, 7.days), Punishment.calculate_next_forum(guilty)
+        assert_equal [Punishment::Type::FORUM_BAN, 7.days], Punishment.calculate_next_forum(guilty)
 
         create(:forum_ban, punished: guilty)
 
-        assert_equal (Type::FORUM_BAN, 30.days), Punishment.calculate_next_forum(guilty)
+        assert_equal [Punishment::Type::FORUM_BAN, 30.days], Punishment.calculate_next_forum(guilty)
 
         create(:forum_ban, punished: guilty)
 
-        assert_equal (Type::FORUM_BAN, nil), Punishment.calculate_next_forum(guilty)
+        assert_equal [Punishment::Type::FORUM_BAN, nil], Punishment.calculate_next_forum(guilty)
     end
 
     test "punish sequence stale" do
@@ -71,11 +71,11 @@ class PunishmentTest < ActiveSupport::TestCase
 
             create(:kick, punished: guilty)
 
-            assert_equal (Type::BAN, 7.days), Punishment.calculate_next_game(guilty)
+            assert_equal [Punishment::Type::BAN, 7.days], Punishment.calculate_next_game(guilty)
 
             Timecop.freeze Punishment::STALE_REAL_TIME + 1.day do
                 add_playing_time guilty, ( Punishment::STALE_PLAY_TIME + 1.second )
-                assert_equal (Type::KICK, nil), Punishment.calculate_next_game(guilty)
+                assert_equal [Punishment::Type::KICK, nil], Punishment.calculate_next_game(guilty)
             end
         end
     end
@@ -87,10 +87,10 @@ class PunishmentTest < ActiveSupport::TestCase
             create(:forum_warn, punished: guilty)
             create(:forum_warn, punished: guilty)
 
-            assert_equal (Type::FORUM_BAN, 7.days), Punishment.calculate_next_forum(guilty)
+            assert_equal [Punishment::Type::FORUM_BAN, 7.days], Punishment.calculate_next_forum(guilty)
 
             Timecop.freeze Punishment::FORUM_STALE_TIME + 1.day do
-                assert_equal (Type::FORUM_WARN, nil), Punishment.calculate_next_forum(guilty)
+                assert_equal [Punishment::Type::FORUM_WARN, nil], Punishment.calculate_next_forum(guilty)
             end
         end
     end

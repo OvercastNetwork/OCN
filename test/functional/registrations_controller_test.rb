@@ -10,7 +10,7 @@ class RegistrationsControllerTest < ActionController::TestCase
         get :new
 
         assert_response :success
-        assert_select '#token', text: /[0-9a-z]{12}\.register\.oc\.tc/
+        assert_select '#token', text: /[0-9a-z]{12}\.register/
     end
 
     test "send email confirmation" do

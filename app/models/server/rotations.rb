@@ -19,8 +19,7 @@ class Server
 
             # Lines from the rotation file, if any
             attr_cached :rotation_entries do
-                fn = rotation_path
-                if File.exists?(fn)
+                if fn = rotation_path and File.exists?(fn)
                     File.read(fn).lines
                 else
                     []
@@ -39,7 +38,9 @@ class Server
         end # included do
 
         def rotation_path
-            Repository[:rotations].join_path(rotation_file || File.join(datacenter, name))
+            if repo = Repository[:rotations]
+                repo.join_path(rotation_file || File.join(datacenter, name))
+            end
         end
 
         def rotation_map_ids
