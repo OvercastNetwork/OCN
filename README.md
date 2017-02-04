@@ -151,22 +151,18 @@ You should now be able to connect to your Bungee server and spawn in the lobby.
 
 ## Create an admin user
 
-Start the standard user [registration process](http://localhost:3000/users/sign_up) through the website running on your local machine, using a working email address.
-In your `/etc/hosts` file, alias the registration hostname to your local machine e.g.
+To create the initial admin user for the website, type this command into rails console, replacing the data fields with your account info. Make sure to replace the UUID field with the UUID of your Minecraft account, which you can find [here](https://mcuuid.net/)
 
-    127.0.0.1 g2gadqho5zr8.register.some.network
-
-Connect to that hostname in Minecraft, and you should be kicked with a successful registration message, and receive a confirmation email shortly after that.
-Edit the confirmation URL in the email with your local web server e.g. `http://localhost:3000/confirm/zqr2QKH4WwnRYrip_aZs`.
-Visit that URL and enter a password (doesn't have to be secure).
-
-Now, you have a user with normal permissions. To make this an admin user, enter this in the Rails shell:
-
-    user = User.by_username('MyUsername')
-    user.admin = true
-    user.save!
-
-You should now see a complete admin menu on the website.
+	User.without_attr_protection {
+        User.create!(
+            email: 'your@email',
+            username: 'your_username',
+            password: 'password',
+            password_confirmation: 'password',
+            admin: true,
+            uuid: 'uuid'
+        ).confirm!
+    }
 
 ## Create a PGM instance
 
