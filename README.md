@@ -154,15 +154,15 @@ You should now be able to connect to your Bungee server and spawn in the lobby.
 To create the initial admin user for the website, type this command into rails console, replacing the data fields with your account info. Make sure to replace the UUID field with the UUID of your Minecraft account, which you can find [here](https://mcuuid.net/)
 
 	User.without_attr_protection {
-			User.create!(
-			email: 'your@email', 
-			username: 'your_username', 
-			password: 'password', 
-			password_confirmation: 'password', 
-			admin: true, 
-			"uuid": 'uuid').confirm!
-	}
-
+                User.create!(
+                    email: 'your@email',
+                    username: 'your_username',
+                    password: 'password',
+                    password_confirmation: 'password',
+                    admin: true,
+                    uuid: 'uuid'
+                ).confirm!
+            }
 
 ## Create a PGM instance
 
