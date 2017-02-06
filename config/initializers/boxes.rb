@@ -3,8 +3,8 @@ case Rails.env
         Box.define do
             box Box.local_id do
                 hostname Socket.gethostname
-                workers [RepoWorker, CouchWorker, ServerReportWorker, ModelSearchWorker,
-                         ChannelWorker, EngagementWorker, ChartWorker, TaskWorker, MatchMaker]
+                workers [RepoWorker, CouchWorker, (ServerReportWorker if Dog.client), ModelSearchWorker,
+                         ChannelWorker, EngagementWorker, ChartWorker, TaskWorker, MatchMaker].compact
                 services [:octc]
             end
         end
@@ -28,7 +28,7 @@ case Rails.env
                     end
 
                     box 'box02' do
-                        workers [RepoWorker, TaskWorker, ServerReportWorker, ModelSearchWorker, MatchMaker]
+                        workers [RepoWorker, TaskWorker, (ServerReportWorker if Dog.client), ModelSearchWorker, MatchMaker].compact
                         services [:octc]
                     end
 

@@ -7,11 +7,13 @@ Raven.configure do |config|
 
     config.async = Raven.method(:send_event_async)
 
+    # Un-comment these to actually use Raven
     case Rails.env
-        when 'development'
-            config.dsn = '...'
-        when 'production', 'staging'
-            config.dsn = '...'
+        # when 'development'
+        #     config.dsn = '...'
+        # when 'production', 'staging'
+        #     config.dsn = '...'
+        when ''
         else
             config.environments = []
     end
