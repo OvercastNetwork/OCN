@@ -5,7 +5,7 @@ class User
 
         USERNAME_REGEX = /\A([a-zA-Z0-9_]{1,16}|[0-9a-f]{24})\z/
         USERNAME_NORMALIZED_REGEX = /\A([a-z0-9_]{1,16}|[0-9a-f]{24})\z/
-        UUID_REGEX = /\A[0-9a-f]{32}\z/
+        UUID_REGEX = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/
         PLAYER_ID_REGEX = /\A([a-zA-Z0-9_ ]{1,16}|_[0-9a-f]{24})\z/ # some old usernames have spaces
 
         class MojangUuidValidator < ActiveModel::EachValidator
@@ -13,7 +13,7 @@ class User
                 if uuid !~ UUID_REGEX
                     user.errors.add(attr, "is not a valid UUID")
                 else
-                    v = UUIDTools::UUID.parse_hexdigest(uuid).version
+                    v = UUIDTools::UUID.parse(uuid).version
                     v == 4 or user.errors.add(attr, "must be version 4 (was version #{v})")
                 end
             end
@@ -144,14 +144,19 @@ class User
 
             def normalize_uuid(uuid)
                 if uuid.is_a? UUIDTools::UUID
-                    uuid.hexdigest
-                elsif uuid
-                    uuid.gsub(/-/,'').downcase
+                    uuid.to_s
+                elsif uuid =~ /\A\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/
+                    uuid.downcase
+                elsif uuid =~ /\A(\h{8})(\h{4})(\h{4})(\h{4})(\h{12})\z/
+                    "#{$1}-#{$2}-#{$3}-#{$4}-#{$5}".downcase
+                else
+                    # Validation will catch it
+                    uuid
                 end
             end
 
             def uuid_invalid_reason(uuid)
-                unless UUIDTools::UUID.parse_hexdigest(uuid).version == 4
+                unless UUIDTools::UUID.parse(uuid).version == 4
                     "Not a v4 UUID (probably generated for an offline login)"
                 end
             end
@@ -190,7 +195,7 @@ class User
         end
 
         def uuid_obj
-            UUIDTools::UUID.parse_hexdigest(self.uuid)
+            UUIDTools::UUID.parse(self.uuid)
         end
 
         # The API client can deserialize this into a tc.oc.api.PlayerId

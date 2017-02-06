@@ -40,8 +40,8 @@ class UserTest < ActiveSupport::TestCase
     end
 
     test "uuid normalized on save" do
-        user = User.create!(username: "Woot", uuid: "01234567-89AB-4DEF-8123-456789ABCDEF", player_id: "Woot")
-        assert_equal "0123456789ab4def8123456789abcdef", user.uuid
+        user = User.create!(username: "Woot", uuid: "0123456789AB4DEF8123456789ABCDEF", player_id: "Woot")
+        assert_equal "01234567-89ab-4def-8123-456789abcdef", user.uuid
     end
 
     test "invalid uuid format fails validation" do
