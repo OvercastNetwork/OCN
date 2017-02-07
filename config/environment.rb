@@ -34,7 +34,7 @@ PGM::Application.configure do
     config.query_logging = false
 
     config.site_base_url = "https://#{ORG::DOMAIN}"
-    config.avatar_base_url = "https://avatar.#{ORG::DOMAIN}"
+    config.avatar_base_url = "https://crafatar.com/avatars"
 
     # Use localhost for avatar URLs
     config.local_avatars = false
