@@ -66,7 +66,7 @@ module OCN
             # This is missing from Mongoid's configuration, so we have to do it this way.
             # See #ActiveModel::MassAssignmentSecurity::RavenSanitizer
             included do
-                self.mass_assignment_sanitizer = if ['production', 'test'].include? Rails.env
+                self.mass_assignment_sanitizer = if Object::const_defined?(:Raven) && ['production', 'test'].include?(Rails.env)
                     RavenSanitizer.new(self)
                 else
                     :strict
@@ -92,7 +92,11 @@ module OCN
 
                     # For whatever reason, Devise tries to mass-assign the email field after a failed login,
                     # and generates lots of pointless errors. This is the best solution I could think of.
-                    if self.is_a?(User) && attributes.key?('email') && !caller.grep(%r[devise/sessions_controller]).empty?
+                    if Object::const_defined?(:Devise) &&
+                        self.is_a?(Devise::Models::Confirmable) &&
+                        attributes.key?('email') &&
+                        !caller.grep(%r[devise/sessions_controller]).empty?
+
                         attributes.delete('email')
                     end
 
