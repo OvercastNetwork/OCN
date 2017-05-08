@@ -37,6 +37,8 @@ class User
     include Punishments
     include PvpEncounters
     include Raindrops
+    include MapTokens
+    include MutationTokens
     include Tickets
     include Servers
     include Sessions
