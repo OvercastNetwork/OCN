@@ -14,6 +14,8 @@ PGM::Application.routes.draw do
                 post "logout"
                 post "purchase_gizmo"
                 post "credit_raindrops"
+                post "credit_maptokens"
+                post "credit_mutationtokens"
                 post "change_setting"
                 post "change_class"
             end
