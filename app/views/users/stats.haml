@@ -29,7 +29,7 @@
                             %option{:value => key, :selected => @time == key}= value
                 .form-group
                     %label sorted by
-                    %select.form-control.input-sm.playerstats-control#playerstats-sort{disabled: @time_only}
+                    %select.form-control.input-sm.playerstats-control#playerstats-sort
                         - @sorts.each do |key, value|
                             %option{:value => key, :selected => @sort == key}= value
             %br
@@ -62,15 +62,15 @@
                                 %td
                                     = format_playing_time(stat.playing_time(@family))
                                 %td
-                                    = stat.pretty_stat(:kills, @family) unless @time_only
+                                    = stat.pretty_stat(:kills, @family)
                                 %td
-                                    = stat.pretty_stat(:deaths, @family) unless @time_only
+                                    = stat.pretty_stat(:deaths, @family)
                                 %td
-                                    = stat.pretty_stat(:deaths_player, @family) unless @time_only
+                                    = stat.pretty_stat(:deaths_player, @family)
                                 %td
-                                    = stat.pretty_stat(:kd, @family) unless @time_only
+                                    = stat.pretty_stat(:kd, @family)
                                 %td
-                                    = stat.pretty_stat(:kk, @family) unless @time_only
+                                    = stat.pretty_stat(:kk, @family)
                                 %td
                                     - if user
                                         = avatar_for(user, 16, glow: true)

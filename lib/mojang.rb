@@ -1,3 +1,4 @@
+require 'open-uri'
 # Simple client for parts of Mojang's HTTP API
 module Mojang
     class Error < Exception; end
