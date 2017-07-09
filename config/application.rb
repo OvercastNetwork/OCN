@@ -29,8 +29,8 @@ if defined?(Bundler)
 end
 
 module ORG
-    NAME = "Some Network"
-    DOMAIN = "some.network"
+    NAME = "Stratus Network"
+    DOMAIN = "play.stratus.network"
     EMAIL = "support@#{DOMAIN}"
 end
 

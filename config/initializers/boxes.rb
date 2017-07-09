@@ -3,8 +3,12 @@ case Rails.env
         Box.define do
             box Box.local_id do
                 hostname Socket.gethostname
-                workers [RepoWorker, CouchWorker, (ServerReportWorker if Dog.client), ModelSearchWorker,
-                         ChannelWorker, EngagementWorker, ChartWorker, TaskWorker, MatchMaker].compact
+                workers [RepoWorker, 
+                         #CouchWorker, 
+                         (ServerReportWorker if Dog.client), ModelSearchWorker,
+                         ChannelWorker, EngagementWorker,
+                         #ChartWorker, 
+                         TaskWorker, MatchMaker].compact
                 services [:octc]
             end
         end
@@ -23,7 +27,9 @@ case Rails.env
             workers([RepoWorker]) do
                 datacenter 'DC' do
                     box 'box01' do
-                        workers [RepoWorker, TaskWorker, CouchWorker, EngagementWorker, TranslationWorker]
+                        workers [RepoWorker, TaskWorker, 
+                                 #CouchWorker, 
+                                 EngagementWorker, TranslationWorker]
                         services [:octc, :data]
                     end
 
@@ -33,7 +39,9 @@ case Rails.env
                     end
 
                     box 'box03' do
-                        workers [RepoWorker, TaskWorker, ChannelWorker, ChartWorker]
+                        workers [RepoWorker, TaskWorker, ChannelWorker,
+                                 #ChartWorker
+                                  ]
                         services [:octc]
                     end
                 end

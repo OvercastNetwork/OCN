@@ -21,7 +21,7 @@ class Banner
         Server.bungees.online.each(&:api_sync!)
     end
 
-    TITLE = "§b§llife§c§lboat §f§lNetwork"
+    TITLE = "§b§lStratus Network"
     PIXELS = 263
 
     class << self
@@ -33,11 +33,11 @@ class Banner
         end
 
         def make_motd_top(text)
-            ChatUtils.padded_heading("╔", text, "╗", width: PIXELS, pad: "═", pad_color: ChatColor::GREEN)
+            ChatUtils.padded_heading("╔", text, "╗", width: PIXELS, pad: "═", pad_color: ChatColor::BLUE)
         end
 
         def make_motd_bottom(text)
-            ChatUtils.padded_heading("╚", text, "╝", width: PIXELS, pad: "═", pad_color: ChatColor::GREEN)
+            ChatUtils.padded_heading("╚", text, "╝", width: PIXELS, pad: "═", pad_color: ChatColor::BLUE)
         end
 
         def make_motd(datacenter:, title: TITLE, message: nil)
@@ -45,7 +45,7 @@ class Banner
             bottom = if message
                          make_motd_bottom(message)
                      else
-                         "§a╚#{ "═" * 28 }╝" # Must increase PIXELS to 269 if we ever want this
+                         "§9╚#{ "═" * 28 }╝" # Must increase PIXELS to 269 if we ever want this
                      end
             [top, bottom].join("\n")
         end

@@ -35,7 +35,7 @@ module Mojang
         end
 
         def username_taken?(name)
-            case code = api_get(username_url(name)).status[0].to_i
+            case code = open("https://api.mojang.com/users/profiles/minecraft/#{name}").status[0].to_i
                 when 200
                     true
                 when 204

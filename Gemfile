@@ -10,7 +10,7 @@ gem 'mongoid', '~> 5.0.0'               # MongoDB ORM
 gem 'jquery-rails'                      # Regular jQuery and UJS
 gem 'json'
 gem 'haml'
-gem 'capistrano', '2.15.5'              # Deployment
+#gem 'capistrano', '2.15.5'              # Deployment
 gem 'uuid'
 gem 'devise'                            # User registration and authentication
 gem 'tlsmail'
@@ -64,8 +64,8 @@ gem 'ruby-string-match-scorer', :github => 'bjeanes/ruby-string-match-scorer'
 
 group :production, :staging do
     gem 'unicorn'                       # Web server
-    gem 'rvm-capistrano'                # RVM deploy integration
-    gem 'capistrano-unicorn'            # Unicorn deploy integration
+#    gem 'rvm-capistrano'                # RVM deploy integration
+#    gem 'capistrano-unicorn'            # Unicorn deploy integration
     gem 'sass-rails'                    # CSS and JS minification
     gem 'coffee-rails'                  # CSS and JS minification
     gem 'uglifier'                      # CSS and JS minification

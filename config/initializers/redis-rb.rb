@@ -1,6 +1,6 @@
 options = {
     'production'    => { host: 'redis' },
-    'staging'       => { host: 'redis-staging' },
+    'staging'       => { }, #{ host: 'redis-staging' },
     'development'   => { },
     'test'          => { port: 7480 },
 }
