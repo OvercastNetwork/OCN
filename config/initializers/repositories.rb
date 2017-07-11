@@ -1,5 +1,5 @@
 Repository.define do
-    repositories provider: :github, namespace: 'OvercastNetwork' do
+    repositories provider: :github, namespace: 'StratusNetwork' do
         repository :data do
             klass           Repository::Data
             repo            'Data'
@@ -23,9 +23,16 @@ Repository.define do
             end
 
             repository :docs do
-                title           "docs.oc.tc"
-                description     "The documentation website for PGM mapmakers at https://docs.oc.tc"
-                repo            "docs.oc.tc"
+                title           "Website"
+                description     "Our website repository"
+                repo            "OCN"
+                open?           false
+            end
+
+            repository :rotations do
+                title           "Rotations"
+                description     "Our map rotations on our servers"
+                repo            "Map-Rotations"
                 open?           true
             end
         end
