@@ -3,7 +3,7 @@ development:
     default:
       database: pgm-prod
       hosts:
-        - localhost:27017
+        - mongo:27017
   options:
     raise_not_found_error: false
 
@@ -12,7 +12,7 @@ test:
     default:
       database: pgm-prod
       hosts:
-        - localhost:38128
+        - mongo:38128
   options:
     raise_not_found_error: false
 
@@ -21,7 +21,7 @@ staging:
     default:
       database: pgm-prod
       hosts:
-        - localhost:27017
+        - mongo:27017
   options:
     raise_not_found_error: false
 
@@ -30,6 +30,6 @@ production:
     default:
       database: pgm-prod
       hosts:
-        - localhost:27017
+        - mongo:27017
   options:
     raise_not_found_error: false

@@ -1,13 +1,6 @@
-host = 'localhost'
+host = 'couch'
 port = 5984
 database = 'ocn'
-
-case Rails.env
-    when 'production', 'staging'
-        host = 'couchdb'
-    when 'test'
-        database = 'ocn_test'
-end
 
 CouchPotato::Config.database_host = "http://#{host}:#{port}"
 CouchPotato::Config.database_name = database

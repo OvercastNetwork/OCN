@@ -7,18 +7,15 @@ Raven.configure do |config|
 
     config.async = Raven.method(:send_event_async)
 
-    # Un-comment these to actually use Raven
-    case Rails.env
-        # when 'development'
-        #     config.dsn = '...'
-        # when 'production', 'staging'
-        #     config.dsn = '...'
-        when ''
-        else
-            config.environments = []
+    dsn = ENV['SENTRY_DSN_WEB']
+    if dsn
+        config.dsn = dsn
+    else
+        config.environments = []
     end
+
 end
 
 MAP_SENTRY = Raven::Client.new(Raven::Configuration.new)
-MAP_SENTRY.configuration.dsn = '...'
+MAP_SENTRY.configuration.dsn = ENV['SENTRY_DSN_MAPS']
 MAP_SENTRY.configuration.environments = Raven.configuration.environments

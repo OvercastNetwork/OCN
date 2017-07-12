@@ -38,7 +38,7 @@ module UserHelper
             end
 
             if local && Rails.configuration.local_avatars
-                "http://localhost:3005/#{user}"
+                "http://avatar:3005/#{user}"
             else
                 "#{Rails.configuration.avatar_base_url}/#{user}"
             end
