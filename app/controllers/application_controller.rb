@@ -189,6 +189,15 @@ class ApplicationController < CommonController
         render :json => {results: @matches.map{|user| {id: user.id.to_s, text: user.username} } } # This format is used by Select2
     end
 
+    def load_models
+        begin
+            Repository[:data].load_models
+        rescue Exception
+            Rails.logger.error "An error occured while loading data models"
+        end
+        return render :nothing => true, :status => 200
+    end
+
     def set_time_zone
         if user_signed_in?
             begin
