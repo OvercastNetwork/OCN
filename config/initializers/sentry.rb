@@ -8,7 +8,7 @@ Raven.configure do |config|
     config.async = Raven.method(:send_event_async)
 
     dsn = ENV['SENTRY_DSN_WEB']
-    if dsn
+    if dsn && ENV['SENTRY_ENABLED'] != nil
         config.dsn = dsn
     else
         config.environments = []

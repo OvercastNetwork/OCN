@@ -1,4 +1,4 @@
-host = 'couch'
+host = ENV['COUCH_HOST'] || 'localhost'
 port = 5984
 database = 'ocn'
 
