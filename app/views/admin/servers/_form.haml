@@ -115,6 +115,10 @@
             %label.col-md-4.control-label Port
             .col-md-7
                 = f.text_field :port, :class => "form-control"
+        .form-group
+            %label.col-md-4.control-label Current Port
+            .col-md-7
+                = f.text_field :current_port, :disabled => true, :class => "form-control"
     %h4 DNS
     .form-horizontal
         .form-group
