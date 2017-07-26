@@ -123,7 +123,7 @@ class Punishment
     index({server_id: 1})
     index({match_id: 1})
     index(INDEX_punished_date = {punished_id: 1, date: -1})
-    index(INDEX_punisher = {punisher_id: 1})
+    index(INDEX_punisher_date = {punisher_id: 1, date: -1})
     index({active: 1})
     index({appealed: 1})
     index({expire: 1})
@@ -223,7 +223,7 @@ class Punishment
 
             if request
                 if request.punisher
-                    documents = documents.where(punisher_id: request.punisher).hint(INDEX_punisher)
+                    documents = documents.where(punisher_id: request.punisher).hint(INDEX_punisher_date)
                 elsif request.punished
                     documents = documents.where(punished_id: request.punished).hint(INDEX_punished_date)
                     if request.active
