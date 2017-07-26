@@ -92,7 +92,7 @@ class Punishment
 
     # Callbacks
 
-    before_create do
+    before_validation do
         playing_time_ms ||= punished.stats.playing_time_ms
 
         unless type
