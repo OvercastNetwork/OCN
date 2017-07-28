@@ -6,7 +6,6 @@ class Punishment
     include PunishmentHelper
     include ApiModel
     include ApiAnnounceable
-    include ApiSyncable
     include ApiSearchable
     store_in :database => 'oc_punishments'
 
