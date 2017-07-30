@@ -17,5 +17,5 @@ Raven.configure do |config|
 end
 
 MAP_SENTRY = Raven::Client.new(Raven::Configuration.new)
-MAP_SENTRY.configuration.dsn = ENV['SENTRY_DSN_MAPS']
+MAP_SENTRY.configuration.dsn = ENV['SENTRY_DSN_MAPS'] || '...'
 MAP_SENTRY.configuration.environments = Raven.configuration.environments

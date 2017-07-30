@@ -53,6 +53,7 @@ gem 'chunky_png'                        # Image processor (used for skins)
 gem 'google-api-client'                 # Client for all things Google
 gem 'braintree'                         # Payment processor
 gem 'geoip'                             # IP lookup utility
+gem 'droplet_kit'                       # Digital Ocean client
 gem 'net-http-pipeline'
 gem 'crowdin-api', github: 'OvercastNetwork/crowdin-api', branch: 'master'
 

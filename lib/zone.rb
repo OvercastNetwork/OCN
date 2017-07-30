@@ -1,34 +1,24 @@
-
-# A layer on top of the Cloudflare API for dealing with DNS records
+# A layer on top of the DigitalOcean API for dealing with DNS records
 class Zone
-    class Error < Exception
-    end
 
     class Record
-        FIELDS = %i[zone_name rec_id name type content ttl service_mode]
+        FIELDS = %i[id name type data ttl]
         attr_accessor :zone, *FIELDS
 
-        def initialize(zone, vals)
+        def initialize(zone, values)
             @zone = zone
             FIELDS.each do |field|
-                val = vals[field] || vals[field.to_s]
+                val = values[field] || values[field.to_s]
                 instance_variable_set("@#{field}", val) if val
             end
-            self.service_mode = [true, 1, '1'].include?(self.service_mode)
         end
 
-        def save
-            if %w(production staging).include? Rails.env
-                if self.rec_id
-                    self.zone.req(:rec_edit, self.zone_name, self.type, self.rec_id, self.name, self.content, self.ttl, self.service_mode, 0)
-                else
-                    res = self.zone.req(:rec_new, self.zone_name, self.type, self.name, self.content, self.ttl, 0)
-                    self.rec_id = res['rec']['obj']['rec_id']
-                    res
-                end
-            else
-                Rails.logger.info ">>> Record.save rec_id=#{rec_id} zone_name=#{zone_name} name=#{name} type=#{type} content=#{content} ttl=#{ttl}"
-            end
+        def save!
+            zone.update(self)
+        end
+
+        def backend
+            DropletKit::DomainRecord.new(name: self.name, type: self.type, data: self.data, ttl: self.ttl)
         end
 
         def to_s
@@ -58,31 +48,20 @@ class Zone
 
     def initialize(zone_name)
         @zone_name = zone_name
-        config = Rails.configuration.servers[:cloudflare]
-        @cloudflare = CloudFlare.connection(config[:api_key], config[:email])
+        config = Rails.configuration.servers[:digitalocean]
+        @client = DropletKit::Client.new(access_token: config[:access_token])
     end
 
-    def req(meth, *args)
-        r = @cloudflare.send(meth, *args)
-        raise Error r['message'] unless r['result'] == 'success'
-        r['response']
-    end
-
-    def build_record(args = {})
-        Record.new(self, args.merge(zone_name: @zone_name))
+    def update(record)
+        if record.id
+            @client.domain_records.update(record.backend, for_domain: @zone_name, id: record.id)
+        else
+            record.id = @client.domain_records.create(record.backend, for_domain: @zone_name).id
+        end
     end
 
     def refresh
-        has_more = true
-        offset = 0
-        records = []
-        while has_more
-            res = req(:rec_load_all, @zone_name, offset)
-            has_more = res['recs']['has_more']
-            offset += res['recs']['count']
-            records += res['recs']['objs'].map{|rec| Record.new(self, rec) }
-        end
-        @records = records
+        @records = @client.domain_records.all(for_domain: @zone_name).map{|backend| Record.new(self, backend)}
     end
 
     def records
