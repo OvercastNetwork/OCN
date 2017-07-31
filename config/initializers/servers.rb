@@ -11,7 +11,7 @@ Rails.configuration.tap do |config|
         },
 
         dns: {
-            zone: 'stratus.network',
+            zone: ORG::DOMAIN,
             enabled_prefix: nil,
             disabled_prefix: 'offline',
             ttl: 60.seconds,

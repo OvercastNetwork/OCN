@@ -33,4 +33,9 @@ PGM::Application.configure do
     config.after_initialize do
         ActiveMerchant::Billing::Base.mode = :test
     end
+
+    config.action_mailer.perform_deliveries = true
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.smtp_settings = { address: ENV['SMTP_HOST'] || 'localhost', port: 25 }
+
 end

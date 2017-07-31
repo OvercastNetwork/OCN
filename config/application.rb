@@ -30,8 +30,9 @@ end
 
 module ORG
     NAME = "Stratus Network"
-    DOMAIN = "play.stratus.network"
-    EMAIL = "support@#{DOMAIN}"
+    DOMAIN = "stratus.network"
+    SHOP = "shop.#{DOMAIN}"
+    EMAIL = "networkstratus@gmail.com"
 end
 
 module PGM
