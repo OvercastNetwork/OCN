@@ -54,6 +54,7 @@ gem 'google-api-client'                 # Client for all things Google
 gem 'braintree'                         # Payment processor
 gem 'geoip'                             # IP lookup utility
 gem 'droplet_kit'                       # Digital Ocean client
+gem 'lockup'                            # Password protect development/staging websites
 gem 'net-http-pipeline'
 gem 'crowdin-api', github: 'OvercastNetwork/crowdin-api', branch: 'master'
 

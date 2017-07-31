@@ -4,6 +4,7 @@ PGM::Application.routes.draw do
     end
 
     default_url_options :host => "localhost"
+    mount Lockup::Engine, at: '/lockup' if ENV['LOCKUP_ENABLED']
     mount Peek::Railtie => "/peek"
     mount Forem::Engine, :at => "/forums"
 
