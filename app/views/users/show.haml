@@ -119,8 +119,6 @@
                     %li
                         %a{:href => '#trophycase', :data => {:toggle => 'tab'}} Trophy Case
                     %li
-                        %a{:href => '#stats', :data => {:toggle => 'tab'}} Stats
-                    %li
                         %a{:href => '#pvp-encounters', :data => {:toggle => 'tab'}} PvP
                     %li
                         %a{:href => '#objectives', :data => {:toggle => 'tab'}} Objectives
@@ -244,66 +242,6 @@
                                 - else
                                     %pre
                                         Nothing here yet.
-                    .tab-pane#stats
-                        .row
-                            .col-md-3.col-sm-6
-                                %h3{:rel => "tooltip", :title => "First joined on " + vague_format_time(@initial_join), :data => {:placement => "top"}}
-                                    = @days_here
-                                    %small days since first seen
-                            .col-md-3.col-sm-6
-                                %h3
-                                    = @hours_played
-                                    %small hours played
-                            .col-md-3.col-sm-6
-                                %h3
-                                    = @teams_joined
-                                    %small teams joined
-                            .col-md-3.col-sm-6
-                                %h3
-                                    = @player.raindrops
-                                    %small raindrops
-                        %hr
-                        %h4 Forum Stats
-                        .row
-                            .col-md-3.col-sm-6
-                                %h3
-                                    = @forum_posts
-                                    %small forum posts
-                            .col-md-3.col-sm-6
-                                %h3
-                                    = @topics_created
-                                    %small topics started
-                        - @families.each do |name, id|
-                            %hr
-                            %h4
-                                #{name} Stats
-                            .row
-                                .col-md-4
-                                    .row
-                                        .col-sm-6
-                                            %h3
-                                                = @stats.pretty_stat(:kills, id)
-                                                %small kills
-                                        .col-sm-6
-                                            %h3
-                                                = @stats.pretty_stat(:deaths, id)
-                                                %small deaths
-                                .col-md-3
-                                    .row
-                                        .col-sm-6
-                                            %h3
-                                                = @stats.pretty_stat(:kd, id)
-                                                %small kd
-                                        .col-sm-6
-                                            %h3
-                                                = @stats.pretty_stat(:kk, id)
-                                                %small kk
-                                .col-md-5
-                                    .row
-                                        .col-md-6
-                                            %h3
-                                                = (@stats.stat(:playing_time, id).to_f / 1000 / 60 / 60 / 24).round(2)
-                                                %small days played
                     .tab-pane#pvp-encounters
                         .row
                             - if !@encounters.empty?
