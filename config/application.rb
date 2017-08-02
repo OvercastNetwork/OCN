@@ -29,9 +29,10 @@ if defined?(Bundler)
 end
 
 module ORG
-    NAME = "Some Network"
-    DOMAIN = "some.network"
-    EMAIL = "support@#{DOMAIN}"
+    NAME = "Stratus Network"
+    DOMAIN = "stratus.network"
+    SHOP = "shop.#{DOMAIN}"
+    EMAIL = "networkstratus@gmail.com"
 end
 
 module PGM

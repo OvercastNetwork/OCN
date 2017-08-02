@@ -1,9 +1,10 @@
-%p= "Welcome #{@resource.username}!"
+- confirm = "http://confirm.#{ORG::DOMAIN}/confirm/#{@token}"
+- shop = "http://#{ORG::SHOP}"
+%p= "Welcome #{@resource.username} to #{ORG::NAME}!"
 %p You can confirm your account email through the link below:
 %p
-    %a{:href => confirmify_url(@token)} Confirm my account
-%p If the link above doesn't work you can copy and paste the following link into your browser:
+    %a{:href => confirm}= confirm
+%p Thanks for confirming your account and consider upgrading to a premium rank at:
 %p
-    %a{:href => confirmify_url(@token)}= confirmify_url(@token)
-%p Thanks in advance for confirming your account.
+    %a{:href => shop}= shop
 %p - #{ORG::NAME} Staff

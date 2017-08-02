@@ -6,7 +6,6 @@ class Punishment
     include PunishmentHelper
     include ApiModel
     include ApiAnnounceable
-    include ApiSyncable
     include ApiSearchable
     store_in :database => 'oc_punishments'
 
@@ -15,13 +14,13 @@ class Punishment
     FORUM_STALE_TIME = 1.year
 
     module Type
-        WARN = 'warn'
-        KICK = 'kick'
-        BAN = 'ban'
-        FORUM_WARN = 'forum_warn'
-        FORUM_BAN = 'forum_ban'
-        TOURNEY_WARN = 'tourney_warn'
-        TOURNEY_BAN = 'tourney_ban'
+        WARN = 'WARN'
+        KICK = 'KICK'
+        BAN = 'BAN'
+        FORUM_WARN = 'FORUM_WARN'
+        FORUM_BAN = 'FORUM_BAN'
+        TOURNEY_WARN = 'TOURNEY_WARN'
+        TOURNEY_BAN = 'TOURNEY_BAN'
         ALL = [WARN, KICK, BAN, FORUM_WARN, FORUM_BAN, TOURNEY_BAN]
         GAME = [WARN, KICK, BAN]
         FORUM = [FORUM_WARN, FORUM_BAN]
@@ -62,14 +61,15 @@ class Punishment
     # Properties
 
     required = [
-        :punished, :punished_id,
-        :family, :date, :reason, :type, :playing_time_ms,
+        # :punished, 
+        :punished_id,
+        :family, :date, :reason, :type,
         :debatable, :automatic, :active, :enforced
     ]
 
     props = [
         *required,
-        :punisher, :punisher_id,
+        :punisher, :punisher_id, :punished, :playing_time_ms,
         :server, :server_id, :match, :match_id,
         :evidence, :expire, :off_record, :silent
     ]
@@ -91,7 +91,7 @@ class Punishment
 
     # Callbacks
 
-    before_create do
+    before_validation do
         playing_time_ms ||= punished.stats.playing_time_ms
 
         unless type
@@ -122,7 +122,7 @@ class Punishment
     index({server_id: 1})
     index({match_id: 1})
     index(INDEX_punished_date = {punished_id: 1, date: -1})
-    index(INDEX_punisher = {punisher_id: 1})
+    index(INDEX_punisher_date = {punisher_id: 1, date: -1})
     index({active: 1})
     index({appealed: 1})
     index({expire: 1})
@@ -222,7 +222,7 @@ class Punishment
 
             if request
                 if request.punisher
-                    documents = documents.where(punisher_id: request.punisher).hint(INDEX_punisher)
+                    documents = documents.where(punisher_id: request.punisher).hint(INDEX_punisher_date)
                 elsif request.punished
                     documents = documents.where(punished_id: request.punished).hint(INDEX_punished_date)
                     if request.active
@@ -263,7 +263,7 @@ class Punishment
     # Stale
 
     def stale?
-        stale_from_real_time? && stale_from_play_time?
+        stale_from_real_time? # && stale_from_play_time?
     end
 
     def stale_from_real_time?
@@ -303,6 +303,27 @@ class Punishment
                 "Tournament Ban"
             else
                 "Punishment"
+        end
+    end
+
+    def description
+        case type
+            when Type::WARN
+                "warning"
+            when Type::KICK
+                "kick"
+            when Type::BAN
+                expire? ? "ban" : "permanent ban"
+            when Type::FORUM_WARN
+                "forum warning"
+            when Type::FORUM_BAN
+                "forum ban"
+            when Type::TOURNEY_WARN
+                "tournament warning"
+            when Type::TOURNEY_BAN
+                "tournament ban"
+            else
+                "punishment"
         end
     end
 
@@ -435,7 +456,7 @@ class Punishment
     end
 
     def self.can_issue?(type, user = nil)
-        return user && (Punishment.can_manage?(user) || user.has_permission?('punishment', 'create', type, true))
+        return user && (Punishment.can_manage?(user) || user.has_permission?('punishment', 'create', type.downcase, true))
     end
 
     def self.can_issue_forum?(user = nil)
@@ -452,7 +473,7 @@ class Punishment
             return true
         else
             scope = user == self.punished ? 'own' : 'all'
-            visible = user.has_permission?('punishment', 'view', 'type', self.type, scope) || (scope == 'own' && user.has_permission?('punishment', 'view', 'type', self.type, 'all'))
+            visible = user.has_permission?('punishment', 'view', 'type', self.type.downcase, scope) || (scope == 'own' && user.has_permission?('punishment', 'view', 'type', self.type.downcase, 'all'))
             visible = visible && (user.has_permission?('punishment', 'view', 'status', 'stale', scope) || (scope == 'own' && user.has_permission?('punishment', 'view', 'status', 'stale', 'all'))) if self.stale?
             visible = visible && (user.has_permission?('punishment', 'view', 'status', 'inactive', scope) || (scope == 'own' && user.has_permission?('punishment', 'view', 'status', 'inactive', 'all'))) if !self.active?
             visible = visible && (user.has_permission?('punishment', 'view', 'status', 'automatic', scope) || (scope == 'own' && user.has_permission?('punishment', 'view', 'status', 'automatic', 'all'))) if self.automatic?
@@ -475,7 +496,7 @@ class Punishment
 
     def can_index?(user = nil)
         scope = user == self.punished ? 'own' : 'all'
-        visible = Punishment.can_index?(['type', self.type], scope, user)
+        visible = Punishment.can_index?(['type', self.type.downcase], scope, user)
         visible = visible && Punishment.can_index?(%w(status stale), scope, user) if self.stale?
         visible = visible && Punishment.can_index?(%w(status inactive), scope, user) if !self.active?
         visible = visible && Punishment.can_index?(%w(status automatic), scope, user) if self.automatic?

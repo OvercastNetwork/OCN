@@ -17,8 +17,7 @@
         = stylesheet_link_tag "//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css", "application", "//fonts.googleapis.com/css?family=Lato:700,400,300", "//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css"
         = javascript_include_tag "libraries", "//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js", "application"
         = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.0/bootstrap3-typeahead.min.js"
-        -# SHUTDOWN
-        -# if current_page?(main_app.shop_path)
+        - if current_page?(main_app.shop_path)
             = javascript_include_tag "https://js.braintreegateway.com/v2/braintree.js"
         - if current_page?(main_app.live_path)
             = javascript_include_tag "//player.twitch.tv/js/embed/v1.js"

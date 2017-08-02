@@ -6,41 +6,44 @@
             %small Play anywhere, anytime
     .sidebar>
         .well.connect
-            %table.table
-                %thead
-                    %tr
-                        %th{colspan: 2} Connect To
-                %tbody
+            .row
+                .col-md-12.connect-header
+                    Connect to
+            %hr
+            .row
+                .col-md-12.connect-padding
                     - @portal_infos.each do |info|
-                        %tr
-                            %td.hostname
-                                %input.input{type: "text", value: info[:portal].hostname, onClick: "this.select();", readonly: true}
-                            %td.details
+                        .row.hostname
+                            %input.input{type: "text", value: info[:portal].hostname, onClick: "this.select();", readonly: true}
+                        .row.details
+                            .col-md-4.col-sm-4.col-xs-4
                                 - if @portal_infos.size > 1
                                     .location= info[:portal].long_name
                                 - else
                                     .location Global
+                            .col-md-4.col-sm-4.col-xs-4
                                 %strong= info[:players]
                                 %small players
-                                %br
+                            .col-md-4.col-sm-4.col-xs-4
                                 %strong= info[:servers]
                                 %small servers
+                        %br
         - unless @friends.empty?
             .well.seen
-                %table.table
-                    %thead
-                        %tr
-                            %th{colspan: 2} Online Friends
-                    %tbody
-                        = render partial: 'players_by_server', locals: {servers: @friends, global: @global}
+                .row
+                    .col-md-12.connect-header
+                        Online Friends
+                %hr
+                .row
+                    = render partial: 'players_by_server', locals: {servers: @friends, global: @global}
         - unless @staff.empty?
             .well.seen
-                %table.table
-                    %thead
-                        %tr
-                            %th{colspan: 2} Online Staff
-                    %tbody
-                        = render partial: 'players_by_server', locals: {servers: @staff, global: @global}
+                .row
+                    .col-md-12.connect-header
+                        Online Staff
+                %hr
+                .row
+                    = render partial: 'players_by_server', locals: {servers: @staff, global: @global}
     - if @portal_infos.size > 1
         .navbar-container>
             .navbar.navbar-default

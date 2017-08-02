@@ -115,6 +115,10 @@
             %label.col-md-4.control-label Port
             .col-md-7
                 = f.text_field :port, :class => "form-control"
+        .form-group
+            %label.col-md-4.control-label Current Port
+            .col-md-7
+                = f.text_field :current_port, :disabled => true, :class => "form-control"
     %h4 DNS
     .form-horizontal
         .form-group
@@ -137,15 +141,14 @@
                 = f.text_field :dns_window_stop, value: @dns_window_stop, autocomplete: 'off', :class => "form-control"
                 %span.help-block HH[:MM[:SS]]
         .form-group
-            %label.col-md-4.control-label Cloudflare ID
+            %label.col-md-4.control-label DNS ID
             .col-md-7
                 = f.text_field :dns_record_id, :class => "form-control"
         - if @dns_record
             .form-group
                 %label.col-md-4.control-label DNS Record
                 .col-md-7
-                    %code
-                        = "#{@dns_record.name} #{@dns_record.ttl} #{@dns_record.type} #{@dns_record.content}"
+                    = f.text_field :dns_record_, :disabled => true, :value => "#{@dns_record.name} #{@dns_record.ttl} #{@dns_record.type} #{@dns_record.data}", :class => "form-control"
     %h4 Dynamics
     .form-horizontal
         = f.fields_for :dynamics do |dynamics|

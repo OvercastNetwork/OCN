@@ -83,7 +83,7 @@ class RegistrationsController < Devise::RegistrationsController
                 msg = "Your new passwords do not match." if form[:password] != form[:password_confirmation]
                 msg = "You did not change your email or password" if !email_changed && !password_changed
             else
-                msg = "Your need your current password to change your email or password." if email_changed || password_changed
+                msg = "You need your current password to change your email or password." if email_changed || password_changed
             end
 
             msg = "Your new email is already taken" if email_changed && !email_available

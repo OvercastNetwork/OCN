@@ -1,5 +1,6 @@
 footer li.heading {
-    padding-left: 12px;
+    font-size: 14px;
+    font-weight: bold;
     margin-bottom: 8px;
 }
 
@@ -21,8 +22,4 @@ footer .follow-us li img {
 
 footer .img-responsive {
     margin: 0 auto;
-}
-
-footer .copyright {
-    font-size: 85%;
 }

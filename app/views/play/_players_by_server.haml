@@ -1,9 +1,8 @@
 - servers.each do |server, sessions|
-    %tr
-        %td.server.text-nowrap= server_name(server, global: global)
-        %td.players
-            - sessions.each do |session|
-                %div
-                    %nobr
-                        = avatar_for session.player, 16, link: true
-                        = link_to_user session.player
+    .col-md-12.server.text-nowrap= server_name(server, global: global)
+    .col-md-12.players
+        - sessions.each do |session|
+            %div
+                %nobr
+                    = avatar_for session.player, 16, link: true
+                    = link_to_user session.player

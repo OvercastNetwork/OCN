@@ -132,6 +132,25 @@ module Api
             end
         end
 
+        def credit_maptokens
+            if user = model_instance.credit_maptokens(int_param(:maptokens))
+                respond success: true,
+                        user: user.api_document
+            else
+                respond success: false
+            end
+        end
+
+        def credit_mutationtokens
+            if user = model_instance.credit_mutationtokens(int_param(:mutationtokens))
+                respond success: true,
+                        user: user.api_document
+            else
+                respond success: false
+            end
+        end
+
+
         def update
             if attrs = params[:document]
                 user = model_instance
