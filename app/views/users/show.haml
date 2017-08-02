@@ -97,36 +97,18 @@
         .col-md-4.col-sm-6.col-xs-12
             .stats
                 .well
-                    - if @ordinal
-                        .rank>
-                            .name rank
-                            %a.number{href: url_for(controller: 'users', action: 'leaderboard', page: @ordinal_page)}
-                                = @ordinal
-                                %sup>= @ordinal.ordinalize[-2..-1]
-                        .rank>
-                            .name rating
-                            .number{rel: 'tooltip',
-                                    title: "1 + (wins - losses) / max(matches, #{Ranking::CONFIDENT_MATCHES})",
-                                    data: {placement: 'bottom'}}
-                                = @ranking.formatted_rating
-                    - else
-                        .unqualified
-                            %a{href: url_for(controller: 'users', action: 'leaderboard')}
-                                not enough recent matches for ranking
+                    %h2
+                        = @stats.pretty_stat(:kd)
+                        %small kd
+                    %h2
+                        = @stats.pretty_stat(:kk)
+                        %small kk
+                    %h2
+                        = @player.raindrops
+                        %small Droplets
                     .rule
-                    %div
-                        .total>
-                            .name matches
-                            .number= @ranking.value.match_count
-                        .total>
-                            .name wins
-                            .number= @ranking.value.wins
-                        .total>
-                            .name losses
-                            .number= @ranking.value.losses
-                        .total>
-                            .name forfeits
-                            .number= @ranking.value.forfeits
+                    %a{href: "#more_stats", data: {toggle: "modal"}}
+                        %h4.text-primary More Stats
 %section
     .row
         .col-md-12
@@ -509,3 +491,30 @@
                                                                 - if current_user_safe.has_permission?('misc','ipban','edit', true)
                                                                     %a{:href => new_admin_ipban_path(:ip => alt.mc_last_sign_in_ip, :description => @player.username), :class => "pull-right btn btn-xs btn-danger"}
                                                                         %i.fa.fa-ban
+.modal.fade#more_stats
+    .modal-dialog
+        .modal-content
+            .modal-header
+                %button.close{:data => {:dismiss => "modal"}} &times;
+                %h3.modal-title
+                    More Stats
+            .modal-body
+                %h3
+                    = "First joined on " + vague_format_time(@intial_join)
+                %h2
+                    = @days_here
+                    %small days since first seen
+                %h2
+                    = @hours_played
+                    %small hours played
+                %h2
+                    = @teams_joined
+                    %small teams joined
+                %h2
+                    = @forum_posts
+                    %small forum posts
+                %h2
+                    = @topics_created
+                    %small topics created
+                .modal-footer
+                    %a.btn.btn-default{:href => "#", :data => {:dismiss => "modal"}} Close
