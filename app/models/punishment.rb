@@ -111,6 +111,7 @@ class Punishment
 
     validates_each :off_record do |punishment, attr, value|
         if value
+            punishment.api_announce! # Enforce the off record punishment but don't save it
             punishment.errors.add attr, "must be false for persistent documents"
         end
     end
