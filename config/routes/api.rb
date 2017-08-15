@@ -13,9 +13,9 @@ PGM::Application.routes.draw do
             member do
                 post "logout"
                 post "purchase_gizmo"
-                post "credit_raindrops"
-                post "credit_maptokens"
-                post "credit_mutationtokens"
+                post "credit_tokens"
+                post "join_friend"
+                post "change_group"
                 post "change_setting"
                 post "change_class"
             end
@@ -39,6 +39,14 @@ PGM::Application.routes.draw do
             end
             member do
                 post "finish"
+            end
+        end
+
+        models :friendships do
+            collection do
+                post "create"
+                post "destroy"
+                post "list"
             end
         end
 

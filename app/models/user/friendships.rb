@@ -22,6 +22,10 @@ class User
             end
         end
 
+        def can_request_friends?
+            premium? || friends.count < Friendship.max_default_friends
+        end
+
         def friend?(user = User.current)
             self == user || if friendships_cached?
                 friendships.any?{|f| f.involves? user }
