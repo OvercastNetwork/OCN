@@ -16,12 +16,11 @@ class User
         included do
             field :nickname
             field :nickname_lower
+            field :nickname_updated_at
 
             unset_if_nil :nickname_lower # Required for the sparse index to work properly
-
-            attr_accessible :nickname
-
-            api_property :nickname
+            attr_accessible :nickname, :nickname_updated_at
+            api_property :nickname, :nickname_updated_at
 
             index({nickname_lower: 1}, {sparse: true, unique: true})
 
@@ -84,7 +83,7 @@ class User
 
         def set_nickname!(nickname)
             User.check_nickname(nickname) if nickname
-            update_attributes!(nickname: nickname)
+            update_attributes!(nickname: nickname, nickname_updated_at: Time.now)
         rescue Mongoid::Errors::Validations => ex
             if errors.to_h.all?{|attr, _| attr.to_sym == :nickname }
                 raise Invalid, "Nickname '#{nickname}' #{errors[:nickname].first}"
