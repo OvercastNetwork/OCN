@@ -30,7 +30,7 @@ module Forem
             end
         end
 
-        CREATE_COOLDOWN = 30.seconds
+        CREATE_COOLDOWN = 3.minutes
 
         MODERATION_ACTIONS = [:hide, :approve]
 
@@ -201,7 +201,7 @@ module Forem
                 unless user.has_permission?(:forum, forum.id.to_s, :bypass_cooldown, true)
                     last_post = self.class.latest_by(user).first
                     if last_post && last_post.created_at + CREATE_COOLDOWN > Time.now
-                        errors.add(:base, "You must wait #{time_ago_shorthand(last_post.created_at + CREATE_COOLDOWN)} before creating another post")
+                        errors.add(:base, "Upgrade to premium to avoid the #{time_ago_shorthand(last_post.created_at + CREATE_COOLDOWN)} post cooldown")
                     end
                 end
             end
