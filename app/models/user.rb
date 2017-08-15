@@ -31,15 +31,11 @@ class User
     include MinecraftRegistration
     include Nickname
     include OAuth
+    include Perks
     include Premium
     include Profile
-    include TokenAuthenticatable
     include Punishments
     include PvpEncounters
-    include Raindrops
-    include MapTokens
-    include MutationTokens
-    include Tickets
     include Servers
     include Sessions
     include Settings
@@ -47,7 +43,10 @@ class User
     include Stats
     include Teams
     include Teleporting
+    include Tickets
     include TntLicense
+    include TokenAuthenticatable
+    include Tokens
     include Trophies
     include WebLogin
     include WebRegistration
