@@ -66,7 +66,19 @@
                 .form-group
                     = f.submit "Update", :class => "btn btn-primary"
     .row
-        .col-md-12
+        .col-md-4
+            %h2 Premium Features
+            %hr
+            = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f|
+                .form-group{style: "margin-top: 16px;"}
+                    = f.label :default_server_id, 'Default Server'
+                    = f.select :default_server_id, [nil, *Server.bukkits.searchable.sort_by(&:name).map{|s| [s.name, s.id]}], { :model => Server }, :class => 'form-control', :disabled => !@user.can_set_default_server?
+                .form-group{style: "margin-top: 16px;"}
+                    = f.label :death_screen, 'Death Screen'
+                    = f.select :death_screen, User.death_screens.invert, { :model => String }, :class => 'form-control', :disabled => !@user.can_set_death_screen?
+                .form-group
+                    = f.submit "Update", :class => "btn btn-primary"
+        .col-md-8
             %h2 Connected Accounts
             %hr
             .row
@@ -75,9 +87,11 @@
                         - if current_user.find_oauth2_token_for(:youtube)
                             .label.label-success Connected
                         - else
-                            .label.label-default Not Connected
+                            -#.label.label-default Not Connected
+                            .label.label-default Coming Soon
                 .col-md-2.col-xs-6.account-logo
-                    %a{href: oauth2_authorize_path(service: 'youtube')}
+                    %a
+                        -# {href: oauth2_authorize_path(service: 'youtube')}
                         %img{src: image_path("youtube120.png")}
                 .col-md-8
                     - if current_user.find_oauth2_token_for(:youtube)

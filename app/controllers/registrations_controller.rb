@@ -40,6 +40,7 @@ class RegistrationsController < Devise::RegistrationsController
         form = params[:user]
         form.delete_if{|key, value| banned_updates.include? key.to_sym}
 
+        return redirect_to_back edit_user_registration_path, :alert => 'You must be a premium user to change your default server' unless @user.can_set_default_server?
         return redirect_to_back edit_user_registration_path, :alert => 'Invalid gender specified' unless ['Male', 'Female', '', nil].include? form[:gender]
 
         email_available = User.email_available?(form[:email])

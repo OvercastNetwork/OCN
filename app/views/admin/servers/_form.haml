@@ -58,7 +58,7 @@
         .form-group
             %label.col-md-4.control-label Operators
             .col-md-7
-                = user_multi_select_field :server, :operator_ids, @server.operators
+                = user_select_field2 :server, :operator_ids, @server.operators
         .form-group
             %label.col-md-4.control-label Team ID
             .col-md-7
