@@ -14,7 +14,7 @@ class ApplicationController < CommonController
 
     before_filter :check_general_permission
     before_filter :build_navigation
-    before_filter :html_only, :except => [:autocomplete, :user_search]
+    before_filter :html_only, :except => [:autocomplete, :user_search, :model_search]
     before_render :find_alerts
     before_render :find_streams
     before_render :user_time_zone
@@ -187,6 +187,19 @@ class ApplicationController < CommonController
         query = mc_sanitize(params[:username].to_s.downcase)
         @matches = User.where(:username_lower => /^#{query}/).order_by(username_lower: 1).limit(5)
         render :json => {results: @matches.map{|user| {id: user.id.to_s, text: user.username} } } # This format is used by Select2
+    end
+
+    def model_search
+        if user_signed_in?
+            query, search_class, search_field = params[:request].split(',', 3)
+            @matches = search_class.constantize
+                                   .where(search_field => /^#{query}/i)
+                                   .order_by(search_field => 1)
+                                   .limit(5)
+                                   .to_a
+                                   .map(&:api_document)
+            render :json => {results: @matches.map{|model| {id: model.id.to_s, text: model[search_field]} } }
+        end
     end
 
     def load_models

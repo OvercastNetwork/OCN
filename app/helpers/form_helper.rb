@@ -31,34 +31,46 @@ module FormHelper
         (field_tag.render + script).html_safe
     end
 
+    def user_select_field2(object_name, field_name, collection = [], multiple = true, **options)
+        model_select_field(User, object_name, field_name, :username, collection, multiple, options)
+    end
+
+    def server_select_field(object_name, field_name, collection = [], multiple = false, **options)
+        model_select_field(Server, object_name, field_name, :name, collection, multiple, options)
+    end
+
     # Render a Select2 form control for selecting multiple users,
     # featuring typeahead and all that fancy junk. The value
     # submitted by the form will be plain (unquoted) document IDs
-    # delimited by commas e.g.
+    # delimited by commas.
     #
-    #        54856f8d744e7f90da000003,506119d8482629b455c44524,518853bfa878589b16000603
+    # Object Parameters:
+    #   object_name - the name of the object to modify (e.g. :server)
+    #   select_field - the name of the field for the object to modify (e.g. :operator_ids)
+    # Query Parameters:
+    #   search_class - the model class to search for (e.g. User)
+    #   search_field - the field to query for in the collection (e.g. :username)
     #
-    def user_multi_select_field(object_name, field_name, selection = [], **options)
-        field_tag = ActionView::Helpers::Tags::HiddenField.new(object_name, field_name, self,
-                                                               value: selection.map(&:id).join(','), **options)
-
+    def model_select_field(search_class, object_name, select_field, search_field, collection = [], multiple = true, **options)
+        collection = collection.compact
+        field_tag = ActionView::Helpers::Tags::HiddenField.new(object_name, select_field, self, value: collection.map(&:id).join(','), **options)
         script = javascript_tag <<-JS
             $(document).ready(function() {
                 $('##{field_tag.send(:tag_id)}').select2({
                     containerCssClass: 'form-control',
                     width: '100%',
-                    multiple: true,
+                    multiple: #{multiple},
                     minimumInputLength: 1,
                     maximumInputLength: 16,
-                    formatInputTooShort: "Start typing a name",
+                    formatInputTooShort: "Start typing a #{search_class.name} name",
                     initSelection: function(element, callback) {
-                        callback(#{ selection.map{|u| {id: u.id, text: u.username} }.to_json });
+                        callback(#{ collection.map{|model| {id: model.id, text: model[search_field]} }.to_json });
                     },
                     ajax: {
-                        url: #{ user_search_path.to_json },
+                        url: #{ model_search_path.to_json },
                         dataType: 'json',
                         data: function(term, page) {
-                            return {username: term};
+                            return {request: term + ',#{search_class},#{search_field}'};
                         },
                         results: function(data, page, query) {
                             return data;
@@ -67,7 +79,6 @@ module FormHelper
                 });
             });
         JS
-
         (field_tag.render + script).html_safe
     end
 end
