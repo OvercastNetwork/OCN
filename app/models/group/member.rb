@@ -122,8 +122,12 @@ class Group
         # Destroy any Membership this user has for the given Group. The results
         # are written directly to the database and this User document is then reloaded.
         # Any unsaved changes to the document will be lost.
-        def leave_group(group)
-            self.where_self.pull(memberships: {group_id: group._id})
+        def leave_group(group, expire: false)
+            if expire
+                update_membership(group, {stop: Time.now})
+            else
+                self.where_self.pull(memberships: {group_id: group._id})
+            end
             self.reload
             self
         end

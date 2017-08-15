@@ -215,6 +215,6 @@ class Group
     end
 
     def premium?
-        !Package.for_group(self).nil?
+        staff || !Package.for_group(self).nil?
     end
 end
