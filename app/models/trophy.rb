@@ -14,9 +14,9 @@ class Trophy
     field :name, type: String
     field :description, type: String
 
-    field :color, type: String, default: '#444'.freeze
+    field :color, type: String, default: '#3b4c58'.freeze
     field :css_class, type: String
-    field :background, type: String, default: '#eee'.freeze
+    field :background, type: String, default: '#e8f8f7'.freeze
 
     props = [:name, :description, :color, :css_class, :background]
     attr_accessible *props
