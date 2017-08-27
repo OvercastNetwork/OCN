@@ -40,11 +40,6 @@ class Server
             before_event :startup do
                 self.current_port = current_port.to_i
                 self.current_port = port if current_port == 0
-                if ip_change = self.changes['ip']
-                    if ip_change[1] == nil
-                        self.ip = ip_change[0]
-                    end
-                end
                 true
             end
 
