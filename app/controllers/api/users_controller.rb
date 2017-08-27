@@ -107,12 +107,7 @@ module Api
 
             punishment = Punishment.current_ban(@user)
             session = unless punishment
-                if params[:start_session]
-                    Session.start!(server: @server, user: @user, ip: ip, version: version)
-                elsif recent = @user.current_session
-                    recent.version = version
-                    recent.save!
-                end
+                (Session.start!(server: @server, user: @user, ip: ip) if params[:start_session])
             end
 
             respond_to_login(route_to_server: route_to_server, punishment: punishment, session: session)
