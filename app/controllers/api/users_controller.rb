@@ -181,7 +181,7 @@ module Api
             group = Group.by_name(required_param(:group)) or raise NotFound
             case required_param(:type)
             when 'join'
-                model_instance.join_group(group, stop: time_param(:end)) unless model_instance.in_group?(group)
+                model_instance.join_group(group, stop: params[:end] != nil ? time_param(:end) : nil) unless model_instance.in_group?(group)
             when 'leave'
                 model_instance.leave_group(group) if model_instance.in_group?(group, false)
             when 'expire'
