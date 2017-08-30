@@ -1,13 +1,13 @@
 module BUNNY
-    HOST1 = ENV['RABBIT_HOST'] || 'localhost'
-    HOST2 = ENV['RABBIT_HOST_2'] || HOST1
+    HOST = ENV['RABBIT_HOST'] || 'localhost'
+    HOST2 = ENV['RABBIT_HOST_2'] || HOST
     HOST3 = ENV['RABBIT_HOST_3'] || HOST2
     USER = ENV['RABBIT_USER'] || 'guest'
     PASSWORD = ENV['RABBIT_PASSWORD'] || 'guest'
     CONFIG = {
         production: -> {
             {
-                hosts: [HOST1, HOST2, HOST3].compact,
+                hosts: [HOST, HOST2, HOST3].compact,
                 user: USER,
                 password: PASSWORD
             }
