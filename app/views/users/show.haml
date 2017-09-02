@@ -76,15 +76,15 @@
                     .hidden-sm.hidden-xs
                         = join_safe(@kills[0...16].map{|kill| avatar_for(kill.victim_obj, 32, hover: true, link: true)})
                     .name kills
-                    .number{:rel => (big_stat(kills) ? 'tooltip' : ''), :title => "#{kills} kills", :data => {:placement => 'top'}}
-                        = big_stat(kills) ? number_to_human(kills, :format => '%n%u', :units => { :thousand => 'k' }, :precision => 4) : kills
+                    .number{:rel => (mega_stat(kills) ? 'tooltip' : ''), :title => "#{kills} kills", :data => {:placement => 'top'}}
+                        = mega_stat(kills) ? number_to_human(kills, :format => '%n%u', :units => { :thousand => 'k' }, :precision => 4) : kills
                 .col-md-4
                     - deaths = @stats.pretty_stat(:deaths)
                     .hidden-sm.hidden-xs
                         = join_safe(@deaths[0...16].map{|death| avatar_for(death.killer_obj, 32, hover: true, link: true)})
                     .name deaths
-                    .number{:rel => (big_stat(deaths) ? 'tooltip' : ''), :title => "#{deaths} deaths", :data => {:placement => 'top'}}
-                        = big_stat(deaths) ? number_to_human(deaths, :format => '%n%u', :units => { :thousand => 'k' }, :precision => 4) : deaths
+                    .number{:rel => (mega_stat(deaths) ? 'tooltip' : ''), :title => "#{deaths} deaths", :data => {:placement => 'top'}}
+                        = mega_stat(deaths) ? number_to_human(deaths, :format => '%n%u', :units => { :thousand => 'k' }, :precision => 4) : deaths
                 .col-md-4
                     .hidden-sm.hidden-xs
                         = join_safe(@friends.map{|friend| avatar_for(friend, 32, hover: true, link: true, glow: true) })
@@ -97,36 +97,27 @@
         .col-md-4.col-sm-6.col-xs-12
             .stats
                 .well
-                    - if @ordinal
-                        .rank>
-                            .name rank
-                            %a.number{href: url_for(controller: 'users', action: 'leaderboard', page: @ordinal_page)}
-                                = @ordinal
-                                %sup>= @ordinal.ordinalize[-2..-1]
-                        .rank>
-                            .name rating
-                            .number{rel: 'tooltip',
-                                    title: "1 + (wins - losses) / max(matches, #{Ranking::CONFIDENT_MATCHES})",
-                                    data: {placement: 'bottom'}}
-                                = @ranking.formatted_rating
-                    - else
-                        .unqualified
-                            %a{href: url_for(controller: 'users', action: 'leaderboard')}
-                                not enough recent matches for ranking
+                    .rank>
+                        .number 
+                            = PlayerStat.for_period('eternity').for_user(@player).rank('kills')
+                            %sup>= PlayerStat.for_period('eternity').for_user(@player).rank('kills').ordinalize[-2..-1]
+                    .unqualified
+                        %a{href: url_for(controller: 'users', action: 'stats')}
+                            overall in kills
                     .rule
                     %div
                         .total>
-                            .name matches
-                            .number= @ranking.value.match_count
+                            .number= @stats.pretty_stat(:kd).round(1)
+                            .name kd
                         .total>
-                            .name wins
-                            .number= @ranking.value.wins
+                            .number= @stats.pretty_stat(:kk).round(1)
+                            .name kk
                         .total>
-                            .name losses
-                            .number= @ranking.value.losses
+                            .number= big_stat(@player.raindrops) ? number_to_human(@player.raindrops, :format => '%n%u', :units => { :thousand => 'k', :million => 'm' }, :precision => 3) : @player.raindrops
+                            .name droplets
                         .total>
-                            .name forfeits
-                            .number= @ranking.value.forfeits
+                            .number= @objectives.size
+                            .name objectives
 %section
     .row
         .col-md-12
@@ -136,8 +127,6 @@
                         %a{:href => '#about', :data => {:toggle => 'tab'}} About
                     %li
                         %a{:href => '#trophycase', :data => {:toggle => 'tab'}} Trophy Case
-                    %li
-                        %a{:href => '#stats', :data => {:toggle => 'tab'}} Stats
                     %li
                         %a{:href => '#pvp-encounters', :data => {:toggle => 'tab'}} PvP
                     %li
@@ -262,66 +251,6 @@
                                 - else
                                     %pre
                                         Nothing here yet.
-                    .tab-pane#stats
-                        .row
-                            .col-md-3.col-sm-6
-                                %h3{:rel => "tooltip", :title => "First joined on " + vague_format_time(@initial_join), :data => {:placement => "top"}}
-                                    = @days_here
-                                    %small days since first seen
-                            .col-md-3.col-sm-6
-                                %h3
-                                    = @hours_played
-                                    %small hours played
-                            .col-md-3.col-sm-6
-                                %h3
-                                    = @teams_joined
-                                    %small teams joined
-                            .col-md-3.col-sm-6
-                                %h3
-                                    = @player.raindrops
-                                    %small raindrops
-                        %hr
-                        %h4 Forum Stats
-                        .row
-                            .col-md-3.col-sm-6
-                                %h3
-                                    = @forum_posts
-                                    %small forum posts
-                            .col-md-3.col-sm-6
-                                %h3
-                                    = @topics_created
-                                    %small topics started
-                        - @families.each do |name, id|
-                            %hr
-                            %h4
-                                #{name} Stats
-                            .row
-                                .col-md-4
-                                    .row
-                                        .col-sm-6
-                                            %h3
-                                                = @stats.pretty_stat(:kills, id)
-                                                %small kills
-                                        .col-sm-6
-                                            %h3
-                                                = @stats.pretty_stat(:deaths, id)
-                                                %small deaths
-                                .col-md-3
-                                    .row
-                                        .col-sm-6
-                                            %h3
-                                                = @stats.pretty_stat(:kd, id)
-                                                %small kd
-                                        .col-sm-6
-                                            %h3
-                                                = @stats.pretty_stat(:kk, id)
-                                                %small kk
-                                .col-md-5
-                                    .row
-                                        .col-md-6
-                                            %h3
-                                                = (@stats.stat(:playing_time, id).to_f / 1000 / 60 / 60 / 24).round(2)
-                                                %small days played
                     .tab-pane#pvp-encounters
                         .row
                             - if !@encounters.empty?

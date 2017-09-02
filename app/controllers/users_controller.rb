@@ -160,10 +160,6 @@ class UsersController < ApplicationController
             "eternity" => "all time"
         }
         @families = {
-            "pgm-public" => "Objectives/Deathmatch",
-            "mini" => "Mini",
-            "blitz-public" => "Blitz",
-            "micro" => "Micro",
             "global" => "all games"
         }
         @sorts = {

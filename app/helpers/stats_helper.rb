@@ -26,7 +26,10 @@ module StatsHelper
         end
     end
 
-    def big_stat(num)
+    def mega_stat(num)
         num >= 100_000
+    end    
+    def big_stat(num)
+        num >= 1_000
     end
 end
