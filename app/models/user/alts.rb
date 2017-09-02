@@ -5,8 +5,7 @@ class User
 
         def alts
             request_cache.cache(:alts) do
-                [] # Kubernetes normalized ips to the host ip, need to fix this with a reverse proxy
-                #self.class.in(mc_ips: mc_ips).reject{|u| u == self }.sort_by(&:last_seen_by).reverse
+                self.class.in(mc_ips: mc_ips).reject{|u| u == self }.sort_by(&:last_seen_by).reverse
             end
         end
 
