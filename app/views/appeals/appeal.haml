@@ -2,14 +2,11 @@
 
 %section
     .page-header
-        %h1
+        %h2
             Appeal Punishments
             %a.btn.btn-default.pull-right{:href => appeals_path}
                 %i.fa.fa-tasks
                 All Appeals
-    .row
-        .col-md-12
-            %p Looking to appeal a punishment? Please take the following information into consideration before appealing.
     .row
         .col-md-4
             %h4 What can be appealed?
@@ -27,6 +24,7 @@
         .col-md-6.col-md-offset-3.col-xs-8.col-xs-offset-2.text-center
             - if user_signed_in?
                 - if !@can_appeal
+                    %br
                     .alert.alert-info You don't have punishments to appeal or appeals to view
                 %a.btn.btn-lg.btn-primary{:href => (!@can_appeal ? "#" : new_appeal_path), :class => (@punishments == 0 ? "disabled" : "")} Ok, let's go &raquo;
             - else

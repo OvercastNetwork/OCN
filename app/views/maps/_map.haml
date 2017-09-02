@@ -3,9 +3,9 @@
         .actions
             .servers
                 - if @servers_by_map_slug && @servers_by_map_slug.include?(map.slug)
-                    %span.label.label-info Now playing on:
+                    %span.label.label-primary Now playing on:
                     - @servers_by_map_slug[map.slug].to_a.each do |server|
-                        %a.label.label-warning{:href => play_path}= server.name
+                        %a.label.label-info{:href => play_path}= server.name
         %a{:href => url_for(controller: 'maps', action: 'show', id: map.slug)}
             %img.img-responsive{:src => map.thumbnail_url, :alt => map.name}
     .caption{:style => "text-align: center;"}

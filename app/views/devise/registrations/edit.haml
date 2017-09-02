@@ -1,7 +1,7 @@
 %section
     .row
         .col-md-4
-            %h2 Login
+            %h2.text-design Login
             %hr
             = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f|
                 .form-group
@@ -19,7 +19,7 @@
                 .form-group
                     = f.submit "Update", :class => "btn btn-primary"
         .col-md-4
-            %h2 Personal
+            %h2.text-design Personal
             %hr
             = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f|
                 .form-group
@@ -37,7 +37,7 @@
                 .form-group
                     = f.submit "Update", :class => "btn btn-primary"
         .col-md-4
-            %h2 Settings
+            %h2.text-design Settings
             %hr
             = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f|
                 .checkbox
@@ -67,7 +67,7 @@
                     = f.submit "Update", :class => "btn btn-primary"
     .row
         .col-md-4
-            %h2 Premium Features
+            %h2.text-design Premium Features
             %hr
             = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f|
                 .form-group{style: "margin-top: 16px;"}
@@ -79,7 +79,7 @@
                 .form-group
                     = f.submit "Update", :class => "btn btn-primary"
         .col-md-8
-            %h2 Connected Accounts
+            %h2.text-design Connected Accounts
             %hr
             .row
                 .col-md-2.col-xs-6.account-label
@@ -108,7 +108,7 @@
                             page.
     .row
         .col-md-12
-            %h2 Other Accounts
+            %h2.text-design Other Accounts
             %hr
             %p
                 These accounts will be linked from your
@@ -153,7 +153,7 @@
     - if current_user.can_edit_verified_profile?
         .row
             .col-md-12
-                %h2 Verified Info
+                %h2.text-design Verified Info
                 %hr
                 %p
                     These fields affect site functionality in various ways, and are trusted to be accurate.
@@ -183,7 +183,7 @@
                     = f.submit "Update", class: "btn btn-primary", style: "margin-top: 28px;"
     .row
         .col-md-12
-            %h2 Profile
+            %h2.text-design Profile
             %hr
             = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f|
                 %p
@@ -205,7 +205,7 @@
     - if current_user.can_auth_with_key?
         .row
             .col-md-12
-                %h2 API Key
+                %h2.text-design API Key
                 %hr
         - if current_user.has_api_key?
             .row

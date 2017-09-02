@@ -3,5 +3,5 @@
         %a{:href => forum_path(forum)}
             - if (unread = forum.unread_topics_for) > 0
                 .unread.pull-right
-                    %span.label.label-warning= unread
+                    %span.label.label-info= unread
             = forum.title

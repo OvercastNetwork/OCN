@@ -1,4 +1,4 @@
 - if category.can_view?(current_user)
-    %h4= category
+    %h4.text-design.center= category
     %ul.nav.nav-pills.nav-stacked
         = render 'forem/forums/listing', :category => category

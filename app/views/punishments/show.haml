@@ -2,7 +2,7 @@
 
 %section.punishment
     .page-header
-        %h1.punished
+        %h2.punished
             Punishment for
             = link_to_user(@punishment.punished)
             %small{:rel => "tooltip", :title => format_time(@punishment.date), :data => {:placement => "bottom", :container => "body"}}

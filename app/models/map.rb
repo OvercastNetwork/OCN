@@ -51,13 +51,9 @@ class Map
         koth:       {name: "King of the Hill"},
         blitz:      {name: "Blitz"},
         rage:       {name: "Rage"},
-        scorebox:   {name: "Scorebox"},
         arcade:     {name: "Arcade"},
-        gs:         {name: "Ghost Squadron"},
         ffa:        {name: "Free-for-all"},
         mixed:      {name: "Mixed"},
-        skywars:    {name: "Skywars"},
-        survival:   {name: "Survival Games"},
     }
 
     field :_id,             type: String, overwrite: true # Derived from other fields, see #normalize
