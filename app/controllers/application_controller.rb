@@ -71,7 +71,7 @@ class ApplicationController < CommonController
         if user_signed_in?
             @admin_nav = [
                 { name: "Charts",        controller: Admin::ChartsController },
-                { name: "Transactions",  controller: Admin::TransactionsController },
+                # { name: "Transactions",  controller: Admin::TransactionsController },
                 { name: "Groups",        controller: Admin::GroupsController },
                 { name: "Users",         controller: Admin::UsersController },
                 { name: "Sessions",      controller: Admin::SessionsController },
@@ -90,7 +90,7 @@ class ApplicationController < CommonController
                 { name: "Profile",       path: user_path(current_user.username) },
                 { name: "Alerts",        path: main_app.alerts_path },
                 { name: "Friendships",   path: main_app.friendships_path },
-                { name: "Transactions",  path: main_app.transactions_path },
+                # { name: "Transactions",  path: main_app.transactions_path },
                 { name: "Reports",       path: main_app.reports_path },
                 { name: "Appeals",       path: main_app.appeals_path },
                 { name: "Account",       path: main_app.edit_user_registration_path },
