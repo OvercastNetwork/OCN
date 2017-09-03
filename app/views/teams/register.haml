@@ -17,7 +17,7 @@
         %input{:type => 'hidden', :name => 'tournament', :value => @tournament.id.to_s}
         .row
             .col-md-12
-                %h4 Player selection
+                %h4.strong Player selection
                 - min = @tournament.min_players_per_team.round
                 = "Please select the players that you wish to participate in the tournament. You must select at least #{min} player#{min > 1 ? 's' : ''}, but may select no more than #{@tournament.max_players_per_team.round}."
                 %br

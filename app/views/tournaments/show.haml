@@ -4,7 +4,7 @@
         %h2
             Tournament Info
 
-    = render partial: 'details'
+    = render partial: "details"
 
     - unless @tournament.hide_teams
         - if @team_info[:registered] && (@tournament.can_register? || @tournament.team_accepted?(@team))
@@ -23,23 +23,23 @@
                                     %th Status
                             %tbody
                                 - @tournament.entrant_for(@team).members.each do |member|
-                                    %tr{:class => member.confirmed? ? 'success' : 'info'}
+                                    %tr{:class => member.confirmed? ? "success" : "info"}
                                         %td
-                                            %a{:href => user_path(member.user), :style => 'color: ' + html_color(member.user)}
+                                            %a{:href => user_path(member.user), :style => "color: " + html_color(member.user)}
                                                 = member.user.username
                                         %td
-                                            = member.confirmed? ? 'Confirmed' : 'Pending'
+                                            = member.confirmed? ? "Confirmed" : "Pending"
                 .col-md-6
                     - if @participation_pending && Tournament.can_participate?(current_user)
                         %p
                             %h4 Your team leader has registered your team for this tournament. Please read the following important information.
                         %p
-                            Your team's registration will not be complete until all selected members have confirmed their     |
+                            Your team"s registration will not be complete until all selected members have confirmed their     |
                             participation in the tournament. Once you confirm your participation, you are committed, and may  |
                             not reverse your decision. Once all selected members have confirmed their participation in the    |
                             tournament, your team will be submitted for approval. This submission is final, and your team     |
                             is expected to follow through. Please think carefully before confirming your participation.
-                        %a.btn.btn-primary{:href => team_confirm_participation_path(@team, :tournament => @tournament.id), :data => {:method => 'post'}} Confirm Participation
+                        %a.btn.btn-primary{:href => team_confirm_participation_path(@team, :tournament => @tournament.id), :data => {:method => "post"}} Confirm Participation
                     - elsif @tournament.entrant_for(@team).user_confirmed?(current_user)
                         - if @team_info[:participation_confirmed]
                             .alert.alert-info
@@ -61,7 +61,7 @@
                             %br
                             - if @team_info[:registered]
                                 - unless @team_info[:participation_confirmed] || Time.now > @tournament.end
-                                    %a.btn.btn-sm.btn-warning{:href => team_unregister_path(@team, :tournament => @tournament.id), :data => {:method => 'post', :confirm => 'Are you sure you want to un-register? All participation pledges will be reset.'}} Un-register
+                                    %a.btn.btn-sm.btn-warning{:href => team_unregister_path(@team, :tournament => @tournament.id), :data => {:method => "post", :confirm => "Are you sure you want to un-register? All participation pledges will be reset."}} Un-register
                             - elsif @tournament.can_register? && Tournament.can_participate?(current_user)
                                 %a.btn.btn-sm.btn-primary{:href => team_register_path(@team, :tournament => @tournament.id)} Register
                     %h2
@@ -69,7 +69,7 @@
                         %small Max players per team: #{@tournament.max_players_per_team.round}
                 - if @teams.nil? || @teams.count < 1
                     %center
-                        %p No registrations to display.
+                        %p.strong No registrations to display.
                 - else
                     .table-container
                         %table.table.table-bordered.table-striped
@@ -87,14 +87,14 @@
                                 - @teams.each_with_index do |team, i|
                                     - members = @tournament.entrant_for(team).confirmed_users.map(&:username)
                                     - participation = @tournament.entrant_for(team)
-                                    %tr{:class => @tournament.team_confirmed?(team) ? (@tournament.team_accepted?(team) ? 'success' : 'info') : 'warning'}
+                                    %tr{:class => @tournament.team_confirmed?(team) ? (@tournament.team_accepted?(team) ? "success" : "info") : "warning"}
                                         %td= i + 1
                                         %td
                                             %a{:href => team_path(team)}
                                                 = team.name
                                         %td
-                                            %a{:href => user_path(team.leader), :style => 'color: ' + html_color(team.leader)}= team.leader
-                                        %td{:rel => 'tooltip', :title => members.to_sentence, :data => {:placement => 'left', :container => 'body'}}
+                                            %a{:href => user_path(team.leader), :style => "color: " + html_color(team.leader)}= team.leader
+                                        %td{:rel => "tooltip", :title => members.to_sentence, :data => {:placement => "left", :container => "body"}}
                                             = members.count
                                         %td
                                             - if @tournament.team_accepted?(team)
@@ -103,14 +103,14 @@
                                                 Waiting for players...
                                             - else
                                                 Waiting for approval...
-                                        %td{:rel => 'tooltip', :title => format_time(participation['registered_at']), :data => {:placement => 'left', :container => 'body'}}
-                                            = time_ago_in_words(participation['registered_at'], false, :vague => true) + ' ago'
+                                        %td{:rel => "tooltip", :title => format_time(participation["registered_at"]), :data => {:placement => "left", :container => "body"}}
+                                            = time_ago_in_words(participation["registered_at"], false, :vague => true) + " ago"
                                         - if @has_actions
                                             %td
                                                 - if Tournament.can_manage?
                                                     %a.btn.btn-xs.btn-primary{:href => tournament_show_team_path(@tournament.url, team_id: team.id)} Manage
-                                                    %a.btn.btn-xs.btn-danger{:href => team_unregister_path(team, :tournament => @tournament.id.to_s), :data => {:method => 'post', :confirm => 'Are you sure you want to un-register this team? All participation pledges will be reset.'}} Un-register
+                                                    %a.btn.btn-xs.btn-danger{:href => team_unregister_path(team, :tournament => @tournament.id.to_s), :data => {:method => "post", :confirm => "Are you sure you want to un-register this team? All participation pledges will be reset."}} Un-register
                                                 - if @tournament.team_accepted?(team) && Tournament.can_decline?(current_user)
-                                                    %a.btn.btn-xs.btn-warning{:href => tournament_decline_team_path(@tournament.url, :team_id => team.id.to_s), :data => {:method => 'post'}} Decline
+                                                    %a.btn.btn-xs.btn-warning{:href => tournament_decline_team_path(@tournament.url, :team_id => team.id.to_s), :data => {:method => "post"}} Decline
                                                 - elsif @tournament.team_confirmed?(team) && Tournament.can_accept?(current_user)
-                                                    %a.btn.btn-xs.btn-success{:href => tournament_accept_team_path(@tournament.url, :team_id => team.id.to_s), :data => {:method => 'post'}} Accept
+                                                    %a.btn.btn-xs.btn-success{:href => tournament_accept_team_path(@tournament.url, :team_id => team.id.to_s), :data => {:method => "post"}} Accept

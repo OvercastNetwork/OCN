@@ -172,14 +172,9 @@ hr {
     margin-bottom: 30px;
 }
 
-.page-header h2 {
-    font-weight: bold;
-}
-
-.page-header h3 {
-    font-weight: bold;
-}
-
+.page-header h2,
+.page-header h3,
+.page-header h4,
 .page-header small {
     font-weight: bold;
 }
@@ -760,14 +755,6 @@ pre.about-me, .about-me pre {
   }
 }
 
-.splash-tile {
-    background-color: #ffffff;
-}
-
-.text-design {
-    font-weight: bold;
-}
-
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:hover,
 .nav-tabs > li.active > a:focus {
@@ -788,4 +775,8 @@ pre {
 
 .breadcrumb {
     background-color: #ffffff;
+}
+
+.strong {
+    font-weight: bold;
 }

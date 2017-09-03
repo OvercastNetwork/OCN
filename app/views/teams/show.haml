@@ -20,7 +20,7 @@
                 .pull-right
                     Mumble Token:
                     %code= @team.mumble_token
-            %h4 Stats
+            %h4.strong Stats
             %hr
             %h3
                 %center
@@ -49,7 +49,7 @@
                             = @stats[:deaths]
     .row
         .col-md-12
-            %h4
+            %h4.strong
                 Members
                 %small= @team.member_count
             %hr
@@ -104,5 +104,5 @@
                     - if Tournament.can_manage?
                         %input.btn.btn-danger{type: 'submit', name: 'submit', value: 'Force Add'}
             .col-md-7
-                %h4 Add Members
+                %h4.strong Add Members
                 %p Adding a user to your team will send them an invitation. Once this invitation is accepted, the user will become a member of your team. Invitations may be cancelled if sent in error.

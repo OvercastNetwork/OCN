@@ -2,7 +2,7 @@
 - per_column = (objectives.size / 3.0).ceil
 .row
     .col-md-12
-        %h2
+        %h2.strong
             = total
             %small= klass.total_description
 .row
@@ -17,8 +17,8 @@
                     on
                     = link_to goal.match.map.name, map_path(goal.match.map)
                     %a.profile-timestamp{:href => match_path(goal.match),
-                                         :rel => 'tooltip',
+                                         :rel => "tooltip",
                                          :title => format_time(goal.date),
-                                         :data => {:placement => 'top', :container => 'body'}}
+                                         :data => {:placement => "top", :container => "body"}}
                         = time_ago_in_words(goal.date)
                         ago

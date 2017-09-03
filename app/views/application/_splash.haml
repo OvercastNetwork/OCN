@@ -19,7 +19,7 @@
                            :rel => "tooltip",
                            :title => "Created " + time_ago_in_words(topic.created_at, false, :vague => true) + " ago",
                            :data => {:placement => "bottom"}}= render_topic_title(topic, emoji_size: 16)
-%section.splash-tile
+%section
     .container{:style => "padding-bottom: 40px"}
         %br
         .row

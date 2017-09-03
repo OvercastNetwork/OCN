@@ -6,14 +6,14 @@
                     %span.label.label-primary Now playing on:
                     - @servers_by_map_slug[map.slug].to_a.each do |server|
                         %a.label.label-info{:href => play_path}= server.name
-        %a{:href => url_for(controller: 'maps', action: 'show', id: map.slug)}
+        %a{:href => url_for(controller: "maps", action: "show", id: map.slug)}
             %img.img-responsive{:src => map.thumbnail_url, :alt => map.name}
-    .caption{:style => "text-align: center;"}
-        %h1.lead= link_to map.name, url_for(controller: 'maps', action: 'show', id: map.slug)
+    .caption.strong{:style => "text-align: center;"}
+        %h1.lead= link_to map.name, url_for(controller: "maps", action: "show", id: map.slug)
         %small
-            = render partial: 'maps/authors', locals: {map: map, limit: 3}
+            = render partial: "maps/authors", locals: {map: map, limit: 3}
         - if @show_map_ratings
-            %div{rel: 'tooltip',
+            %div{rel: "tooltip",
                  title: map.visible_rating_text,
-                 data: {:placement => 'bottom', :container => 'body'}}
-                = render partial: 'maps/stars', locals: {size: 16, score: map.visible_rating(current_user_safe)}
+                 data: {:placement => "bottom", :container => "body"}}
+                = render partial: "maps/stars", locals: {size: 16, score: map.visible_rating(current_user_safe)}

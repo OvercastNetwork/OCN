@@ -1,59 +1,61 @@
 - content_for :title do "Play" end
-%section.clearfix.play
-    .page-header
-        %h2
-            Servers
-            %small Play anywhere, anytime
-    .sidebar>
-        .well.connect
-            .row
-                .col-md-12.connect-header
-                    Connect to
-            %hr
-            .row
-                .col-md-12.connect-padding
-                    - @portal_infos.each do |info|
-                        .row.hostname
-                            %input.input{type: "text", value: info[:portal].hostname, onClick: "this.select();", readonly: true}
-                        .row.details
-                            .col-md-4.col-sm-4.col-xs-4
-                                - if @portal_infos.size > 1
-                                    .location= info[:portal].long_name
-                                - else
-                                    .location Global
-                            .col-md-4.col-sm-4.col-xs-4
-                                %strong= info[:players]
-                                %small players
-                            .col-md-4.col-sm-4.col-xs-4
-                                %strong= info[:servers]
-                                %small servers
-                        %br
-        - unless @friends.empty?
-            .well.seen
+
+%section.play
+    .row{:style => "margin: 0px; margin-top: -20px"}
+        .page-header
+            %h2
+                Servers
+                %small Play anywhere, anytime
+        .sidebar>
+            .well.connect
                 .row
                     .col-md-12.connect-header
-                        Online Friends
+                        Connect to
                 %hr
                 .row
-                    = render partial: 'players_by_server', locals: {servers: @friends, global: @global}
-        - unless @staff.empty?
-            .well.seen
-                .row
-                    .col-md-12.connect-header
-                        Online Staff
-                %hr
-                .row
-                    = render partial: 'players_by_server', locals: {servers: @staff, global: @global}
-    - if @portal_infos.size > 1
-        .navbar-container>
-            .navbar.navbar-default
-                .container-fluid
-                    %ul.nav.navbar-nav
-                        %li{class: ('active' if @global)}
-                            %a{href: play_path} Global
-                        - Portal.listed.each do |portal|
-                            %li{class: ('active' if portal == @portal)}
-                                %a{href: portal_path(portal)}= portal.long_name
-    - @servers.each do |server|
-        .server-container>
-            = render partial: 'server', locals: {server: server, global: @global}
+                    .col-md-12.connect-padding
+                        - @portal_infos.each do |info|
+                            .row.hostname
+                                %input.input{type: "text", value: info[:portal].hostname, onClick: "this.select();", readonly: true}
+                            .row.details
+                                .col-md-4.col-sm-4.col-xs-4
+                                    - if @portal_infos.size > 1
+                                        .location= info[:portal].long_name
+                                    - else
+                                        .location Global
+                                .col-md-4.col-sm-4.col-xs-4
+                                    %strong= info[:players]
+                                    %small players
+                                .col-md-4.col-sm-4.col-xs-4
+                                    %strong= info[:servers]
+                                    %small servers
+                            %br
+            - unless @friends.empty?
+                .well.seen
+                    .row
+                        .col-md-12.connect-header
+                            Online Friends
+                    %hr
+                    .row
+                        = render partial: "players_by_server", locals: {servers: @friends, global: @global}
+            - unless @staff.empty?
+                .well.seen
+                    .row
+                        .col-md-12.connect-header
+                            Online Staff
+                    %hr
+                    .row
+                        = render partial: "players_by_server", locals: {servers: @staff, global: @global}
+        - if @portal_infos.size > 1
+            .navbar-container>
+                .navbar.navbar-default
+                    .container-fluid
+                        %ul.nav.navbar-nav
+                            %li{class: ("active" if @global)}
+                                %a{href: play_path} Global
+                            - Portal.listed.each do |portal|
+                                %li{class: ("active" if portal == @portal)}
+                                    %a{href: portal_path(portal)}= portal.long_name
+        - @servers.each do |server|
+            .server-container>
+                = render partial: "server", locals: {server: server, global: @global}
