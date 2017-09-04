@@ -43,3 +43,8 @@
     height: 32px;
     display: inline-block;
 }
+
+.staff-contact {
+    padding-left: 2px;
+    padding-right: 2px;
+}

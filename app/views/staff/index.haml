@@ -9,7 +9,7 @@
         - next if group.magic? || !User.in_group(group).exists?
         .row.staff-group
             .col-md-12
-                %h2{:style => 'color: ' + group.html_color_css}
+                %h2.strong{:style => 'color: ' + group.html_color_css}
                     = group.name
                     %small= group.members.count
                 %p.small= group.description
@@ -21,12 +21,15 @@
                         .staff-entry
                             %a{:href => user_path(member.username)}
                                 = avatar_for(member.username, 90)
-                                %div.staff-username{:style => "color: #{group.badge_color}; border-bottom-color: #{group.badge_color};" }= member.username
+                                %div.staff-username.strong{:style => "color: #{group.badge_color}; border-bottom-color: #{group.badge_color};" }= member.username
                                 %div.staff-role= member.membership_in(group).staff_role.presence || group.name.singularize
                             %div.staff-social
                                 - if member.twitter
-                                    %a{:href => "http://twitter.com/" + member.twitter, :target => "_blank"}
-                                        %img{src: asset_path('twitter_icon.png')}
+                                    %a.staff-contact{:href => "http://twitter.com/" + member.twitter, :target => "_blank"}
+                                        %i.fa.fa-twitter
                                 - if member.public_email
-                                    %a{:href => "mailto:#{member.public_email}"}
+                                    %a.staff-contact{:href => "mailto:#{member.public_email}"}
                                         %i.fa.fa-envelope
+                                - if member.discord
+                                    %a.staff-contact{:style => "cursor: pointer", :tabindex => "0", :"data-toggle" => "popover", :"data-placement" => "bottom", :"data-trigger" => "focus", :"data-content" => member.discord}
+                                        %i.fa.fa-microphone

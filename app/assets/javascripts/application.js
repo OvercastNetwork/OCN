@@ -14,6 +14,7 @@
 //= require application/register
 //= require application/user
 //= require application/punishments
+//= require application/staff
 
 //= require application/util/dropdown-fix
 //= require application/util/inquire
