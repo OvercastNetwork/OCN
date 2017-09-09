@@ -97,24 +97,30 @@
         .col-md-4.col-sm-6.col-xs-12
             .stats
                 .well
-                    .rank>
-                        .number
-                            = PlayerStat.for_period("eternity").for_user(@player).rank("kills")
-                            %sup>= PlayerStat.for_period("eternity").for_user(@player).rank("kills").ordinalize[-2..-1]
-                    .unqualified
-                        %a{href: url_for(controller: "users", action: "stats")}
+                    - if  (defined? PlayerStat.for_period('eternity').for_user(@player).rank('kills')).nil?
+                        .unqualified
+                            %a{href: url_for(controller: 'users', action: 'stats')}
+                            Player's rank unavailable 
+                    - else
+                        .rank>
+                            .number 
+                                = PlayerStat.for_period('eternity').for_user(@player).rank('kills')
+                                %sup>= PlayerStat.for_period('eternity').for_user(@player).rank('kills').ordinalize[-2..-1]
+                        .unqualified
+                            %a{href: url_for(controller: 'users', action: 'stats')}
                             overall in kills
                     .rule
                     %div
-                        .total>
-                            .number= @stats.pretty_stat(:kd).round(1)
-                            .name kd
-                        .total>
-                            .number= @stats.pretty_stat(:kk).round(1)
-                            .name kk
-                        .total>
-                            .number= big_stat(@player.raindrops) ? number_to_human(@player.raindrops, :format => "%n%u", :units => { :thousand => "k", :million => "m" }, :precision => 3) : @player.raindrops
-                            .name droplets
+                        .wellstats
+                            .total>
+                                .number= @stats.pretty_stat(:kd).round(1)
+                                .name kd
+                            .total>
+                                .number= @stats.pretty_stat(:kk).round(1)
+                                .name kk
+                            .total>
+                                .number= big_stat(@player.raindrops) ? number_to_human(@player.raindrops, :format => "%n%u", :units => { :thousand => "k", :million => "m" }, :precision => 3) : @player.raindrops
+                                .name droplets
 %section
     .row
         .col-md-12

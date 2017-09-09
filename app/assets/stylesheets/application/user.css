@@ -113,7 +113,9 @@
     color: rgb(153, 153, 153);
     text-align: center;
 }
-
+.stats .wellstats {
+    text-align: center;
+}
 .stats .rule {
     background-color: #ddd;
     height: 1px;
