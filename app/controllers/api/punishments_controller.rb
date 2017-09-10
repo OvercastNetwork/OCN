@@ -6,7 +6,8 @@ module Api
             attrs = document_param
             if attrs['off_record']
                 # Broadcast but don't persist
-                model_class.new(attrs).publish_sync_message
+                model_class.new(attrs).api_announce!
+                respond 200
             else
                 super
             end

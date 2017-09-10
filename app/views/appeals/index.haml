@@ -11,7 +11,7 @@
                     %li{:class => (sort == @sort ? 'active' : "")}
                         %a{:href => appeals_path + '?sort=' + sort + (@punisher ? "&punisher=#{@punisher.username}" : '')}
                             = sort.capitalize
-        %h1
+        %h2
             Appeals
             %small<
                 - if @punisher

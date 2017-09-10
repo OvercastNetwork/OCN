@@ -10,6 +10,7 @@ class Session
     field :start, type: Time
     field :end, type: Time
     field :ip
+    field :version
     field :post_term, :type => Boolean # whether or not the session was ended improperly [WTF is this?]
 
     field :staff, type: Boolean
@@ -29,7 +30,7 @@ class Session
 
     validates_presence_of :family, :start, :user, :ip, :server
 
-    api_property :server_id, :nickname, :nickname_lower, :ip, :start, :end
+    api_property :server_id, :nickname, :nickname_lower, :ip, :start, :end, :version
 
     api_synthetic :family_id do
         family
@@ -45,7 +46,7 @@ class Session
     index({server_id: 1})
     index({nickname_lower: 1})
     index(INDEX_ip_start = {ip: 1, start: -1})
-
+    index(INDEX_version_start = {version: 1, start: -1})
     index(INDEX_user_start = {user: 1, start: -1})
     index(INDEX_user_ip_start = {user: 1, ip: 1, start: -1})
     index(INDEX_user_nickname_start = {user: 1, nickname_lower: 1, start: -1})
@@ -120,14 +121,14 @@ class Session
             sessions
         end
 
-        def start!(server:, user:, ip:, old_session: nil, now: Time.now.utc, **attrs)
+        def start!(server:, user:, ip:, version:, old_session: nil, now: Time.now.utc, **attrs)
             if old_session or old_session = last_online_started_by(user)
                 # Finish old session without side-effects, because the new session will cause those effects.
                 old_session.update(end: now, post_term: true)
                 old_session.update_sightings!
             end
 
-            new_session = new(start: now, server: server, player: user, ip: ip, **attrs)
+            new_session = new(start: now, server: server, player: user, ip: ip, version: version, **attrs)
             new_session.denormalize_nickname
             new_session.save!
             new_session.update_sightings!

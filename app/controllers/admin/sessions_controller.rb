@@ -19,9 +19,13 @@ module Admin
             if @ip = params[:ip] and !@ip.blank?
                 @sessions = @sessions.where(ip: @ip)
             end
-
+            if @nickname = params[:nickname] and !@nickname.blank?
+                @sessions = @sessions.where(nickname_lower: @nickname.downcase)
+            end
             hint = if @user
-                if @ip
+                if @nickname
+                    Session::INDEX_user_nickname_start
+                elsif @ip
                     Session::INDEX_user_ip_start
                 else
                     Session::INDEX_user_start

@@ -21,6 +21,13 @@ class User
             index({mc_first_sign_in_at: 1})
             index({mc_last_sign_in_at: 1})
             index({mc_ips: 1})
+
+            after_save do
+                if session = current_session
+                    session.version = mc_client_version
+                    session.save!
+                end
+            end
         end
 
         module Errors

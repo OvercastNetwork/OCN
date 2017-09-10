@@ -22,9 +22,21 @@ class Portal
     end
 
     define do
-        portal 'DC' do
-            long_name "Global"
-            hostname "dc.#{ORG::DOMAIN}"
+        portal 'US' do
+            long_name "America"
+            hostname "us.#{ORG::DOMAIN}"
+            listed? true
+        end
+
+        portal 'EU' do
+            long_name "Europe"
+            hostname "eu.#{ORG::DOMAIN}"
+            listed? true
+        end
+
+        portal 'AU' do
+            long_name "Australia"
+            hostname "au.#{ORG::DOMAIN}"
             listed? true
         end
 

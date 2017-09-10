@@ -1,68 +1,66 @@
 %footer
     .row
-        .col-md-2.col-sm-4.col-xs-6
-            %ul.nav.nav-pills.nav-stacked
-                %li.heading
-                    Policies
-                %li
-                    %a Player Rules
-                %li
-                    %a Terms of Service
-                %li
-                    %a Privacy Policy
-                %li
-                    %a Refund Policy
-        .col-md-2.col-sm-4.col-xs-6
-            %ul.nav.nav-pills.nav-stacked
-                %li.heading
-                    Moderation
-                %li
-                    %a{:href => main_app.start_report_path} Report a Player
-                %li
-                    %a{:href => main_app.start_appeal_path} Appeal a Punishment
-                %li
-                    %a{:href => main_app.punishments_path} Recent Punishments
-        .clearfix.visible-xs-block{style: "padding-bottom: 20px;"}
-        .col-md-2.col-sm-4.col-xs-6
-            %ul.nav.nav-pills.nav-stacked
-                %li.heading
-                    Organization
-                %li
-                    %a{:href => main_app.staff_index_path} Staff Listing
-                %li
-                    %a{href: main_app.revisions_path} Development Logs
-                %li
-                    %a{href: "https://github.com/OvercastNetwork/Issues"} Report a Bug
-        .clearfix.visible-sm-block{style: "padding-bottom: 20px;"}
-        .col-md-2.col-sm-4.col-xs-6
-            %ul.nav.nav-pills.nav-stacked
-                %li.heading
-                    Contact Us
-                %li
-                    %a.inquiry{href: "#contact", data: {toggle: "modal"}} General Inquiries
-                %li
-                    %a.inquiry{href: "#contact", data: {toggle: "modal"}} Shop Purchases
-                %li
-                    %a{:href => main_app.start_appeal_path} Ban Appeals
-        .clearfix.visible-xs-block{style: "padding-bottom: 20px;"}
-        .col-md-2.col-sm-4
-            %ul.nav.nav-pills.nav-stacked.follow-us
-                %li.heading
-                    Follow Us
-                %li
-                    %a{href: "https://twitter.com/..."}
-                        %img{src: asset_path('twitter_icon.png')}
-                        Twitter
-                    %a{href: "https://www.facebook.com/..."}
-                        %img{src: asset_path('facebook_icon.png')}
-                        Facebook
-                    %a{href: "https://www.youtube.com/c/..."}
-                        %img{src: asset_path('youtube_icon.png')}
-                        YouTube
-                    %a{href: "http://www.twitch.tv/..."}
-                        %img{src: asset_path('twitch_icon.png')}
-                        Twitch
-        .clearfix.visible-xs-block{style: "padding-bottom: 20px;"}
-        .col-md-2.col-sm-4{style: "text-align: center;"}
-            .copyright
-                &copy; #{Time.now.year} #{ORG::NAME}
+        .center
+            .col-md-2.col-sm-4.col-xs-6.col-md-offset-1
+                %ul.nav.nav-pills.nav-stacked
+                    %li.heading
+                        Policies
+                    %li
+                        %a Player Rules
+                    %li
+                        %a Terms of Service
+                    %li
+                        %a Privacy Policy
+                    %li
+                        %a Refund Policy
+            .col-md-2.col-sm-4.col-xs-6
+                %ul.nav.nav-pills.nav-stacked
+                    %li.heading
+                        Moderation
+                    %li
+                        %a{:href => main_app.start_report_path} Report a Player
+                    %li
+                        %a{:href => main_app.start_appeal_path} Appeal a Punishment
+                    %li
+                        %a{:href => main_app.punishments_path} Recent Punishments
+            .clearfix.visible-xs-block{style: "padding-bottom: 20px;"}
+            .col-md-2.col-sm-4.col-xs-6
+                %ul.nav.nav-pills.nav-stacked
+                    %li.heading
+                        Organization
+                    %li
+                        %a{:href => main_app.staff_index_path} Staff Listing
+                    %li
+                        %a{href: main_app.revisions_path} Development Logs
+                    %li
+                        %a{href: "https://github.com/StratusNetwork/Issues"} Report a Bug
+            .clearfix.visible-sm-block{style: "padding-bottom: 20px;"}
+            .col-md-2.col-sm-4.col-xs-6
+                %ul.nav.nav-pills.nav-stacked
+                    %li.heading
+                        Contact Us
+                    %li
+                        %a.inquiry{href: "#contact", data: {toggle: "modal"}} General Inquiries
+                    %li
+                        %a.inquiry{href: "#contact", data: {toggle: "modal"}} Shop Purchases
+                    %li
+                        %a{:href => main_app.start_appeal_path} Ban Appeals
+            .clearfix.visible-xs-block{style: "padding-bottom: 20px;"}
+            .col-md-2.col-sm-4
+                %ul.nav.nav-pills.nav-stacked.follow-us
+                    %li.heading
+                        Get Involved
+                    %li
+                        %a{href: "https://twitter.com/stratusmc"}
+                            %i.fa.fa-twitter
+                            Twitter
+                        %a{href: "https://discord.me/stratus"}
+                            %i.fa.fa-microphone
+                            Discord
+                        %a{href: "https://github.com/StratusNetwork"}
+                            %i.fa.fa-github
+                            Github
+    %hr
+    .row
+        .center{:style => "font-weight: bold"}
+            &copy; #{Time.now.year} #{ORG::NAME}

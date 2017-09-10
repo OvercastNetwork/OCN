@@ -1,7 +1,7 @@
 %section
     .row
         .col-md-4
-            %h2 Login
+            %h2.text-design Login
             %hr
             = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f|
                 .form-group
@@ -19,7 +19,7 @@
                 .form-group
                     = f.submit "Update", :class => "btn btn-primary"
         .col-md-4
-            %h2 Personal
+            %h2.text-design Personal
             %hr
             = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f|
                 .form-group
@@ -37,7 +37,7 @@
                 .form-group
                     = f.submit "Update", :class => "btn btn-primary"
         .col-md-4
-            %h2 Settings
+            %h2.text-design Settings
             %hr
             = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f|
                 .checkbox
@@ -66,8 +66,20 @@
                 .form-group
                     = f.submit "Update", :class => "btn btn-primary"
     .row
-        .col-md-12
-            %h2 Connected Accounts
+        .col-md-4
+            %h2.text-design Premium Features
+            %hr
+            = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f|
+                .form-group{style: "margin-top: 16px;"}
+                    = f.label :default_server_id, 'Default Server'
+                    = f.select :default_server_id, [nil, *Server.bukkits.searchable.sort_by(&:name).map{|s| [s.name, s.id]}], { :model => Server }, :class => 'form-control', :disabled => !@user.can_set_default_server?
+                .form-group{style: "margin-top: 16px;"}
+                    = f.label :death_screen, 'Death Screen'
+                    = f.select :death_screen, User.death_screens.invert, { :model => String }, :class => 'form-control', :disabled => !@user.can_set_death_screen?
+                .form-group
+                    = f.submit "Update", :class => "btn btn-primary"
+        .col-md-8
+            %h2.text-design Connected Accounts
             %hr
             .row
                 .col-md-2.col-xs-6.account-label
@@ -75,9 +87,11 @@
                         - if current_user.find_oauth2_token_for(:youtube)
                             .label.label-success Connected
                         - else
-                            .label.label-default Not Connected
+                            -#.label.label-default Not Connected
+                            .label.label-default Coming Soon
                 .col-md-2.col-xs-6.account-logo
-                    %a{href: oauth2_authorize_path(service: 'youtube')}
+                    %a
+                        -# {href: oauth2_authorize_path(service: 'youtube')}
                         %img{src: image_path("youtube120.png")}
                 .col-md-8
                     - if current_user.find_oauth2_token_for(:youtube)
@@ -94,7 +108,7 @@
                             page.
     .row
         .col-md-12
-            %h2 Other Accounts
+            %h2.text-design Other Accounts
             %hr
             %p
                 These accounts will be linked from your
@@ -139,7 +153,7 @@
     - if current_user.can_edit_verified_profile?
         .row
             .col-md-12
-                %h2 Verified Info
+                %h2.text-design Verified Info
                 %hr
                 %p
                     These fields affect site functionality in various ways, and are trusted to be accurate.
@@ -169,7 +183,7 @@
                     = f.submit "Update", class: "btn btn-primary", style: "margin-top: 28px;"
     .row
         .col-md-12
-            %h2 Profile
+            %h2.text-design Profile
             %hr
             = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f|
                 %p
@@ -191,7 +205,7 @@
     - if current_user.can_auth_with_key?
         .row
             .col-md-12
-                %h2 API Key
+                %h2.text-design API Key
                 %hr
         - if current_user.has_api_key?
             .row

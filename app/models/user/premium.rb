@@ -5,7 +5,7 @@ class User
         include Login
 
         TRIAL_LENGTH = 7.days
-        TRIAL_CUTOFF = Time.utc(2015, 4, 11) # Only users who joined after this date are eligible
+        TRIAL_CUTOFF = Time.utc(2017, 8, 21) # Only users who joined after this date are eligible
         TRIAL_GROUP_NAME = '_trial'
 
         class << self
@@ -18,9 +18,6 @@ class User
             field :trial_started_at, type: Time
             field :allow_package_gifts, type: Boolean, default: true
             field :shop_lockout_at, type: Time
-
-            field :gifts_given, type: Integer, default: 0      # Secret Santa 2013
-            field :gifts_given_2, type: Integer, default: 0    # Secret Santa 2014
 
             has_many :transactions
 

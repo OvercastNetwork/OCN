@@ -4,13 +4,9 @@ class Server
         include RequestCacheable
 
         included do
-            # {
-            #     rotation_name => {
-            #         "maps" => [map_name, map_name, ...],
-            #         "next" => map_index
-            #     }
-            # }
-            field :rotations, type: Hash
+            field :rotations, type: Array, default: [].freeze
+            attr_accessible :rotations
+            api_property :rotations
 
             field :rotation_file, type: String # relative to rotations repo root
 

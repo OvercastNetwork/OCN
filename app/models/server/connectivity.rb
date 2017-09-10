@@ -16,6 +16,7 @@ class Server
             # For Bungees, this is a public routable IP. For servers behind
             # the proxy, this is an internal hostname like "chi01.lan".
             field :ip, type: String
+            attr_accessible :ip
 
             # Explicit port set in the server control panel. If this is nil,
             # the server will allocate a port dynamically on startup and report
@@ -29,9 +30,12 @@ class Server
 
             attr_cloneable :datacenter
 
-            api_property :datacenter, :current_port
-            api_synthetic :ip
+            api_property :datacenter, :ip, :current_port
             api_synthetic :box, :box_id   # TODO: rename the Java field
+
+            api_synthetic :domain do
+                connect_to
+            end
 
             before_event :startup do
                 self.current_port = current_port.to_i

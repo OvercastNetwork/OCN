@@ -40,6 +40,8 @@ class RegistrationsController < Devise::RegistrationsController
         form = params[:user]
         form.delete_if{|key, value| banned_updates.include? key.to_sym}
 
+        # FIXME: Check permissions before changing default server and death screen
+        # return redirect_to_back edit_user_registration_path, :alert => 'You must be a premium user to change your default server' unless @user.can_set_default_server?
         return redirect_to_back edit_user_registration_path, :alert => 'Invalid gender specified' unless ['Male', 'Female', '', nil].include? form[:gender]
 
         email_available = User.email_available?(form[:email])
@@ -83,7 +85,7 @@ class RegistrationsController < Devise::RegistrationsController
                 msg = "Your new passwords do not match." if form[:password] != form[:password_confirmation]
                 msg = "You did not change your email or password" if !email_changed && !password_changed
             else
-                msg = "Your need your current password to change your email or password." if email_changed || password_changed
+                msg = "You need your current password to change your email or password." if email_changed || password_changed
             end
 
             msg = "Your new email is already taken" if email_changed && !email_available

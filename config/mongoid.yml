@@ -21,7 +21,7 @@ staging:
     default:
       database: pgm-prod
       hosts:
-        - localhost:27017
+        - mongo.backend:27017
   options:
     raise_not_found_error: false
 
@@ -30,6 +30,6 @@ production:
     default:
       database: pgm-prod
       hosts:
-        - localhost:27017
+        - mongo.backend:27017
   options:
     raise_not_found_error: false

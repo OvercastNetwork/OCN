@@ -27,6 +27,8 @@ class FriendshipsController < ApplicationController
     def create
         return_to user_path(user = model_param(User, :user_id))
 
+        current_user_safe.can_request_friends? or raise Back.new(alert: "You must upgrade to a premium rank to add more than #{Friendship.max_default_friends} friends")
+
         if friendship = Friendship.betwixt(current_user_safe, user).one
             friendship.accepted? and raise Back.new(alert: "You are already friends with #{user.username}")
             friendship.friender == current_user_safe and raise Back.new(alert: "You have already requested to be friends with #{user.username}")

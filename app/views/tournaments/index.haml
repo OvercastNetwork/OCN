@@ -3,7 +3,7 @@
 %section
     - unless @active_tournaments.empty?
         .page-header
-            %h1
+            %h2
                 = "Current Tournament".pluralize(@active_tournaments.size)
         -@active_tournaments.each do |tournament|
             .row
@@ -12,7 +12,7 @@
 
     - unless @inactive_tournaments.empty?
         .page-header
-            %h1
+            %h2
                 Past Tournaments
         -@inactive_tournaments.each do |tournament|
             .row

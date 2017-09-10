@@ -3,6 +3,7 @@ class Friendship
     store_in :database => "oc_friendships"
 
     include Subscribable
+    include ApiModel
 
     class Alert < Subscription::Alert
         include UserHelper
@@ -69,6 +70,28 @@ class Friendship
 
     attr_accessible :users, :user_ids, :decision
 
+    api_property :sent_date, :decision_date
+
+    api_synthetic :friender do
+        friender.player_id
+    end
+
+    api_synthetic :friended do
+        friended.player_id
+    end
+
+    api_synthetic :undecided do
+        decision == nil
+    end
+
+    api_synthetic :accepted do
+        decision == true
+    end
+
+    api_synthetic :rejected do
+        decision == false
+    end
+
     scope :involving, -> (user) { where(user_ids: user.id) }
     scope :friender, -> (user) { where('user_ids.0' => user.id) }
     scope :friended, -> (user) { where('user_ids.1' => user.id) }
@@ -81,6 +104,10 @@ class Friendship
     scope :rejected, where(decision: false)
 
     class << self
+        def max_default_friends
+            16
+        end
+
         def user_ids(except: nil)
             all.flat_map(&:user_ids).uniq - [*except].map(&:id)
         end
@@ -104,6 +131,7 @@ class Friendship
     end
 
     before_create do
+        self.friender.can_request_friends?
         self.sent_date ||= Time.now
     end
 
@@ -130,6 +158,13 @@ class Friendship
     def clear_cache
         friender.clear_friendship_cache
         friended.clear_friendship_cache
+    end
+
+    def decide!(value)
+        if undecided?
+            self.decision = value
+            self.save!
+        end
     end
 
     def undecided?

@@ -25,14 +25,10 @@
                         %b.caret
                     %ul.dropdown-menu
                         %li
-                            %a{:href => main_app.url_for(controller: '/users', action: 'leaderboard')}
-                                %i.fa.fa-star
-                                Rankings
-                        %li
                             %a{:href => main_app.url_for(controller: '/users', action: 'stats')}
                                 %i.fa.fa-line-chart
                                 Stats
-                        %li
+                        -# %li
                             %a{:href => main_app.channels_path}
                                 %i.fa.fa-youtube-play
                                 Channels
@@ -56,11 +52,10 @@
                     %a{:href => main_app.forem_path}
                         %i.fa.fa-comments
                         Forum
-                -# SHUTDOWN
-                -# %li{:class => ('active' if 'shop' == controller_name)}
-                    -# %a{:href => main_app.shop_path}
-                        -# %i.fa.fa-shopping-cart
-                        -# Shop
+                %li{:class => ('active' if 'shop' == controller_name)}
+                    %a{:href => main_app.shop_path}
+                        %i.fa.fa-shopping-cart
+                        Shop
             %hr.visible-xs.visible-sm{:style => 'margin: 4px; border-color: #e7e7e7;'}
             %ul.nav.navbar-nav.pull-right
                 - if @nav_live

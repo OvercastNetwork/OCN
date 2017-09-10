@@ -9,7 +9,9 @@ class Server
         included do
             field :role, type: Role, default: Role::PGM
             scope :role, -> (role) { where(role: role)}
+            scope :not_role, -> (role) { ne(role: role) }
 
+            scope :bukkits, not_role(Role::BUNGEE)
             scope :bungees, role(Role::BUNGEE)
             scope :lobbies, role(Role::LOBBY)
             scope :pgms, role(Role::PGM)

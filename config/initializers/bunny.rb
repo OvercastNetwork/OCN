@@ -1,25 +1,30 @@
 module BUNNY
+    HOST = ENV['RABBIT_HOST'] || 'localhost'
+    HOST2 = ENV['RABBIT_HOST_2'] || HOST
+    HOST3 = ENV['RABBIT_HOST_3'] || HOST2
+    USER = ENV['RABBIT_USER'] || 'guest'
+    PASSWORD = ENV['RABBIT_PASSWORD'] || 'guest'
     CONFIG = {
         production: -> {
             {
-                hosts: (1..3).map{|n| "mq#{n}" },
-                user: "overcast",
-                password: "overcast"
+                hosts: [HOST, HOST2, HOST3].compact,
+                user: USER,
+                password: PASSWORD
             }
         },
         development: -> {
             {
-                host: "localhost",
-                user: "guest",
-                password: "guest"
+                host: HOST,
+                user: USER,
+                password: PASSWORD
             }
         },
         test: -> {
             {
-                host: "localhost",
-                port: 6783,
-                user: "guest",
-                password: "guest"
+                host: HOST,
+                user: USER,
+                password: PASSWORD,
+                port: 6783
             }
         }
     }

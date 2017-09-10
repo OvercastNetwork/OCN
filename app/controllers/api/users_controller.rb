@@ -1,6 +1,7 @@
 module Api
     class UsersController < ModelController
         controller_for User
+        include FormattingHelper
 
         def by_username
             user = User.by_username(params[:username]) or raise NotFound
@@ -50,9 +51,10 @@ module Api
             uuid = params[:uuid]
             ip = params[:ip]
             virtual_host = params[:virtual_host]
+            version = params[:mc_client_version]
 
             message = begin
-                @user = User.login(uuid, username, ip, mc_client_version: params[:mc_client_version])
+                @user = User.login(uuid, username, ip, mc_client_version: version)
                 nil
             rescue User::Login::Errors::BadUsername
                 "Your username \"#{username}\" contains illegal characters.\n" +
@@ -99,9 +101,13 @@ module Api
                 route_to_server = s.bungee_name
             end
 
+            if default_route_to_server = @user.default_server_route
+                route_to_server = default_route_to_server
+            end
+
             punishment = Punishment.current_ban(@user)
             session = unless punishment
-                (Session.start!(server: @server, user: @user, ip: ip) if params[:start_session])
+                (Session.start!(server: @server, user: @user, ip: ip, version: version) if params[:start_session])
             end
 
             respond_to_login(route_to_server: route_to_server, punishment: punishment, session: session)
@@ -112,15 +118,6 @@ module Api
             respond
         end
 
-        def credit_raindrops
-            if user = model_instance.credit_raindrops(int_param(:raindrops))
-                respond success: true,
-                        user: user.api_document
-            else
-                respond success: false
-            end
-        end
-
         def purchase_gizmo
             group = Group.for_gizmo(params[:gizmo_name]).one or raise NotFound
             price = int_param(:price)
@@ -129,6 +126,30 @@ module Api
                 show
             else
                 raise Forbidden, "user cannot purchase that gizmo"
+            end
+        end
+
+        def credit_tokens
+            if user = model_instance.credit_tokens(params[:type], int_param(:amount))
+                respond success: true, user: user.api_document
+            else
+                respond success: false
+            end
+        end
+
+        def join_friend
+            amount = int_param(:amount)
+            if model_instance.friend_tokens_limit == 0 || model_instance.friend_tokens_concurrent == 0
+                respond authorized: false, message: "You must be a premium user to join with friends"
+            elsif amount <= model_instance.friend_tokens_concurrent
+                allowed = model_instance.friend_token(amount).to_bool
+                if model_instance.remaining_friend_token > 0
+                    respond authorized: allowed, message: "You have #{model_instance.remaining_friend_token} friend joins left for today"
+                else
+                    respond authorized: allowed, message: "You can join with friends again in #{format_relative_time(model_instance.next_friend_token)}"
+                end
+            else
+                respond authorized: false, message: "You can only join up to #{model_instance.friend_tokens_concurrent} friends at a time"
             end
         end
 
@@ -154,6 +175,21 @@ module Api
             show
         rescue User::Nickname::Error => ex
             respond_with_message(BadNickname.new(problem: ex.problem, error: ex.message), status: 422)
+        end
+
+        def change_group
+            group = Group.by_name(required_param(:group)) or raise NotFound
+            case required_param(:type)
+            when 'join'
+                model_instance.join_group(group, stop: params[:end] != nil ? time_param(:end) : nil) unless model_instance.in_group?(group)
+            when 'leave'
+                model_instance.leave_group(group) if model_instance.in_group?(group, false)
+            when 'expire'
+                model_instance.leave_group(group, expire: true) if model_instance.in_group?(group)
+            else
+                raise NotFound
+            end
+            show
         end
 
         def change_setting

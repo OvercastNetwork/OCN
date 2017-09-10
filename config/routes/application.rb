@@ -4,6 +4,7 @@ PGM::Application.routes.draw do
     end
 
     default_url_options :host => "localhost"
+    mount Lockup::Engine, at: '/lockup' if ENV['LOCKUP_ENABLED']
     mount Peek::Railtie => "/peek"
     mount Forem::Engine, :at => "/forums"
 
@@ -18,7 +19,9 @@ PGM::Application.routes.draw do
     post '/inquire', :to => 'application#inquire'
     post '/autocomplete/:name', :to => 'application#autocomplete'
     get '/user_search', :to => 'application#user_search', :as => 'user_search'
+    get '/model_search', :to => 'application#model_search', :as => 'model_search'
     put '/set_time_zone', :to => 'application#set_time_zone'
+    get '/load_models', :to => 'application#load_models'
 
     resources :revisions
     resources :rules

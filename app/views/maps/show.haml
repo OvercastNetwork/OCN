@@ -7,7 +7,7 @@
     });
 %section
     .page-header
-        %h1
+        %h2
             The Maps
             %small A large variety of unique maps
     .row
@@ -23,7 +23,7 @@
                                 = variant_label(variant)
                 - if @map.can_download?
                     -# Use POST to prevent denial of service from forged requests
-                    = button_to download_map_path(@map), class: 'btn btn-success pull-right-md' do
+                    = button_to download_map_path(@map), class: 'btn btn-primary pull-right-md' do
                         %i.fa.fa-download
                         Download
             %h1{style: "margin-top: 0;"}

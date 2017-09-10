@@ -18,7 +18,7 @@
                             %a{:href => url_for(action: 'gamemode', gamemode: gamemode)}= details[:name]
                     %li{:class => ('ranked' == @gamemode_id ? "active" : nil)}
                         %a{:href => url_for(action: 'gamemode', gamemode: 'ranked')} Ranked
-            %li.dropdown{:class => @server && 'active'}
+            -# %li.dropdown{:class => @server && 'active'}
                 %a.dropdown-toggle{href: '#', 'data-toggle' => 'dropdown'}
                     - if @server
                         = "#{@server.name} (#{@server.datacenter})"

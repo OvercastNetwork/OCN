@@ -160,11 +160,7 @@ class UsersController < ApplicationController
             "eternity" => "all time"
         }
         @families = {
-            "pgm-public" => "Objectives/Deathmatch",
-            "mini" => "Mini",
-            "blitz-public" => "Blitz",
-            "micro" => "Micro",
-            "global" => "all games (time only)"
+            "global" => "all games"
         }
         @sorts = {
             "kills" => "kills",
@@ -175,12 +171,7 @@ class UsersController < ApplicationController
 
         @time = choice_param(:time, @times.keys)
         @family = choice_param(:game, @families.keys)
-        @time_only = ['global'].include?(@family)
-        @sort = if @time_only
-            'playing_time'
-        else
-            choice_param(:sort, @sorts.keys)
-        end
+        @sort = choice_param(:sort, @sorts.keys)
 
         model = PlayerStat.for_period(@time)
 

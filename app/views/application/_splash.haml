@@ -1,19 +1,30 @@
 .carousel.slide#hero{:style => "position: absolute;"}
     .carousel-inner{:style => "z-index: -1"}
         .item{:class => "active"}
-            %img{:src => image_path(@image)}
+            %img{:src => image_path(@image), :id => "breathing"}
 
 .jumbotron.main.masthead
     .container
-        -# Shutdown
-        %h1= ORG::NAME
+        %h2= ORG::NAME
+        %h4 Large varieties of Minecraft PvP<br>anytime, anywhere
+        %a.btn.btn-primary.btn-lg{:href => play_path} Play Now &raquo;
 .bs-docs-social
     .container
         %ul.bs-docs-social-buttons
-            %li Latest Announcements:
-            - @topics.each do |topic|
-                %li
-                    %a{:href => forem.topic_path(topic),
-                       :rel => "tooltip",
-                       :title => "Created " + time_ago_in_words(topic.created_at, false, :vague => true) + " ago",
-                       :data => {:placement => "bottom"}}= render_topic_title(topic, emoji_size: 16)
+            %li
+                %h5{:style => "font-weight: bold"} Latest Announcements:
+                - @topics.each do |topic|
+                    %li
+                        %a{:href => forem.topic_path(topic),
+                           :rel => "tooltip",
+                           :title => "Created " + time_ago_in_words(topic.created_at, false, :vague => true) + " ago",
+                           :data => {:placement => "bottom"}}= render_topic_title(topic, emoji_size: 16)
+%section
+    .container{:style => "padding-bottom: 40px"}
+        %br
+        .row
+            .col-md-8{:style => "padding-top: 20px"}
+                %h4{:style => "font-weight: bold"} About Us
+                %p Founded in early 2017, the Stratus Network aims to become the next home for the PGM plugin. With it and other custom-coded plugins, Stratus offers both competitive and casual team-based PvP and, most importantly, a dedicated and awesome community.
+            .col-md-4
+                %img{:src => asset_path("index/variety.png")}

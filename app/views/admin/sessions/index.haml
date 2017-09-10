@@ -1,10 +1,11 @@
 %section
     .row
-        .col-md-12
+        .col-md-16
             %form.form-inline
                 = token_tag nil
                 %input.form-control{name: 'before', placeholder: "Date", value: @before}
                 %input.form-control{name: 'ip', placeholder: "IP", value: @ip}
+                %input.form-control{name: 'nickname', placeholder: "Nickname", value: @nickname}
                 = user_select_field(nil, 'user_id', @user, allow_clear: true, placeholder: "User")
                 %input.btn.btn-sm.btn-primary{type: 'submit', value: "Filter"}
                 %a.btn.btn-sm.btn-default{href: admin_sessions_path} Clear
@@ -18,11 +19,12 @@
                     %tr
                         %th{width: "18%"} Start
                         %th{width: "18%"} Finish
-                        %th{width: "10%"} Duration
+                        %th{width: "7%"} Duration
                         %th{width: "10%"} Server
                         %th{width: "10%"} IP
-                        %th{width: "17%"} User
-                        %th{width: "17%"} Nickname
+                        %th{width: "7%"} Version
+                        %th{width: "18%"} User
+                        %th{width: "18%"} Nickname
                 %tbody
                     - @sessions.each do |session|
                         %tr{class: ("success" if session.online?)}
@@ -31,6 +33,7 @@
                             %td= duration_shorthand(session.start, session.end) if session.end
                             %td= "#{session.server.datacenter} #{session.server.name}" if session.server
                             %td= session.ip
+                            %td= session.version
                             %td= link_to_user(session.player) if session.player
                             %td= session.nickname
             = pagination
