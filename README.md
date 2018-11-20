@@ -10,6 +10,7 @@ but it may be help in understanding how the [ProjectAres](https://github.com/Ove
 We are quite open to the idea of evolving this into something more generally useful.
 If you would like to contribute to this effort, talk to us in [Discord](https://discord.gg/6zGDEen).
 
+**NOTE**: This repository is no longer maintained, but you can still contribute to [forks](https://github.com/OvercastNetwork/OCN/network).
 
 # License
 
