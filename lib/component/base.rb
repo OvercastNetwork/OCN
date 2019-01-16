@@ -8,6 +8,21 @@ module Component
             def assert_flag(flag)
                 FLAGS.include?(flag) or raise ArgumentError, "Unknown formatting flag '#{flag}'"
             end
+
+            def json_create(json)
+                if json.is_a?(String)
+                    Component.from_legacy_text(json)
+                else
+                    args = json_create_args(json)
+                    if text = json['text']
+                        Component.from_legacy_text(text, **args)
+                    elsif translate = json['translate']
+                        Translate.new(translate: translate, with: json['with'] || [], **args)
+                    else
+                        new(**args)
+                    end
+                end
+            end
         end
 
         def get_flag(flag)
@@ -40,10 +55,6 @@ module Component
 
         def as_json(*)
             @json ||= full_json.freeze
-        end
-
-        def self.json_create(json)
-            new(**json_create_args(json))
         end
 
         protected

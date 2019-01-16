@@ -1,15 +1,17 @@
 module Ext
     module Raven
-        class HttpInterface < ::Raven::HttpInterface
-            name 'request'
+        if Object::const_defined? :Raven
+            class HttpInterface < ::Raven::HttpInterface
+                name 'request'
 
-            def from_rack(env)
-                # ActionDispatch::ShowExceptions changes PATH_INFO to the error page
-                # before it gets here, so we need to change it back.
-                if original_path = env['action_dispatch.original_path']
-                    env = env.merge('PATH_INFO' => original_path)
+                def from_rack(env)
+                    # ActionDispatch::ShowExceptions changes PATH_INFO to the error page
+                    # before it gets here, so we need to change it back.
+                    if original_path = env['action_dispatch.original_path']
+                        env = env.merge('PATH_INFO' => original_path)
+                    end
+                    super(env)
                 end
-                super(env)
             end
         end
 
@@ -58,7 +60,9 @@ module Ext
     end
 end
 
-::Raven.extend(::Ext::Raven::ClassMethods)
+if Object::const_defined? :Raven
+    ::Raven.extend(::Ext::Raven::ClassMethods)
 
-# This should replace the one already registered
-::Raven.register_interface http: ::Ext::Raven::HttpInterface
+    # This should replace the one already registered
+    ::Raven.register_interface http: ::Ext::Raven::HttpInterface
+end
